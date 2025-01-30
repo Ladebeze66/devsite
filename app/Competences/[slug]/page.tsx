@@ -1,6 +1,5 @@
-import ContentSectionCompetences from "../../components/ContentSectionCompetences";
+import ContentSectionCompetencesContainer from "../../components/ContentSectionCompetencesContainer";
 
-export default function Page({ params }: { params: { slug: string } }) {
-  console.log("🛠️ Paramètres reçus :", params.slug);
-  return <ContentSectionCompetences collection="competences" slug={params.slug} />;
+export default function CompetencePage({ params }: { params: { slug: string } }) {
+  return <ContentSectionCompetencesContainer collection="competences" slug={params.slug} />;
 }

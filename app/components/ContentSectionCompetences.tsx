@@ -1,14 +1,13 @@
-"use client";
+"use client"; // ✅ Ajout pour en faire un Client Component
 
-import { fetchDataCompetences, fetchDataGlossaire } from "../utils/fetchDataCompetences";
+import { useState, useEffect } from "react";
 import CarouselCompetences from "./CarouselCompetences";
 import ReactMarkdown from "react-markdown";
-import { useState, useEffect } from "react";
-import ModalGlossaire from "./ModalGlossaire"; // ✅ Import de la modale
+import ModalGlossaire from "./ModalGlossaire";
 
 interface ContentSectionProps {
-  collection: string;
-  slug: string;
+  competenceData: any;
+  glossaireData: any[];
   titleClass?: string;
   contentClass?: string;
 }
@@ -22,17 +21,14 @@ interface GlossaireItem {
   images?: any[];
 }
 
-export default async function ContentSectionCompetences({ collection, slug, titleClass, contentClass }: ContentSectionProps) {
-  const data = await fetchDataCompetences(collection, slug);
-  const glossaireData: GlossaireItem[] = await fetchDataGlossaire(); 
-
+export default function ContentSectionCompetences({ competenceData, glossaireData, titleClass, contentClass }: ContentSectionProps) {
   const [selectedMot, setSelectedMot] = useState<GlossaireItem | null>(null);
 
-  if (!data) {
+  if (!competenceData) {
     return <div className="text-red-500 text-center">❌ Compétence introuvable.</div>;
   }
 
-  const { name, content, picture } = data;
+  const { name, content, picture } = competenceData;
 
   const images = picture?.map((img: any) => ({
     url: `http://localhost:1337${img?.formats?.large?.url || img?.url}`,
