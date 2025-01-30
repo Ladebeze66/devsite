@@ -30,12 +30,11 @@ export async function fetchDataCompetences(collection: string, slug: string) {
   }
 }
 
-// ✅ Fonction pour récupérer tous les mots-clés du glossaire
 export async function fetchDataGlossaire() {
   try {
-    console.log("🛠️ Requête API Glossaire : http://localhost:1337/api/glossaires");
+    console.log("🛠️ Requête API Glossaire : http://localhost:1337/api/glossaires?populate=images");
 
-    const response = await fetch("http://localhost:1337/api/glossaires", {
+    const response = await fetch("http://localhost:1337/api/glossaires?populate=images", {
       cache: "no-store",
     });
 
@@ -52,3 +51,4 @@ export async function fetchDataGlossaire() {
     return [];
   }
 }
+
