@@ -1,6 +1,10 @@
-import { fetchDataCompetences } from "../utils/fetchDataCompetences"; // ✅ Importation du bon fetch
+"use client";
+
+import { fetchDataCompetences, fetchDataGlossaire } from "../utils/fetchDataCompetences";
 import CarouselCompetences from "./CarouselCompetences";
 import ReactMarkdown from "react-markdown";
+import { useState, useEffect } from "react";
+import ModalGlossaire from "./ModalGlossaire"; // ✅ Import de la modale
 
 interface ContentSectionProps {
   collection: string;
@@ -9,32 +13,82 @@ interface ContentSectionProps {
   contentClass?: string;
 }
 
+// ✅ Définition du type Glossaire
+interface GlossaireItem {
+  mot_clef: string;
+  slug: string;
+  variantes: string[];
+  description: string;
+  images?: any[];
+}
+
 export default async function ContentSectionCompetences({ collection, slug, titleClass, contentClass }: ContentSectionProps) {
-  const data = await fetchDataCompetences(collection, slug); // ✅ Utilisation du fetch spécifique
+  const data = await fetchDataCompetences(collection, slug);
+  const glossaireData: GlossaireItem[] = await fetchDataGlossaire(); 
+
+  const [selectedMot, setSelectedMot] = useState<GlossaireItem | null>(null);
 
   if (!data) {
     return <div className="text-red-500 text-center">❌ Compétence introuvable.</div>;
   }
 
-  const { name, content, picture } = data; // ✅ Assure-toi que `content` est bien récupéré au lieu de `Resum`
+  const { name, content, picture } = data;
 
-  // 🔹 Transformation des images pour le carrousel des compétences
   const images = picture?.map((img: any) => ({
     url: `http://localhost:1337${img?.formats?.large?.url || img?.url}`,
     alt: img.name || "Image de compétence",
   })) || [];
 
+  // 🔥 Transformation du texte riche avec des <span> cliquables
+  function transformMarkdownWithKeywords(text: string) {
+    if (!glossaireData || glossaireData.length === 0) return text;
+
+    let modifiedText = text;
+
+    glossaireData.forEach(({ mot_clef, variantes }) => {
+      const regexVariants = (variantes || []).map((v: string) => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+      const regex = new RegExp(`\\b(${mot_clef}|${regexVariants})\\b`, "gi");
+
+      modifiedText = modifiedText.replace(regex, (match) => {
+        return `<span class="keyword" data-mot="${mot_clef}">${match}</span>`; // 🔥 Span cliquable
+      });
+    });
+
+    return modifiedText;
+  }
+
+  const contentWithLinks = transformMarkdownWithKeywords(content);
+
+  // ✅ Gestion des clics sur les mots-clés
+  useEffect(() => {
+    function handleKeywordClick(event: any) {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains("keyword")) {
+        const mot = target.getAttribute("data-mot");
+        if (mot) {
+          const glossaireMot = glossaireData.find((g) => g.mot_clef === mot);
+          setSelectedMot(glossaireMot || null);
+        }
+      }
+    }
+
+    document.addEventListener("click", handleKeywordClick);
+    return () => document.removeEventListener("click", handleKeywordClick);
+  }, [glossaireData]);
+
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className={titleClass || "text-3xl mb-6 font-bold text-gray-700"}>{name}</h1>
 
-      {/* Carrousel spécifique aux compétences */}
       <CarouselCompetences images={images} className="w-full h-64" />
 
-      {/* Contenu en Markdown */}
+      {/* 🔥 Affichage du texte riche avec mots-clés cliquables */}
       <div className={contentClass || "mt-6 text-lg text-black-700"}>
-        <ReactMarkdown>{content}</ReactMarkdown> {/* ✅ Utilisation de `content` au lieu de `Resum` */}
+        <ReactMarkdown>{contentWithLinks}</ReactMarkdown>
       </div>
+
+      {/* 🚀 Modale pour afficher les infos des mots-clés */}
+      {selectedMot && <ModalGlossaire mot={selectedMot} onClose={() => setSelectedMot(null)} />}
     </div>
   );
 }
