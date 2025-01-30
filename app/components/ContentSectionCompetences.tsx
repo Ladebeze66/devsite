@@ -1,8 +1,9 @@
-"use client"; // ✅ Ajout pour en faire un Client Component
+"use client";
 
 import { useState, useEffect } from "react";
 import CarouselCompetences from "./CarouselCompetences";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw"; // ✅ Permet d'interpréter le HTML dans ReactMarkdown
 import ModalGlossaire from "./ModalGlossaire";
 
 interface ContentSectionProps {
@@ -46,7 +47,7 @@ export default function ContentSectionCompetences({ competenceData, glossaireDat
       const regex = new RegExp(`\\b(${mot_clef}|${regexVariants})\\b`, "gi");
 
       modifiedText = modifiedText.replace(regex, (match) => {
-        return `<span class="keyword" data-mot="${mot_clef}">${match}</span>`; // 🔥 Span cliquable
+        return `<span class="keyword" data-mot="${mot_clef}" style="color: blue; cursor: pointer;">${match}</span>`; // ✅ Span cliquable
       });
     });
 
@@ -80,7 +81,7 @@ export default function ContentSectionCompetences({ competenceData, glossaireDat
 
       {/* 🔥 Affichage du texte riche avec mots-clés cliquables */}
       <div className={contentClass || "mt-6 text-lg text-black-700"}>
-        <ReactMarkdown>{contentWithLinks}</ReactMarkdown>
+        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{contentWithLinks}</ReactMarkdown> {/* ✅ Permet d'interpréter le HTML */}
       </div>
 
       {/* 🚀 Modale pour afficher les infos des mots-clés */}
