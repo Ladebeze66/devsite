@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
                     <NavLink text="Portfolio" path="/portfolio" />
                   </li>
                   <li>
-                    <NavLink text="Compétences" path="/Competences" />
+                    <NavLink text="Compétences" path="/competences" />
                   </li>
                   <li>
                     <NavLink text="Contact" path="/contact" />
