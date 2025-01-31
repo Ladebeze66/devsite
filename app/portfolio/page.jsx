@@ -19,8 +19,18 @@ async function getAllprojects() {
 export default async function Page() {
   const projects = await getAllprojects();
 
+  // Déterminer la largeur du conteneur en fonction du nombre de projets
+  let containerWidth = "max-w-4xl";
+  if (projects.length > 10) {
+    containerWidth = "max-w-full";
+  } else if (projects.length > 5) {
+    containerWidth = "max-w-6xl";
+  } else if (projects.length > 3) {
+    containerWidth = "max-w-5xl";
+  }
+
   return (
-    <div>
+    <div className={`large-container mx-auto p-6 ${containerWidth}`}>
       {/* Titre de la page */}
       <h1 className="text-3xl mb-6 font-bold text-grey-700">Portfolio formation 42</h1>
       

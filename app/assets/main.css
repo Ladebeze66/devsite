@@ -72,3 +72,10 @@
     transform: translate(0, 0) scale(1); /* Retour à la position et échelle initiales */
   }
 }
+
+/* Classe pour agrandir le conteneur */
+.large-container {
+  max-width: 72rem; /* Largeur maximale de 72rem */
+  margin: 0 auto; /* Centrer horizontalement */
+  padding: 1.5rem; /* Padding de 1.5rem */
+}

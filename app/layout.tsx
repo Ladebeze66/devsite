@@ -17,7 +17,10 @@ export default function RootLayout({ children }) {
     setNumElements(elementsCount);
 
     // Ajuster la largeur et la hauteur en fonction du nombre d'éléments
-    if (elementsCount > 5) {
+    if (elementsCount > 10) {
+      setContainerWidth("max-w-full");
+      setContainerHeight("min-h-[90vh]");
+    } else if (elementsCount > 5) {
       setContainerWidth("max-w-6xl");
       setContainerHeight("min-h-[80vh]");
     } else if (elementsCount > 3) {
