@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+// Fonction pour récupérer tous les projets depuis l'API Strapi
 async function getAllprojects() {
   try {
     const response = await fetch("http://localhost:1337/api/projects?populate=*");
@@ -14,13 +15,18 @@ async function getAllprojects() {
   }
 }
 
+// Composant principal de la page des projets
 export default async function Page() {
   const projects = await getAllprojects();
 
   return (
     <div>
+      {/* Titre de la page */}
       <h1 className="text-3xl mb-6 font-bold text-grey-700">Portfolio formation 42</h1>
+      
+      {/* Grille pour afficher les projets */}
       <div className="grid grid-cols-2 gap-6">
+        {/* Boucle sur les projets pour les afficher */}
         {projects.map((project) => {
           const picture = project.picture?.[0]; // Récupère la première image si elle existe
           const largeImageUrl = picture?.formats?.large?.url; // Vérifie que le format "large" existe
@@ -31,8 +37,10 @@ export default async function Page() {
 
           return (
             <div key={project.id} className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:bg-blue-100">
+              {/* Lien vers la page de détail du projet */}
               <Link href={`/portfolio/${project.slug}`}>
                 <div className="overflow-hidden">
+                  {/* Affichage de l'image du projet */}
                   {imageUrl ? (
                     <img
                       src={imageUrl}
@@ -46,7 +54,9 @@ export default async function Page() {
                   )}
                 </div>
                 <div className="p-4">
+                  {/* Affichage du nom du projet */}
                   <p className="font-bold text-xl mb-2">{project.name}</p>
+                  {/* Affichage de la description du projet */}
                   <p className="text-gray-700">{project.description}</p>
                 </div>
               </Link>

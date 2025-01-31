@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw"; // ✅ Permet d'interpréter le HTML dans ReactMarkdown
 import ModalGlossaire from "./ModalGlossaire";
 
+// Définition des propriétés du composant ContentSectionCompetences
 interface ContentSectionProps {
   competenceData: any;
   glossaireData: any[];
@@ -22,6 +23,7 @@ interface GlossaireItem {
   images?: any[];
 }
 
+// Composant principal ContentSectionCompetences
 export default function ContentSectionCompetences({ competenceData, glossaireData, titleClass, contentClass }: ContentSectionProps) {
   const [selectedMot, setSelectedMot] = useState<GlossaireItem | null>(null);
 
@@ -29,8 +31,10 @@ export default function ContentSectionCompetences({ competenceData, glossaireDat
     return <div className="text-red-500 text-center">❌ Compétence introuvable.</div>;
   }
 
+  // Déstructuration des données de la compétence
   const { name, content, picture } = competenceData;
 
+  // Transformation des images de Strapi en format attendu par le carrousel
   const images = picture?.map((img: any) => ({
     url: `http://localhost:1337${img?.formats?.large?.url || img?.url}`,
     alt: img.name || "Image de compétence",
@@ -74,9 +78,12 @@ export default function ContentSectionCompetences({ competenceData, glossaireDat
   }, [glossaireData]);
 
   return (
+    // ✅ Affichage de la compétence
     <div className="max-w-3xl mx-auto p-6">
+      {/* Titre de la section */}
       <h1 className={titleClass || "text-3xl mb-6 font-bold text-gray-700"}>{name}</h1>
 
+      {/* Carrousel pour afficher les images */}
       <CarouselCompetences images={images} className="w-full h-64" />
 
       {/* 🔥 Affichage du texte riche avec mots-clés cliquables */}

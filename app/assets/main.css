@@ -1,3 +1,4 @@
+/* Importation des polices Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
@@ -5,62 +6,69 @@
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
+/* Importation des styles de base, des composants et des utilitaires de Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Classe pour définir l'image de fond */
 .bg-wallpaper {
-  background-image: url('./images/wallpapersite.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-image: url('./images/wallpapersite.png'); /* Chemin de l'image de fond */
+  background-size: cover; /* L'image couvre toute la zone */
+  background-position: center; /* L'image est centrée */
+  background-repeat: no-repeat; /* L'image ne se répète pas */
 }
 
+/* Classe pour définir la hauteur minimale et maximale du contenu de la page d'accueil */
 .homepage-content {
   min-height: 50vh; /* Hauteur minimale de 50% de la hauteur de la fenêtre */
   max-height: 80vh; /* Hauteur maximale de 80% de la hauteur de la fenêtre */
 }
 
+/* Classe pour animer le premier cercle */
 .circle-one {
-  animation: move1 10s linear infinite;
+  animation: move1 10s linear infinite; /* Animation infinie avec une durée de 10s */
 }
 
+/* Classe pour animer le deuxième cercle */
 .circle-two {
-    animation: move2 10s linear infinite;
-  }
+  animation: move2 10s linear infinite; /* Animation infinie avec une durée de 10s */
+}
 
+/* Définition de l'animation pour le premier cercle */
 @keyframes move1 {
   0% {
-    transform: translate(0, 0) scale 1;
+    transform: translate(0, 0) scale(1); /* Position et échelle initiales */
   }
   25% {
-    transform: translate(200px, 200px) scale(1);
+    transform: translate(200px, 200px) scale(1); /* Déplacement et échelle */
   }
-  50%{
-    transform: translate(100px, 400px) scale(1.2);
+  50% {
+    transform: translate(100px, 400px) scale(1.2); /* Déplacement et échelle */
   }
-  75%{
-    transform: translate(-100px, -200px) scale(1.1);
+  75% {
+    transform: translate(-100px, -200px) scale(1.1); /* Déplacement et échelle */
   }
   100% {
-    transform: translate(0, 0) scale(1);
+    transform: translate(0, 0) scale(1); /* Retour à la position et échelle initiales */
   }
 }
 
+/* Définition de l'animation pour le deuxième cercle */
 @keyframes move2 {
-    0% {
-      transform: translate(0, 0) scale 1;
-    }
-    25% {
-      transform: translate(-30px, -300px) scale(1);
-    }
-    50%{
-      transform: translate(-200px, -100px) scale(1.2);
-    }
-    75%{
-      transform: translate(30px, 70px) scale(1.1);
-    }
-    100% {
-      transform: translate(0, 0) scale(1);
-    }
+  0% {
+    transform: translate(0, 0) scale(1); /* Position et échelle initiales */
   }
+  25% {
+    transform: translate(-200px, -200px) scale(1); /* Déplacement et échelle */
+  }
+  50% {
+    transform: translate(-100px, -400px) scale(1.2); /* Déplacement et échelle */
+  }
+  75% {
+    transform: translate(100px, 200px) scale(1.1); /* Déplacement et échelle */
+  }
+  100% {
+    transform: translate(0, 0) scale(1); /* Retour à la position et échelle initiales */
+  }
+}

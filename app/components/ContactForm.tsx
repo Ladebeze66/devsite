@@ -4,6 +4,7 @@ import { useState } from "react";
 import { sendMessage } from "../utils/sendMessage";
 
 export default function ContactForm() {
+  // États pour gérer les valeurs des champs de formulaire
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");

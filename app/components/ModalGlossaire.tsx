@@ -1,18 +1,20 @@
 import { useEffect } from "react";
-import { createPortal } from "react-dom"; // ✅ Insère la modale dans <body>
-import CarouselCompetences from "./CarouselCompetences";
+import { createPortal } from "react-dom"; // Insère la modale dans <body>
+import CarouselCompetences from "./CarouselCompetences"; // Importation du composant CarouselCompetences pour afficher les images
 
+// Définition des propriétés du composant ModalGlossaire
 interface ModalGlossaireProps {
   mot: {
-    mot_clef: string;
-    description: string;
-    images?: any[];
+    mot_clef: string; // Mot-clé du glossaire
+    description: string; // Description du mot-clé
+    images?: any[]; // Images associées au mot-clé
   };
-  onClose: () => void;
+  onClose: () => void; // Fonction pour fermer la modale
 }
 
+// Composant principal ModalGlossaire
 export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
-  // 🔥 Désactiver le scroll du `body` quand la modale est ouverte
+  // Désactiver le scroll du `body` quand la modale est ouverte
   useEffect(() => {
     document.body.classList.add("overflow-hidden");
     return () => {
@@ -20,10 +22,10 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
     };
   }, []);
 
-  // ✅ Debug : Vérifier les images reçues
+  // Debug : Vérifier les images reçues
   console.log("🖼️ Images reçues dans la modale :", mot.images);
 
-  // ✅ Vérifier si `mot.images` est bien un tableau et contient des images
+  // Vérifier si `mot.images` est bien un tableau et contient des images
   const images = mot.images?.map((img: any) => {
     return {
       url: `http://localhost:1337${img.formats?.large?.url || img.url}`,
@@ -45,14 +47,14 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
         {/* Description */}
         <p className="text-gray-700 mb-6">{mot.description}</p>
 
-        {/* 🚀 Carrousel d'images si disponible */}
+        {/* Carrousel d'images si disponible */}
         {images.length > 0 ? (
           <CarouselCompetences images={images} className="w-full h-80" />
         ) : (
-          <p className="text-gray-500 text-center">Aucune image disponible</p>
+          <p className="text-gray-500">Aucune image disponible.</p>
         )}
       </div>
     </div>,
-    document.body // ✅ Fixe la modale au `body` pour qu'elle couvre toute la page
+    document.body
   );
 }

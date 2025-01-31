@@ -1,37 +1,42 @@
+/* Importation des styles de base, des composants et des utilitaires de Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Définition des variables CSS pour les couleurs de fond et de premier plan */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #ffffff; /* Couleur de fond par défaut (clair) */
+  --foreground: #171717; /* Couleur de premier plan par défaut (foncé) */
 }
 
+/* Définition des variables CSS pour le mode sombre */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0a0a0a; /* Couleur de fond pour le mode sombre */
+    --foreground: #ededed; /* Couleur de premier plan pour le mode sombre */
   }
 }
 
+/* Styles globaux pour le corps de la page */
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--foreground); /* Utilisation de la couleur de premier plan définie */
+  background: var(--background); /* Utilisation de la couleur de fond définie */
+  font-family: Arial, Helvetica, sans-serif; /* Police de caractères par défaut */
 }
 
+/* Définition d'une animation de fondu en entrée */
 @keyframes fade-in {
   from {
-    opacity: 0;
-    transform: translateY(-10px);
+    opacity: 0; /* Opacité initiale à 0 (invisible) */
+    transform: translateY(-10px); /* Déplacement initial vers le haut */
   }
   to {
-    opacity: 1;
-    transform: translateY(0);
+    opacity: 1; /* Opacité finale à 1 (visible) */
+    transform: translateY(0); /* Position finale */
   }
 }
 
+/* Classe utilitaire pour appliquer l'animation de fondu en entrée */
 .animate-fade-in {
-  animation: fade-in 0.5s ease-out;
+  animation: fade-in 0.5s ease-out; /* Animation de 0.5s avec une courbe de transition */
 }
-

@@ -1,9 +1,12 @@
-import ContactForm from "../components/ContactForm";
+import ContactForm from "../components/ContactForm"; // Importation du composant ContactForm
 
 export default function ContactPage() {
   return (
     <div className="max-w-3xl mx-auto p-6">
+      {/* Titre de la page */}
       <h1 className="text-3xl font-bold text-center mb-6">Contactez-moi</h1>
+      
+      {/* Texte d'introduction */}
       <p className="text-lg text-center mb-4">
         Vous pouvez me contacter via ce formulaire ou sur mes réseaux sociaux.
       </p>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+// Fonction pour récupérer toutes les compétences depuis l'API Strapi
 async function getAllCompetences() {
   try {
     const response = await fetch("http://localhost:1337/api/competences?populate=*");
@@ -14,12 +15,15 @@ async function getAllCompetences() {
   }
 }
 
+// Composant principal de la page des compétences
 export default async function Page() {
   const competences = await getAllCompetences();
 
   return (
     <div>
+      {/* Titre de la page */}
       <h1 className="text-3xl mb-6 font-bold text-grey-700">Mes Compétences</h1>
+      {/* Grille pour afficher les compétences */}
       <div className="grid grid-cols-2 gap-6">
         {competences.map((competence) => {
           const picture = competence.picture?.[0]; // Récupère la première image si elle existe
@@ -33,8 +37,10 @@ export default async function Page() {
 
           return (
             <div key={competence.id} className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:bg-blue-100">
+              {/* Lien vers la page de détail de la compétence */}
               <Link href={`/competences/${competence.slug}`}>
                 <div className="overflow-hidden">
+                  {/* Affichage de l'image de la compétence */}
                   {imageUrl ? (
                     <img
                       src={imageUrl}
@@ -48,7 +54,9 @@ export default async function Page() {
                   )}
                 </div>
                 <div className="p-4">
+                  {/* Affichage du nom de la compétence */}
                   <p className="font-bold text-xl mb-2">{competence.name}</p>
+                  {/* Affichage de la description de la compétence */}
                   <p className="text-gray-700">{competence.description}</p>
                 </div>
               </Link>
