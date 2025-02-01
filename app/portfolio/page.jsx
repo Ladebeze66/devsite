@@ -30,7 +30,7 @@ export default async function Page() {
   }
 
   return (
-    <div className={`large-container mx-auto p-6 ${containerWidth}`}>
+    <div className={`mx-auto p-6 ${containerWidth}`}>
       {/* Titre de la page */}
       <h1 className="text-3xl mb-6 font-bold text-grey-700">Portfolio formation 42</h1>
       
