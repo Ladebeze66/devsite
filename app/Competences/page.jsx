@@ -20,33 +20,34 @@ export default async function Page() {
   const competences = await getAllCompetences();
 
   return (
-    <div className="w-full p-6">
+    <main className="w-full p-6">
       <h1 className="text-3xl mb-6 font-bold text-gray-700">Mes Compétences</h1>
 
-      <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+      {/* Grille dynamique pour un affichage équilibré */}
+      <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(280px,1fr))] max-w-6xl mx-auto">
         {competences.map((competence) => {
           const picture = competence.picture?.[0]; // Récupère la première image si elle existe
           const imageUrl = picture?.url ? `http://localhost:1337${picture.url}` : "/placeholder.jpg";
 
           return (
-            <div key={competence.id} className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:bg-blue-100">
+            <div key={competence.id} className="bg-white rounded-lg shadow-md overflow-hidden w-72 h-96 flex flex-col">
               <Link href={`/competences/${competence.slug}`}>
-                <div className="overflow-hidden">
+                <div className="overflow-hidden w-full h-48">
                   <img
                     src={imageUrl}
                     alt={picture?.name || "Competence image"}
-                    className="w-full h-48 object-cover transform transition-transform duration-300 hover:scale-125 hover:rotate-12"
+                    className="w-full h-full object-cover object-center"
                   />
                 </div>
-                <div className="p-4">
+                <div className="p-4 flex-grow">
                   <p className="font-bold text-xl mb-2">{competence.name}</p>
-                  <p className="text-gray-700">{competence.description}</p>
+                  <p className="text-gray-700 text-sm line-clamp-3">{competence.description}</p>
                 </div>
               </Link>
             </div>
           );
         })}
       </div>
-    </div>
+    </main>
   );
 }

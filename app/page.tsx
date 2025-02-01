@@ -30,14 +30,14 @@ export default async function HomePage() {
   const imageUrl = photo?.url ? `${baseUrl}${photo.url}` : null;
 
   return (
-    <div className="flex flex-col items-center justify-center homepage-content p-6">
+    <main className="max-w-3xl mx-auto flex flex-col items-center justify-center p-6">
       {/* Texte court (title) */}
       <h1 className="text-3xl font-bold text-gray-800 mb-4">{title}</h1>
 
       {/* Photo en cadre ovale avec effet hover */}
       {imageUrl ? (
         <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-lg border-4 border-gray-300 transition-transform duration-300 hover:scale-110">
-          <img src={imageUrl} alt="Photo de profil" className="w-full h-full object-cover" />
+          <img src={imageUrl} alt="Photo de profil" className="w-full h-full object-cover object-center" />
         </div>
       ) : (
         <div className="w-64 h-64 flex items-center justify-center bg-gray-500 text-gray-200 rounded-full shadow-md">
@@ -49,6 +49,6 @@ export default async function HomePage() {
       <div className="mt-6 text-lg text-black-700 max-w-2xl p-4 text-center">
         <ReactMarkdown>{cv}</ReactMarkdown>
       </div>
-    </div>
+    </main>
   );
 }
