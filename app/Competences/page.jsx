@@ -20,43 +20,26 @@ export default async function Page() {
   const competences = await getAllCompetences();
 
   return (
-    <div>
-      {/* Titre de la page */}
-      <h1 className="text-3xl mb-6 font-bold text-grey-700">Mes Compétences</h1>
-      {/* Grille pour afficher les compétences */}
-      <div className="grid grid-cols-2 gap-6">
+    <div className="w-full p-6">
+      <h1 className="text-3xl mb-6 font-bold text-gray-700">Mes Compétences</h1>
+
+      <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
         {competences.map((competence) => {
           const picture = competence.picture?.[0]; // Récupère la première image si elle existe
-          const largeImageUrl = picture?.formats?.large?.url; // Vérifie que le format "large" existe
-          const originalImageUrl = picture?.url; // URL de l'image originale
-
-          // Utilisez l'URL de l'image originale si disponible, sinon l'URL de l'image large
-          const imageUrl = originalImageUrl
-            ? `http://localhost:1337${originalImageUrl}`
-            : `http://localhost:1337${largeImageUrl}`;
+          const imageUrl = picture?.url ? `http://localhost:1337${picture.url}` : "/placeholder.jpg";
 
           return (
             <div key={competence.id} className="bg-white rounded-lg shadow-md overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-lg hover:bg-blue-100">
-              {/* Lien vers la page de détail de la compétence */}
               <Link href={`/competences/${competence.slug}`}>
                 <div className="overflow-hidden">
-                  {/* Affichage de l'image de la compétence */}
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt={picture?.name || "Competence image"}
-                      className="w-full h-48 object-cover transform transition-transform duration-300 hover:scale-125 hover:rotate-12"
-                    />
-                  ) : (
-                    <div className="bg-gray-200 text-gray-500 text-center rounded-md shadow-md p-4">
-                      Image indisponible
-                    </div>
-                  )}
+                  <img
+                    src={imageUrl}
+                    alt={picture?.name || "Competence image"}
+                    className="w-full h-48 object-cover transform transition-transform duration-300 hover:scale-125 hover:rotate-12"
+                  />
                 </div>
                 <div className="p-4">
-                  {/* Affichage du nom de la compétence */}
                   <p className="font-bold text-xl mb-2">{competence.name}</p>
-                  {/* Affichage de la description de la compétence */}
                   <p className="text-gray-700">{competence.description}</p>
                 </div>
               </Link>
@@ -67,5 +50,3 @@ export default async function Page() {
     </div>
   );
 }
-
-
