@@ -30,13 +30,13 @@ export default async function HomePage() {
   const imageUrl = photo?.url ? `${baseUrl}${photo.url}` : null;
 
   return (
-    <main className="max-w-3xl mx-auto flex flex-col items-center justify-center p-6">
+    <main className="max-w-3xl w-full mx-auto flex flex-col items-center justify-center p-6 bg-white/30 rounded-lg mt-3 mb-3">
       {/* Texte court (title) */}
       <h1 className="text-3xl font-bold text-gray-800 mb-4">{title}</h1>
 
       {/* Photo en cadre ovale avec effet hover */}
       {imageUrl ? (
-        <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-lg border-4 border-gray-300 transition-transform duration-300 hover:scale-110">
+        <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-lg border-4 border-gray-300 transition-transform duration-300 hover:scale-110 hover:rotate-3">
           <img src={imageUrl} alt="Photo de profil" className="w-full h-full object-cover object-center" />
         </div>
       ) : (
@@ -46,7 +46,7 @@ export default async function HomePage() {
       )}
 
       {/* Texte riche en Markdown */}
-      <div className="mt-6 text-lg text-black-700 max-w-2xl p-4 text-center">
+      <div className="mt-6 text-lg text-black-700 max-w-2xl px-6 text-center">
         <ReactMarkdown>{cv}</ReactMarkdown>
       </div>
     </main>

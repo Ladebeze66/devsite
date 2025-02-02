@@ -21,27 +21,32 @@ export default async function Page() {
 
   return (
     <main className="w-full p-6">
-      <h1 className="text-3xl mb-6 font-bold text-gray-700">Mes Compétences</h1>
+      <h1 className="text-3xl mb-6 font-bold text-gray-700 text-center">Mes Compétences</h1>
 
-      {/* Grille dynamique pour un affichage équilibré */}
-      <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(280px,1fr))] max-w-6xl mx-auto">
+      {/* Grille améliorée avec une meilleure gestion de l'espace */}
+      <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-w-7xl mx-auto">
         {competences.map((competence) => {
-          const picture = competence.picture?.[0]; // Récupère la première image si elle existe
+          const picture = competence.picture?.[0];
           const imageUrl = picture?.url ? `http://localhost:1337${picture.url}` : "/placeholder.jpg";
 
           return (
-            <div key={competence.id} className="bg-white rounded-lg shadow-md overflow-hidden w-72 h-96 flex flex-col">
+            <div 
+              key={competence.id} 
+              className="bg-white rounded-lg shadow-md overflow-hidden w-80 h-96 flex flex-col transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            >
               <Link href={`/competences/${competence.slug}`}>
                 <div className="overflow-hidden w-full h-48">
                   <img
                     src={imageUrl}
                     alt={picture?.name || "Competence image"}
-                    className="w-full h-full object-cover object-center"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="p-4 flex-grow">
                   <p className="font-bold text-xl mb-2">{competence.name}</p>
-                  <p className="text-gray-700 text-sm line-clamp-3">{competence.description}</p>
+                  <p className="text-gray-700 text-sm hover:text-base transition-all duration-200 ease-in-out">
+                    {competence.description}
+                  </p>
                 </div>
               </Link>
             </div>

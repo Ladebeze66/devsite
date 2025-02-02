@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
           </header>
 
           {/* Ne pas forcer de largeur ici, chaque page gère son `main` */}
-          <main className="w-full mx-auto bg-white/20 rounded-xl py-7 px-8 m-6 transition-all duration-300">
+          <main >
             {children}
           </main>
 
