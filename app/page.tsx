@@ -30,7 +30,7 @@ export default async function HomePage() {
   const imageUrl = photo?.url ? `${baseUrl}${photo.url}` : null;
 
   return (
-    <main className="max-w-3xl w-full mx-auto flex flex-col items-center justify-center p-6 bg-white/30 rounded-lg mt-3 mb-3">
+    <main className="max-w-3xl w-full mx-auto flex flex-col items-center justify-center p-6 bg-white/55 rounded-lg mt-12 mb-3">
       {/* Texte court (title) */}
       <h1 className="text-3xl font-bold text-gray-800 mb-4">{title}</h1>
 

@@ -20,12 +20,12 @@ export default async function Page() {
   const projects = await getAllprojects();
 
   return (
-    <main className="w-full p-6">
+    <main className="w-full p-3 mt-5 mb-5">
       {/* Titre de la page */}
-      <h1 className="text-3xl mb-6 font-bold text-gray-700 text-center">Portfolio formation 42</h1>
+      <h1 className="text-3xl mb-3 font-bold text-gray-700 text-center">Portfolio formation 42</h1>
 
       {/* Grille améliorée avec une meilleure largeur et des colonnes plus équilibrées */}
-      <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-w-7xl mx-auto">
+      <div className="grid gap-7 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-w-7xl mx-auto">
         {projects.map((project) => {
           const picture = project.picture?.[0];
           const imageUrl = picture?.url ? `http://localhost:1337${picture.url}` : "/placeholder.jpg";
@@ -33,18 +33,18 @@ export default async function Page() {
           return (
             <div 
               key={project.id} 
-              className="bg-white rounded-lg shadow-md overflow-hidden w-80 h-96 flex flex-col transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              className="bg-white rounded-lg shadow-md overflow-hidden w-80 h-96 flex flex-col transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4"
             >
               {/* Lien vers la page de détail du projet */}
               <Link href={`/portfolio/${project.slug}`}>
-                <div className="overflow-hidden w-full h-48">
+                <div className="overflow-hidden w-full h-48 mb-4">
                   <img
                     src={imageUrl}
                     alt={picture?.name || "Project image"}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="p-4 flex-grow">
+                <div className="flex-grow overflow-y-auto max-h-32 hide-scrollbar show-scrollbar">
                   <p className="font-bold text-xl mb-2">{project.name}</p>
                   <p className="text-gray-700 text-sm hover:text-base transition-all duration-200 ease-in-out">
                     {project.description}

@@ -38,7 +38,7 @@ export default async function ContentSection({ collection, slug, titleClass, con
       <Carousel images={images} className="w-full h-64" />
 
       {/* Contenu en Markdown */}
-      <div className={contentClass || "bg-gray-100 rounded-md p-4 shadow-md mt-6"}>
+      <div className={contentClass || "bg-white/55 rounded-md p-4 shadow-md mt-6"}>
         <ReactMarkdown>{richText}</ReactMarkdown>
       </div>
 

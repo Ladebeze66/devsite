@@ -79,3 +79,23 @@
   margin: 0 auto; /* Centrer horizontalement */
   padding: 1.5rem; /* Padding de 1.5rem */
 }
+
+/* Masquer la barre de défilement par défaut */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* WebKit (Chrome, Safari, Edge) */
+}
+
+/* Afficher la barre de défilement au survol */
+.show-scrollbar:hover {
+  scrollbar-width: auto; /* Firefox */
+  -ms-overflow-style: auto; /* Internet Explorer 10+ */
+}
+
+.show-scrollbar:hover::-webkit-scrollbar {
+  display: block; /* WebKit (Chrome, Safari, Edge) */
+}
