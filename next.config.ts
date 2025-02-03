@@ -2,10 +2,8 @@
 const nextConfig = {
   // Active le mode strict de React pour signaler des erreurs potentielles
   reactStrictMode: true,
-  
-  // Activer les fonctionnalités expérimentales nécessaires (par exemple appDir pour les layouts de l'application)
   experimental: {
-    appDir: true,
+    appDir: true, // ✅ Assurez-vous que cette ligne est bien présente
   },
 
   // Gestion des réécritures d'URL pour proxy local vers le backend
