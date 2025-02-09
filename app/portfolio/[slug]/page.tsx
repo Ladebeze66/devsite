@@ -2,9 +2,9 @@
 
 import { useParams } from "next/navigation"; // ✅ Nouvelle méthode pour récupérer `params`
 import { useEffect, useState } from "react";
-import ContentSectionCompetencesContainer from "../../components/ContentSectionCompetencesContainer";
+import ContentSection from "../../components/ContentSection";
 
-export default function CompetencePage() {
+export default function Page() {
   const params = useParams(); // ✅ Récupérer `params` correctement
   const [slug, setSlug] = useState<string | null>(null);
 
@@ -18,5 +18,5 @@ export default function CompetencePage() {
     return <div className="text-center text-gray-500">⏳ Chargement...</div>;
   }
 
-  return <ContentSectionCompetencesContainer collection="competences" slug={slug} />;
+  return <ContentSection collection="projects" slug={slug} />;
 }

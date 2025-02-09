@@ -2,17 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getApiUrl } from "../utils/getApiUrl"; // 🔥 Import de l'URL dynamique
+import { getApiUrl } from "../utils/getApiUrl";
+import Carousel from "../components/Carousel"; // ✅ Import du carrousel
 
 export default function Page() {
-  const [projects, setProjects] = useState([]); // 🔥 Stocker les projets une seule fois
-  const apiUrl = getApiUrl(); // 🔥 Définition de l'URL API
+  const [projects, setProjects] = useState([]); // ✅ Stocker les projets
+  const apiUrl = getApiUrl();
 
   useEffect(() => {
     async function fetchProjects() {
       console.log("🔍 API utilisée pour les projets :", apiUrl);
       try {
-        const response = await fetch(`${apiUrl}/api/projects?populate=*`);
+        const response = await fetch(`${apiUrl}/api/projects?populate=picture`);
         if (!response.ok) {
           throw new Error(`Erreur de récupération des projets : ${response.statusText}`);
         }
@@ -23,34 +24,43 @@ export default function Page() {
       }
     }
 
-    fetchProjects(); // 🔥 Exécuter une seule fois au montage du composant
-  }, [apiUrl]); // ✅ Exécuter `useEffect()` uniquement si `apiUrl` change
+    fetchProjects();
+  }, [apiUrl]);
 
   return (
     <main className="w-full p-3 mt-5 mb-5">
       {/* Titre de la page */}
       <h1 className="text-3xl mb-3 font-bold text-gray-700 text-center">Portfolio formation 42</h1>
 
-      {/* Grille améliorée avec une meilleure largeur et des colonnes plus équilibrées */}
+      {/* Grille des projets */}
       <div className="grid gap-7 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-w-7xl mx-auto">
         {projects.map((project) => {
-          const picture = project.picture?.[0];
-          const imageUrl = picture?.url ? `${apiUrl}${picture.url}` : "/placeholder.jpg";
+          const pictures = project.picture ?? [];
+          const images = pictures.map((img) => ({
+            url: `${apiUrl}${img.url}`,
+            alt: img.name || "Project image",
+          }));
 
           return (
-            <div 
-              key={project.id} 
+            <div
+              key={project.id}
               className="bg-white rounded-lg shadow-md overflow-hidden w-80 h-96 flex flex-col transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4"
             >
               {/* Lien vers la page de détail du projet */}
               <Link href={`/portfolio/${project.slug}`}>
                 <div className="overflow-hidden w-full h-48 mb-4">
-                  <img
-                    src={imageUrl}
-                    alt={picture?.name || "Project image"}
-                    className="w-full h-full object-cover"
-                  />
+                  {/* ✅ Ajout du carrousel au lieu d'une image unique */}
+                  {images.length > 1 ? (
+                    <Carousel images={images} className="h-48" />
+                  ) : (
+                    <img
+                      src={images[0]?.url || "/placeholder.jpg"}
+                      alt={images[0]?.alt || "Project image"}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
+
                 <div className="flex-grow overflow-y-auto max-h-32 hide-scrollbar show-scrollbar">
                   <p className="font-bold text-xl mb-2">{project.name}</p>
                   <p className="text-gray-700 text-sm hover:text-base transition-all duration-200 ease-in-out">

@@ -1,11 +1,22 @@
+"use client"; // ✅ Indique que ce composant fonctionne côté client
+
+import { useParams } from "next/navigation"; // ✅ Nouvelle méthode pour récupérer `params`
+import { useEffect, useState } from "react";
 import ContentSectionCompetencesContainer from "../../components/ContentSectionCompetencesContainer";
 
-export default function CompetencePage({ params }: { params: { slug?: string } }) {
-  // ✅ Vérification du slug avant d'afficher le composant
-  if (!params?.slug) {
-    console.error("❌ [CompetencePage] Erreur : Aucun slug fourni !");
-    return <div className="text-center text-red-500">❌ Erreur : Compétence introuvable.</div>;
+export default function CompetencePage() {
+  const params = useParams(); // ✅ Récupérer `params` correctement
+  const [slug, setSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (params?.slug) {
+      setSlug(params.slug as string); // ✅ Assurer que `slug` est bien une string
+    }
+  }, [params]);
+
+  if (!slug) {
+    return <div className="text-center text-gray-500">⏳ Chargement...</div>;
   }
 
-  return <ContentSectionCompetencesContainer collection="competences" slug={params.slug} />;
+  return <ContentSectionCompetencesContainer collection="competences" slug={slug} />;
 }
