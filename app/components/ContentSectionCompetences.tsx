@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getApiUrl } from "../utils/getApiUrl"; // ✅ Importation de l'URL dynamique
+import { getApiUrl } from "../utils/getApiUrl";
 import CarouselCompetences from "./CarouselCompetences";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -37,28 +37,42 @@ interface ContentSectionProps {
   contentClass?: string;
 }
 
-// ✅ Composant principal
-export default function ContentSectionCompetences({ competenceData, glossaireData, titleClass, contentClass }: ContentSectionProps) {
+export default function ContentSectionCompetences({
+  competenceData,
+  glossaireData,
+  titleClass,
+  contentClass,
+}: ContentSectionProps) {
   console.log("🔍 [ContentSectionCompetences] Chargement du composant...");
-  console.log("📌 [ContentSectionCompetences] Données reçues - competenceData :", competenceData);
-  console.log("📌 [ContentSectionCompetences] Données reçues - glossaireData :", glossaireData);
 
   const [selectedMot, setSelectedMot] = useState<GlossaireItem | null>(null);
-  const apiUrl = getApiUrl(); // ✅ Détection automatique de l'URL API
+  const [loading, setLoading] = useState(competenceData === null); // ✅ Initialiser correctement loading
+  const apiUrl = getApiUrl();
+
+  useEffect(() => {
+    if (competenceData) {
+      setLoading(false); // ✅ Mise à jour de loading une seule fois après chargement
+    }
+  }, [competenceData]);
+
+  // ✅ Affichage d'un message de chargement
+  if (loading) {
+    return <div className="text-center text-gray-500">⏳ Chargement des détails de la compétence...</div>;
+  }
 
   if (!competenceData) {
     console.error("❌ [ContentSectionCompetences] Compétence introuvable !");
     return <div className="text-red-500 text-center">❌ Compétence introuvable.</div>;
   }
 
-  // ✅ Déstructuration des données de la compétence
   const { name, content, picture } = competenceData;
 
   // ✅ Transformation des images de Strapi en format attendu par le carrousel
-  const images = picture?.map((img) => ({
-    url: `${apiUrl}${img.formats?.large?.url || img.url}`, // ✅ Correction ici
-    alt: img.name || "Image de compétence",
-  })) || [];
+  const images =
+    picture?.map((img) => ({
+      url: `${apiUrl}${img.formats?.large?.url || img.url}`,
+      alt: img.name || "Image de compétence",
+    })) || [];
 
   console.log("✅ [ContentSectionCompetences] Images préparées :", images);
 
@@ -68,7 +82,9 @@ export default function ContentSectionCompetences({ competenceData, glossaireDat
 
     let modifiedText = text;
     glossaireData.forEach(({ mot_clef, variantes }) => {
-      const regexVariants = variantes.map((v) => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+      const regexVariants = variantes
+        .map((v) => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+        .join("|");
       const regex = new RegExp(`\\b(${mot_clef}|${regexVariants})\\b`, "gi");
 
       modifiedText = modifiedText.replace(regex, (match) => {
@@ -101,7 +117,6 @@ export default function ContentSectionCompetences({ competenceData, glossaireDat
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      {/* ✅ Ajout de logs visuels dans le rendu */}
       <h1 className={titleClass || "text-3xl mb-6 font-bold text-gray-700"}>{name}</h1>
       <CarouselCompetences images={images} className="w-full h-64" />
       <div className={contentClass || "mt-6 text-lg text-black-700"}>

@@ -28,7 +28,7 @@ export default function HomePage() {
     getHomepageData().then((data) => setHomepage(data));
   }, []);
 
-  if (!homepage) return <p className="text-center text-red-500">Erreur lors du chargement du contenu.</p>;
+  if (!homepage) return <p className="text-center text-blue-500">Chargement de la page...</p>;
 
   const title = homepage.title ?? "Titre par défaut";
   const cv = homepage.cv ?? "";

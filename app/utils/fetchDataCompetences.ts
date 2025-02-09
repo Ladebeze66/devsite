@@ -3,6 +3,11 @@ import { getApiUrl } from "./getApiUrl";
 
 export async function fetchDataCompetences(collection: string, slug: string) {
   const apiUrl = getApiUrl();
+  if (!apiUrl) {
+    console.error("❌ [fetchDataCompetences] URL de l'API invalide !");
+    return null;
+  }
+
   const query = qs.stringify({
     filters: { slug: { $eq: slug } },
     populate: "picture",
@@ -14,11 +19,8 @@ export async function fetchDataCompetences(collection: string, slug: string) {
   try {
     const response = await fetch(fullUrl, { cache: "no-store" });
 
-    console.log(`📡 [fetchDataCompetences] Réponse HTTP : ${response.status} ${response.statusText}`);
-
     if (!response.ok) {
-      console.error(`❌ [fetchDataCompetences] Erreur HTTP ${response.status} : ${response.statusText}`);
-      return null;
+      throw new Error(`HTTP ${response.status} : ${response.statusText}`);
     }
 
     const data = await response.json();
@@ -32,18 +34,19 @@ export async function fetchDataCompetences(collection: string, slug: string) {
 
 export async function fetchDataGlossaire() {
   const apiUrl = getApiUrl();
-  const fullUrl = `${apiUrl}/api/glossaires?populate=images`;
+  if (!apiUrl) {
+    console.error("❌ [fetchDataGlossaire] URL de l'API invalide !");
+    return [];
+  }
 
+  const fullUrl = `${apiUrl}/api/glossaires?populate=images`;
   console.log("🔍 [fetchDataGlossaire] Requête API :", fullUrl);
 
   try {
     const response = await fetch(fullUrl, { cache: "no-store" });
 
-    console.log(`📡 [fetchDataGlossaire] Réponse HTTP : ${response.status} ${response.statusText}`);
-
     if (!response.ok) {
-      console.error(`❌ [fetchDataGlossaire] Erreur HTTP ${response.status} : ${response.statusText}`);
-      return [];
+      throw new Error(`HTTP ${response.status} : ${response.statusText}`);
     }
 
     const data = await response.json();
