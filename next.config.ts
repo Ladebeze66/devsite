@@ -1,26 +1,28 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  // Active le mode strict de React pour signaler des erreurs potentielles
-  reactStrictMode: true,
-  experimental: {
-    appDir: true, // ✅ Assurez-vous que cette ligne est bien présente
-  },
 
-  // Gestion des réécritures d'URL pour proxy local vers le backend
+require("dotenv").config();
+
+console.log("🔍 Vérification NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
+
+
+const nextConfig = {
+  reactStrictMode: true,
+  compress: false,  // ❌ Désactive la compression Gzip pour éviter les erreurs IIS
+  trailingSlash: true,
+
+  // Utilisation de l'API URL dynamique pour Strapi
   async rewrites() {
     return [
       {
-        source: "/api/:path*", // Toute URL commençant par /api
-        destination: "http://localhost:1337/api/:path*", // Redirige vers votre backend Strapi
+        source: "/api/:path*", 
+        destination: process.env.NEXT_PUBLIC_API_URL + "/api/:path*", 
       },
     ];
   },
 
-  // Optimisation des fichiers statiques
   images: {
-    domains: ["localhost"], // Permet de charger les images provenant de "localhost" si nécessaire
+    domains: ["localhost", "api.fernandgrascalvet.com"], // ✅ Autorise aussi l'API en HTTPS
   },
 };
 
-export default nextConfig;
-
+module.exports = nextConfig;

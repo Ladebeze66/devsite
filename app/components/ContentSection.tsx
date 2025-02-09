@@ -1,6 +1,30 @@
-import { fetchData } from "../utils/fetchData"; // Importation de la fonction fetchData pour récupérer les données depuis l'API
-import Carousel from "./Carousel"; // Importation du composant Carousel pour afficher les images
-import ReactMarkdown from "react-markdown"; // Importation de ReactMarkdown pour rendre le texte riche en Markdown
+"use client";
+
+import { useEffect, useState } from "react";
+import { fetchData } from "../utils/fetchData"; // Importation de la fonction fetchData
+import { getApiUrl } from "../utils/getApiUrl"; // Importation de l'URL dynamique
+import Carousel from "./Carousel"; // Importation du composant Carrousel
+import ReactMarkdown from "react-markdown"; // Importation pour gérer le Markdown
+
+// Définition du type pour une image
+interface ImageData {
+  url: string;
+  formats?: {
+    large?: {
+      url: string;
+    };
+  };
+  name?: string;
+}
+
+// Définition du type pour les données récupérées
+interface ContentData {
+  name: string;
+  Resum: string; // Texte en Markdown
+  picture?: ImageData[];
+  link?: string;
+  linkText?: string;
+}
 
 // Définition des propriétés du composant ContentSection
 interface ContentSectionProps {
@@ -11,21 +35,31 @@ interface ContentSectionProps {
 }
 
 // Composant principal ContentSection
-export default async function ContentSection({ collection, slug, titleClass, contentClass }: ContentSectionProps) {
-  // Récupération des données depuis l'API en utilisant la fonction fetchData
-  const data = await fetchData(collection, slug);
+export default function ContentSection({ collection, slug, titleClass, contentClass }: ContentSectionProps) {
+  const [data, setData] = useState<ContentData | null>(null);
+  const apiUrl = getApiUrl(); // Détection automatique de l'URL de l'API
+
+  useEffect(() => {
+    async function fetchContent() {
+      console.log("🔍 API utilisée pour ContentSection :", apiUrl);
+      const result = await fetchData(collection, slug);
+      setData(result);
+    }
+
+    fetchContent();
+  }, [collection, slug, apiUrl]);
 
   // Affichage d'un message si les données ne sont pas disponibles
   if (!data) {
-    return <div>Contenu introuvable.</div>;
+    return <div className="text-center text-gray-500">Contenu introuvable.</div>;
   }
 
   // Déstructuration des données récupérées
   const { name, Resum: richText, picture, link, linkText } = data;
 
   // Transformation des images de Strapi en format attendu par le carrousel
-  const images = picture?.map((img: any) => ({
-    url: `http://localhost:1337${img?.formats?.large?.url || img?.url}`, // Utilisation de l'URL de l'image en format large ou originale
+  const images = picture?.map((img: ImageData) => ({
+    url: `${apiUrl}${img.formats?.large?.url || img.url}`, // 🔥 URL dynamique
     alt: img.name || "Image", // Texte alternatif pour l'image
   })) || [];
 

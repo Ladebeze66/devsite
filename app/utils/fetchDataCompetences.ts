@@ -1,67 +1,56 @@
-import qs from "qs"; // Importation de qs pour construire des requêtes de chaîne de requête
+import qs from "qs";
+import { getApiUrl } from "./getApiUrl";
 
-// Fonction pour récupérer une compétence spécifique
 export async function fetchDataCompetences(collection: string, slug: string) {
-  // Construction de la requête avec des filtres et des relations à peupler
+  const apiUrl = getApiUrl();
   const query = qs.stringify({
-    filters: {
-      slug: { $eq: slug },
-    },
-    populate: "picture", // On garde les images des compétences
+    filters: { slug: { $eq: slug } },
+    populate: "picture",
   });
 
-  // Log de la requête API pour le débogage
-  console.log(`🛠️ Requête API Compétence : http://localhost:1337/api/${collection}?${query}`);
+  const fullUrl = `${apiUrl}/api/${collection}?${query}`;
+  console.log("🔍 [fetchDataCompetences] Requête API :", fullUrl);
 
   try {
-    // Envoi de la requête à l'API Strapi
-    const response = await fetch(`http://localhost:1337/api/${collection}?${query}`, {
-      cache: "no-store",
-    });
+    const response = await fetch(fullUrl, { cache: "no-store" });
 
-    // Vérification de la réponse de l'API
+    console.log(`📡 [fetchDataCompetences] Réponse HTTP : ${response.status} ${response.statusText}`);
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch competences data: ${response.status}`);
+      console.error(`❌ [fetchDataCompetences] Erreur HTTP ${response.status} : ${response.statusText}`);
+      return null;
     }
 
-    // Récupération des données de la réponse
     const data = await response.json();
-    console.log("✅ Données reçues (Compétence) :", data);
-
-    // Retourne la première compétence ou null si aucune donnée n'est trouvée
-    return data.data[0] || null;
+    console.log("✅ [fetchDataCompetences] Données reçues :", JSON.stringify(data, null, 2));
+    return data.data?.[0] ?? null;
   } catch (error) {
-    // Gestion des erreurs et log des erreurs
-    console.error("❌ Erreur lors de la récupération des compétences :", error);
+    console.error("❌ [fetchDataCompetences] Erreur lors de la récupération des compétences :", error);
     return null;
   }
 }
 
-// Fonction pour récupérer les données du glossaire
 export async function fetchDataGlossaire() {
+  const apiUrl = getApiUrl();
+  const fullUrl = `${apiUrl}/api/glossaires?populate=images`;
+
+  console.log("🔍 [fetchDataGlossaire] Requête API :", fullUrl);
+
   try {
-    // Log de la requête API pour le débogage
-    console.log("🛠️ Requête API Glossaire : http://localhost:1337/api/glossaires?populate=images");
+    const response = await fetch(fullUrl, { cache: "no-store" });
 
-    // Envoi de la requête à l'API Strapi
-    const response = await fetch("http://localhost:1337/api/glossaires?populate=images", {
-      cache: "no-store",
-    });
+    console.log(`📡 [fetchDataGlossaire] Réponse HTTP : ${response.status} ${response.statusText}`);
 
-    // Vérification de la réponse de l'API
     if (!response.ok) {
-      throw new Error(`Failed to fetch glossaire data: ${response.status}`);
+      console.error(`❌ [fetchDataGlossaire] Erreur HTTP ${response.status} : ${response.statusText}`);
+      return [];
     }
 
-    // Récupération des données de la réponse
     const data = await response.json();
-    console.log("✅ Données reçues (Glossaire) :", data);
-
-    // Retourne les données du glossaire ou un tableau vide si aucune donnée n'est trouvée
-    return data.data || [];
+    console.log("✅ [fetchDataGlossaire] Données reçues :", JSON.stringify(data, null, 2));
+    return data.data ?? [];
   } catch (error) {
-    // Gestion des erreurs et log des erreurs
-    console.error("❌ Erreur lors de la récupération du glossaire :", error);
+    console.error("❌ [fetchDataGlossaire] Erreur lors de la récupération du glossaire :", error);
     return [];
   }
 }

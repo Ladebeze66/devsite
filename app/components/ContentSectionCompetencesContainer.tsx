@@ -1,7 +1,6 @@
 import { fetchDataCompetences, fetchDataGlossaire } from "../utils/fetchDataCompetences";
 import ContentSectionCompetences from "./ContentSectionCompetences";
 
-// Définition des propriétés du composant ContentSection
 interface ContentSectionProps {
   collection: string;
   slug: string;
@@ -9,11 +8,15 @@ interface ContentSectionProps {
   contentClass?: string;
 }
 
-// Composant principal ContentSection
 export default async function ContentSectionCompetencesContainer({ collection, slug, titleClass, contentClass }: ContentSectionProps) {
-  const competenceData = await fetchDataCompetences(collection, slug);
-  const glossaireData = await fetchDataGlossaire();
+  console.log("🔍 [ContentSectionCompetencesContainer] Chargement des données...");
   
+  const competenceData = await fetchDataCompetences(collection, slug);
+  console.log("✅ [ContentSectionCompetencesContainer] Données compétences :", JSON.stringify(competenceData, null, 2));
+
+  const glossaireData = await fetchDataGlossaire();
+  console.log("✅ [ContentSectionCompetencesContainer] Données glossaire :", JSON.stringify(glossaireData, null, 2));
+
   return (
     <ContentSectionCompetences
       competenceData={competenceData}

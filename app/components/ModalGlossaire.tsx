@@ -1,19 +1,32 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom"; // Insère la modale dans <body>
-import CarouselCompetences from "./CarouselCompetences"; // Importation du composant CarouselCompetences pour afficher les images
+import { getApiUrl } from "../utils/getApiUrl"; // ✅ Import de l'URL dynamique
+import CarouselCompetences from "./CarouselCompetences"; // Importation du composant CarouselCompetences
 
-// Définition des propriétés du composant ModalGlossaire
-interface ModalGlossaireProps {
-  mot: {
-    mot_clef: string; // Mot-clé du glossaire
-    description: string; // Description du mot-clé
-    images?: any[]; // Images associées au mot-clé
+// ✅ Définition des propriétés du composant ModalGlossaire
+interface ImageData {
+  url: string;
+  formats?: {
+    large?: { url: string };
   };
-  onClose: () => void; // Fonction pour fermer la modale
+  name?: string;
 }
 
-// Composant principal ModalGlossaire
+interface GlossaireMot {
+  mot_clef: string; // Mot-clé du glossaire
+  description: string; // Description du mot-clé
+  images?: ImageData[]; // Images associées au mot-clé
+}
+
+interface ModalGlossaireProps {
+  mot: GlossaireMot;
+  onClose: () => void;
+}
+
+// ✅ Composant principal ModalGlossaire
 export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
+  const apiUrl = getApiUrl(); // 🔥 Détection automatique de l'URL API
+
   // Désactiver le scroll du `body` quand la modale est ouverte
   useEffect(() => {
     document.body.classList.add("overflow-hidden");
@@ -25,13 +38,11 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
   // Debug : Vérifier les images reçues
   console.log("🖼️ Images reçues dans la modale :", mot.images);
 
-  // Vérifier si `mot.images` est bien un tableau et contient des images
-  const images = mot.images?.map((img: any) => {
-    return {
-      url: `http://localhost:1337${img.formats?.large?.url || img.url}`,
-      alt: img.name || "Illustration",
-    };
-  }) || [];
+  // ✅ Vérification et mise à jour des URLs d'image avec `getApiUrl()`
+  const images = mot.images?.map((img) => ({
+    url: `${apiUrl}${img.formats?.large?.url || img.url}`,
+    alt: img.name || "Illustration",
+  })) || [];
 
   return createPortal(
     <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-75 flex items-center justify-center z-[1000]">

@@ -1,23 +1,30 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getApiUrl } from "../utils/getApiUrl"; // 🔥 Import de l'URL dynamique
 
-// Fonction pour récupérer tous les projets depuis l'API Strapi
-async function getAllprojects() {
-  try {
-    const response = await fetch("http://localhost:1337/api/projects?populate=*");
-    if (!response.ok) {
-      throw new Error("Failed to fetch projects");
+export default function Page() {
+  const [projects, setProjects] = useState([]); // 🔥 Stocker les projets une seule fois
+  const apiUrl = getApiUrl(); // 🔥 Définition de l'URL API
+
+  useEffect(() => {
+    async function fetchProjects() {
+      console.log("🔍 API utilisée pour les projets :", apiUrl);
+      try {
+        const response = await fetch(`${apiUrl}/api/projects?populate=*`);
+        if (!response.ok) {
+          throw new Error(`Erreur de récupération des projets : ${response.statusText}`);
+        }
+        const data = await response.json();
+        setProjects(data.data ?? []);
+      } catch (error) {
+        console.error("❌ Erreur lors de la récupération des projets :", error);
+      }
     }
-    const projects = await response.json();
-    return projects.data;
-  } catch (error) {
-    console.error("Error fetching projects:", error);
-    return [];
-  }
-}
 
-// Composant principal de la page des projets
-export default async function Page() {
-  const projects = await getAllprojects();
+    fetchProjects(); // 🔥 Exécuter une seule fois au montage du composant
+  }, [apiUrl]); // ✅ Exécuter `useEffect()` uniquement si `apiUrl` change
 
   return (
     <main className="w-full p-3 mt-5 mb-5">
@@ -28,7 +35,7 @@ export default async function Page() {
       <div className="grid gap-7 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-w-7xl mx-auto">
         {projects.map((project) => {
           const picture = project.picture?.[0];
-          const imageUrl = picture?.url ? `http://localhost:1337${picture.url}` : "/placeholder.jpg";
+          const imageUrl = picture?.url ? `${apiUrl}${picture.url}` : "/placeholder.jpg";
 
           return (
             <div 
