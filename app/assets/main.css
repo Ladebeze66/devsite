@@ -5,6 +5,102 @@
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+.font-orbitron-24 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px;
+  color: #333333;
+}
+
+.font-orbitron-16 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  color: #333333;
+}
+
+.font-orbitron-12 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  color: #333333;
+}
+
+/* Classe pour la police Orbitron avec taille 24px en gras */
+.font-orbitron-24-bold {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* Classe pour la police Orbitron avec taille 24px en italique */
+.font-orbitron-24-italic {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px;
+  font-style: italic;
+  color: #333333;
+}
+
+/* Classe pour la police Orbitron avec taille 24px en gras et italique */
+.font-orbitron-24-bold-italic {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  font-style: italic;
+  color: #333333;
+}
+
+/* Classe pour la police Orbitron avec taille 16px en gras */
+.font-orbitron-16-bold {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* Classe pour la police Orbitron avec taille 16px en italique */
+.font-orbitron-16-italic {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  font-style: italic;
+  color: #333333;
+}
+
+/* Classe pour la police Orbitron avec taille 16px en gras et italique */
+.font-orbitron-16-bold-italic {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: italic;
+  color: #333333;
+}
+
+/* Classe pour la police Orbitron avec taille 12px en gras */
+.font-orbitron-12-bold {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* Classe pour la police Orbitron avec taille 12px en italique */
+.font-orbitron-12-italic {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: #333333;
+}
+
+/* Classe pour la police Orbitron avec taille 12px en gras et italique */
+.font-orbitron-12-bold-italic {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  font-style: italic;
+  color: #333333;
+}
 
 /* Importation des styles de base, des composants et des utilitaires de Tailwind CSS */
 @tailwind base;

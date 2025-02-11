@@ -29,8 +29,7 @@ export default function Page() {
 
   return (
     <main className="w-full p-3 mt-5 mb-5">
-      {/* Titre de la page */}
-      <h1 className="text-3xl mb-3 font-bold text-gray-700 text-center">Portfolio formation 42</h1>
+      
 
       {/* Grille des projets */}
       <div className="grid gap-7 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-w-7xl mx-auto">
@@ -44,7 +43,7 @@ export default function Page() {
           return (
             <div
               key={project.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden w-80 h-96 flex flex-col transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4"
+              className="bg-white/80 rounded-lg shadow-md overflow-hidden w-80 h-96 flex flex-col transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4"
             >
               {/* Lien vers la page de détail du projet */}
               <Link href={`/portfolio/${project.slug}`}>
@@ -62,8 +61,8 @@ export default function Page() {
                 </div>
 
                 <div className="flex-grow overflow-y-auto max-h-32 hide-scrollbar show-scrollbar">
-                  <p className="font-bold text-xl mb-2">{project.name}</p>
-                  <p className="text-gray-700 text-sm hover:text-base transition-all duration-200 ease-in-out">
+                  <p className="font-orbitron-16-bold text-xl mb-2">{project.name}</p>
+                  <p className="text-gray-700 text-sm font-orbitron-12 hover:text-base transition-all duration-200 ease-in-out">
                     {project.description}
                   </p>
                 </div>

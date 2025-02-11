@@ -12,14 +12,9 @@ export default function Footer() {
 
   return (
     <footer className="bg-white/50 backdrop-blur rounded-lg">
-      <div className="max-w-4xl mx-auto flex flex-col items-center py-6 text-sm text-gray-400">
+      <div className="max-w-4xl mx-auto flex flex-col items-center font-orbitron-12 py-6 text-sm text-gray-700">
         {/* Affichage de l'année actuelle */}
-        <p>&copy; {new Date().getFullYear()} Our Company.</p>
-        {/* Affichage du compteur de clics et du bouton */}
-        <p>
-          Vous avez cliqué {count} fois sur le bouton.
-          <button onClick={handleClick}>Click Me</button>
-        </p>
+        <p>&copy; {new Date().getFullYear()} Gras-Calvet Fernand</p>
       </div>
     </footer>
   );

@@ -12,9 +12,9 @@ export default function RootLayout({ children }) {
         <div className="bg-wallpaper min-h-[100dvh] grid grid-rows-[auto_1fr_auto]">
           <header className="z-10 bg-white/50 backdrop-blur rounded-lg border-2 border-gray-500">
             <div className="max-w-4xl mx-auto flex items-center justify-between p-4">
-              <h2 className="text-2xl font-bold">Portfolio Gras-Calvet Fernand</h2>
+              <h2 className="text-2xl font-orbitron-24-bold-italic">Portfolio Gras-Calvet Fernand</h2>
               <nav>
-                <ul className="flex gap-x-7 text-black-500 font-bold">
+                <ul className="flex gap-x-7 text-black-500 font-orbitron-16-bold">
                   <li><NavLink text="Accueil" path="/" /></li>
                   <li><NavLink text="Portfolio" path="/portfolio" /></li>
                   <li><NavLink text="Compétences" path="/competences" /></li>

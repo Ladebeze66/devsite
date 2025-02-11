@@ -36,7 +36,7 @@ export default function HomePage() {
 
   return (
     <main className="max-w-3xl w-full mx-auto flex flex-col items-center justify-center p-6 bg-white/55 rounded-lg mt-12 mb-3">
-      <h1 className="text-3xl font-bold text-gray-800 mb-4">{title}</h1>
+      <h1 className="text-3xl font-orbitron-24-bold-italic text-gray-800 mb-4">{title}</h1>
 
       {imageUrl ? (
         <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-lg border-4 border-gray-300 transition-transform duration-300 hover:scale-110 hover:rotate-3">
@@ -48,7 +48,7 @@ export default function HomePage() {
         </div>
       )}
 
-      <div className="mt-6 text-lg text-black-700 max-w-2xl px-6 text-center">
+      <div className="mt-6 text-lg text-black-700 max-w-2xl font-orbitron-16-bold px-6 text-center">
         <ReactMarkdown>{cv}</ReactMarkdown>
       </div>
     </main>

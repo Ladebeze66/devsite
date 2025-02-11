@@ -1,11 +1,13 @@
-// Composant principal de la page des messages
+import { getApiUrl } from "../../utils/getApiUrl"; // 🔥 Import de l'URL dynamique
+// // Composant principal de la page des messages
 export default async function MessagesPage() {
     // Récupération des messages depuis l'API Strapi
-    const res = await fetch("http://localhost:1337/api/messages");
+    const apiUrl = getApiUrl();
+    const res = await fetch(`${apiUrl}/api/messages`);
     const { data } = await res.json();
   
     return (
-      <div className="max-w-3xl mx-auto p-6">
+      <div className="bg-white/70 rounded-md max-w-3xl mx-auto p-6">
         {/* Titre de la page */}
         <h1 className="text-3xl font-bold text-center mb-6">📬 Messages reçus</h1>
         

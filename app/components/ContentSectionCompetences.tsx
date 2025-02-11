@@ -117,9 +117,9 @@ export default function ContentSectionCompetences({
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className={titleClass || "text-3xl mb-6 font-bold text-gray-700"}>{name}</h1>
+      <h1 className={titleClass || "bg-white/60 rounded-md  p-1 text-2xl mb-6 font-orbitron-16-bold text-blue-700"}>{name}</h1>
       <CarouselCompetences images={images} className="w-full h-64" />
-      <div className={contentClass || "mt-6 text-lg text-black-700"}>
+      <div className={contentClass || "bg-white/70 rounded-md p-4 mt-6 text-lg font-orbitron-16-bold text-black-700"}>
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>{contentWithLinks}</ReactMarkdown>
       </div>
       {selectedMot && <ModalGlossaire mot={selectedMot} onClose={() => setSelectedMot(null)} />}

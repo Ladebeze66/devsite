@@ -54,7 +54,7 @@ export default function CarouselCompetences({ images, className }: CarouselProps
             <div className="relative w-full max-w-6xl p-6 bg-transparent">
               {/* Bouton de fermeture */}
               <button
-                className="absolute top-6 right-6 text-white text-3xl bg-gray-900/70 p-2 rounded-full"
+                className="absolute top-6 right-6 text-white text-l bg-gray-900/70 p-2 rounded-full"
                 onClick={() => setSelectedImage(null)} // Fermer au clic
               >
                 ✖
