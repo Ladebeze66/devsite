@@ -51,7 +51,7 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
         <button className="absolute top-3 right-3 text-gray-700 text-2xl" onClick={onClose}>
           ✖
         </button>
-
+      
         {/* Titre */}
         <h2 className="text-3xl font-bold mb-4">{mot.mot_clef}</h2>
 
