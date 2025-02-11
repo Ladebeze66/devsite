@@ -6,6 +6,7 @@ import CarouselCompetences from "./CarouselCompetences";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import ModalGlossaire from "./ModalGlossaire";
+import ChatBot from "./ChatBot"; // ✅ Import du ChatBot
 
 // ✅ Définition des types pour TypeScript
 interface ImageData {
@@ -46,16 +47,16 @@ export default function ContentSectionCompetences({
   console.log("🔍 [ContentSectionCompetences] Chargement du composant...");
 
   const [selectedMot, setSelectedMot] = useState<GlossaireItem | null>(null);
-  const [loading, setLoading] = useState(competenceData === null); // ✅ Initialiser correctement loading
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false); // ✅ État pour afficher/masquer le chatbot
+  const [loading, setLoading] = useState(competenceData === null);
   const apiUrl = getApiUrl();
 
   useEffect(() => {
     if (competenceData) {
-      setLoading(false); // ✅ Mise à jour de loading une seule fois après chargement
+      setLoading(false);
     }
   }, [competenceData]);
 
-  // ✅ Affichage d'un message de chargement
   if (loading) {
     return <div className="text-center text-gray-500">⏳ Chargement des détails de la compétence...</div>;
   }
@@ -67,7 +68,6 @@ export default function ContentSectionCompetences({
 
   const { name, content, picture } = competenceData;
 
-  // ✅ Transformation des images de Strapi en format attendu par le carrousel
   const images =
     picture?.map((img) => ({
       url: `${apiUrl}${img.formats?.large?.url || img.url}`,
@@ -76,11 +76,17 @@ export default function ContentSectionCompetences({
 
   console.log("✅ [ContentSectionCompetences] Images préparées :", images);
 
-  // ✅ Transformation des mots-clés du glossaire
   function transformMarkdownWithKeywords(text: string) {
     if (!glossaireData.length) return text;
 
     let modifiedText = text;
+
+    // ✅ Ajout de la mise en surbrillance pour "IA locale"
+    modifiedText = modifiedText.replace(
+      /\bIA locale\b/g,
+      `<span class="chatbot-keyword" data-chatbot="true" style="color: red; cursor: pointer;">IA locale</span>`
+    );
+
     glossaireData.forEach(({ mot_clef, variantes }) => {
       const regexVariants = variantes
         .map((v) => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
@@ -98,7 +104,7 @@ export default function ContentSectionCompetences({
 
   const contentWithLinks = transformMarkdownWithKeywords(content);
 
-  // ✅ Gestion des clics sur les mots-clés
+  // ✅ Gestion des clics sur les mots-clés pour le glossaire
   useEffect(() => {
     function handleKeywordClick(event: MouseEvent) {
       const target = event.target as HTMLElement;
@@ -115,14 +121,36 @@ export default function ContentSectionCompetences({
     return () => document.body.removeEventListener("click", handleKeywordClick);
   }, [glossaireData]);
 
+  // ✅ Gestion du clic sur "IA locale" pour ouvrir le chatbot
+  useEffect(() => {
+    function handleChatbotClick(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+      if (target.dataset.chatbot === "true") {
+        setIsChatbotOpen(true);
+      }
+    }
+
+    document.body.addEventListener("click", handleChatbotClick);
+    return () => document.body.removeEventListener("click", handleChatbotClick);
+  }, []);
+
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className={titleClass || "bg-white/60 rounded-md  p-1 text-2xl mb-6 font-orbitron-16-bold text-blue-700"}>{name}</h1>
+      <h1 className={titleClass || "bg-white/60 rounded-md p-1 text-2xl mb-6 font-orbitron-16-bold text-blue-700"}>
+        {name}
+      </h1>
       <CarouselCompetences images={images} className="w-full h-64" />
       <div className={contentClass || "bg-white/70 rounded-md p-4 mt-6 text-lg font-orbitron-16-bold text-black-700"}>
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>{contentWithLinks}</ReactMarkdown>
       </div>
       {selectedMot && <ModalGlossaire mot={selectedMot} onClose={() => setSelectedMot(null)} />}
+
+      {/* 🔥 Chatbot affiché uniquement si isChatbotOpen est vrai */}
+      {isChatbotOpen && (
+        <div className="fixed bottom-10 right-10 p-4 w-96">
+          <ChatBot />
+        </div>
+      )}
     </div>
   );
 }
