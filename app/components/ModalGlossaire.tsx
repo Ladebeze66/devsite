@@ -1,15 +1,16 @@
 import { useEffect } from "react";
-import { createPortal } from "react-dom"; // Insère la modale dans <body>
-import { getApiUrl } from "../utils/getApiUrl"; // ✅ Import de l'URL dynamique
-import CarouselCompetences from "./CarouselCompetences"; // Importation du composant CarouselCompetences
+import { createPortal } from "react-dom";
+import CarouselCompetences from "./CarouselCompetences";
+import { getApiUrl } from "../utils/getApiUrl";
 
-// ✅ Définition des propriétés du composant ModalGlossaire
 interface ImageData {
   url: string;
-  formats?: {
-    large?: { url: string };
-  };
   name?: string;
+  formats?: {
+    large?: {
+      url: string;
+    };
+  };
 }
 
 interface GlossaireMot {
@@ -46,24 +47,29 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
 
   return createPortal(
     <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-75 flex items-center justify-center z-[1000]">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[90vw] max-w-4xl relative">
+      <div className="bg-white/60 p-6 rounded-lg shadow-lg w-[114vw] max-w-6xl relative h-[72vh]">
         {/* Bouton de fermeture */}
-        <button className="absolute top-3 right-3 text-gray-700 text-2xl" onClick={onClose}>
+        <button className="absolute top-2 right-2 text-gray-700 text-sm p-1" onClick={onClose}>
           ✖
         </button>
-      
-        {/* Titre */}
-        <h2 className="text-3xl font-bold mb-4">{mot.mot_clef}</h2>
 
-        {/* Description */}
-        <p className="text-gray-700 mb-6">{mot.description}</p>
+        {/* Conteneur Flexbox pour la description et le carrousel */}
+        <div className="flex flex-col md:flex-row gap-6 h-full">
+          {/* Description */}
+          <div className="md:w-1/2">
+            <h2 className="text-3xl font-orbitron-16-bold mb-4">{mot.mot_clef}</h2>
+            <p className="font-orbitron-12-bold text-gray-700 mb-6">{mot.description}</p>
+          </div>
 
-        {/* Carrousel d'images si disponible */}
-        {images.length > 0 ? (
-          <CarouselCompetences images={images} className="w-full h-80" />
-        ) : (
-          <p className="text-gray-500">Aucune image disponible.</p>
-        )}
+          {/* Carrousel d'images si disponible */}
+          <div className="md:w-1/2 h-full">
+            {images.length > 0 ? (
+              <CarouselCompetences images={images} className="w-full h-full" />
+            ) : (
+              <p className="text-gray-500">Aucune image disponible.</p>
+            )}
+          </div>
+        </div>
       </div>
     </div>,
     document.body
