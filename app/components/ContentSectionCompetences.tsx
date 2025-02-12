@@ -148,7 +148,7 @@ export default function ContentSectionCompetences({
       {/* 🔥 Chatbot affiché uniquement si isChatbotOpen est vrai */}
       {isChatbotOpen && (
         <div className="fixed bottom-10 right-10 p-4 w-96">
-          <ChatBot />
+          <ChatBot onClose={() => setIsChatbotOpen(false)} />
         </div>
       )}
     </div>
