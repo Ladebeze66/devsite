@@ -14,9 +14,9 @@ interface ImageData {
 }
 
 interface GlossaireMot {
-  mot_clef: string; // Mot-clé du glossaire
-  description: string; // Description du mot-clé
-  images?: ImageData[]; // Images associées au mot-clé
+  mot_clef: string;
+  description: string;
+  images?: ImageData[];
 }
 
 interface ModalGlossaireProps {
@@ -24,11 +24,9 @@ interface ModalGlossaireProps {
   onClose: () => void;
 }
 
-// ✅ Composant principal ModalGlossaire
 export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
-  const apiUrl = getApiUrl(); // 🔥 Détection automatique de l'URL API
+  const apiUrl = getApiUrl();
 
-  // Désactiver le scroll du `body` quand la modale est ouverte
   useEffect(() => {
     document.body.classList.add("overflow-hidden");
     return () => {
@@ -36,10 +34,6 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
     };
   }, []);
 
-  // Debug : Vérifier les images reçues
-  console.log("🖼️ Images reçues dans la modale :", mot.images);
-
-  // ✅ Vérification et mise à jour des URLs d'image avec `getApiUrl()`
   const images = mot.images?.map((img) => ({
     url: `${apiUrl}${img.formats?.large?.url || img.url}`,
     alt: img.name || "Illustration",
@@ -48,12 +42,10 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
   return createPortal(
     <div className="fixed inset-0 w-screen h-screen bg-black bg-opacity-75 flex items-center justify-center z-[1000]">
       <div className="bg-white/60 p-6 rounded-lg shadow-lg w-[114vw] max-w-6xl relative h-[72vh]">
-        {/* Bouton de fermeture */}
         <button className="absolute top-2 right-2 text-gray-700 text-sm p-1" onClick={onClose}>
           ✖
         </button>
 
-        {/* Conteneur Flexbox pour la description et le carrousel */}
         <div className="flex flex-col md:flex-row gap-6 h-full">
           {/* Description */}
           <div className="md:w-1/2">
@@ -61,7 +53,6 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
             <p className="font-orbitron-12-bold text-gray-700 mb-6">{mot.description}</p>
           </div>
 
-          {/* Carrousel d'images si disponible */}
           <div className="md:w-1/2 h-full">
             {images.length > 0 ? (
               <CarouselCompetences images={images} className="w-full h-full" />

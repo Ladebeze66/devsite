@@ -40,14 +40,12 @@ export default function RootLayout({ children }) {
             </div>
           </header>
 
-          {/* Ne pas forcer de largeur ici, chaque page gère son `main` */}
           <main className="relative z-10">
             {children}
           </main>
 
           <Footer />
 
-          {/* Affichage du compteur de visites */}
           <div className="absolute bottom-0 right-0 p-4 text-sm text-gray-500">
             NV : {visitCount}
           </div>

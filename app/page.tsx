@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import "./assets/main.css";
-import { getApiUrl } from "./utils/getApiUrl"; // 🔥 Import de l'URL dynamique
+import { getApiUrl } from "./utils/getApiUrl";
 
 async function getHomepageData() {
-  const apiUrl = getApiUrl(); // 🔥 Utilisation de l'URL centralisée
+  const apiUrl = getApiUrl();
   try {
     const response = await fetch(`${apiUrl}/api/homepages?populate=*`);
     if (!response.ok) {

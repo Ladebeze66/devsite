@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getApiUrl } from "../utils/getApiUrl"; // 🔥 Import de l'URL dynamique
-import CarouselCompetences from "../components/CarouselCompetences"; // 🔥 Import du composant CarouselCompetences
+import { getApiUrl } from "../utils/getApiUrl";
+import CarouselCompetences from "../components/CarouselCompetences";
 
 export default function Page() {
-  const [competences, setCompetences] = useState([]); // 🔥 Stocker les compétences une seule fois
-  const apiUrl = getApiUrl(); // 🔥 Définition de l'URL API
+  const [competences, setCompetences] = useState([]);
+  const apiUrl = getApiUrl();
 
   useEffect(() => {
     async function fetchCompetences() {
-      console.log("🔍 API utilisée pour les compétences :", apiUrl);
       try {
         const response = await fetch(`${apiUrl}/api/competences?populate=*`);
         if (!response.ok) {
@@ -24,13 +23,13 @@ export default function Page() {
       }
     }
 
-    fetchCompetences(); // 🔥 Exécuter une seule fois au montage du composant
-  }, [apiUrl]); // ✅ Exécuter `useEffect()` uniquement si `apiUrl` change
+    fetchCompetences();
+  }, [apiUrl]);
 
   return (
     <main className="w-full p-3 mt-5 mb-5">
 
-      {/* Affichage d'un message si aucune compétence n'est trouvée */}
+      
       {competences.length === 0 ? (
         <p className="text-center text-gray-500">Aucune compétence disponible.</p>
       ) : (
@@ -47,7 +46,6 @@ export default function Page() {
                 key={competence.id}
                 className="bg-white/70 rounded-lg shadow-md overflow-hidden w-full h-auto flex flex-col transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4"
               >
-                {/* Lien vers la page de détail de la compétence */}
                 <Link href={`/competences/${competence.slug}`}>
                   <div className="overflow-hidden w-full h-64 mb-4">
                     <CarouselCompetences images={images} className="w-full h-full object-cover" />

@@ -6,9 +6,8 @@ import CarouselCompetences from "./CarouselCompetences";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import ModalGlossaire from "./ModalGlossaire";
-import ChatBot from "./ChatBot"; // ✅ Import du ChatBot
+import ChatBot from "./ChatBot";
 
-// ✅ Définition des types pour TypeScript
 interface ImageData {
   url: string;
   formats?: {
@@ -47,7 +46,7 @@ export default function ContentSectionCompetences({
   console.log("🔍 [ContentSectionCompetences] Chargement du composant...");
 
   const [selectedMot, setSelectedMot] = useState<GlossaireItem | null>(null);
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false); // ✅ État pour afficher/masquer le chatbot
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [loading, setLoading] = useState(competenceData === null);
   const apiUrl = getApiUrl();
 
@@ -74,14 +73,11 @@ export default function ContentSectionCompetences({
       alt: img.name || "Image de compétence",
     })) || [];
 
-  console.log("✅ [ContentSectionCompetences] Images préparées :", images);
-
   function transformMarkdownWithKeywords(text: string) {
     if (!glossaireData.length) return text;
 
     let modifiedText = text;
 
-    // ✅ Ajout de la mise en surbrillance pour "IA locale"
     modifiedText = modifiedText.replace(
       /\bIA locale\b/g,
       `<span class="chatbot-keyword" data-chatbot="true" style="color: red; cursor: pointer;">IA locale</span>`
@@ -98,13 +94,11 @@ export default function ContentSectionCompetences({
       });
     });
 
-    console.log("🔄 [ContentSectionCompetences] Contenu transformé avec mots-clés :", modifiedText);
     return modifiedText;
   }
 
   const contentWithLinks = transformMarkdownWithKeywords(content);
 
-  // ✅ Gestion des clics sur les mots-clés pour le glossaire
   useEffect(() => {
     function handleKeywordClick(event: MouseEvent) {
       const target = event.target as HTMLElement;
@@ -121,7 +115,6 @@ export default function ContentSectionCompetences({
     return () => document.body.removeEventListener("click", handleKeywordClick);
   }, [glossaireData]);
 
-  // ✅ Gestion du clic sur "IA locale" pour ouvrir le chatbot
   useEffect(() => {
     function handleChatbotClick(event: MouseEvent) {
       const target = event.target as HTMLElement;
@@ -145,7 +138,6 @@ export default function ContentSectionCompetences({
       </div>
       {selectedMot && <ModalGlossaire mot={selectedMot} onClose={() => setSelectedMot(null)} />}
 
-      {/* 🔥 Chatbot affiché uniquement si isChatbotOpen est vrai */}
       {isChatbotOpen && (
         <div className="fixed bottom-10 right-10 p-4 w-96">
           <ChatBot onClose={() => setIsChatbotOpen(false)} />

@@ -4,13 +4,12 @@ import { useState } from "react";
 import { sendMessage } from "../utils/sendMessage";
 
 export default function ContactForm() {
-  // États pour gérer les valeurs des champs de formulaire
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // ✅ Nouvel état pour désactiver le bouton
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +28,7 @@ export default function ContactForm() {
 
     setStatus("⏳ Envoi en cours...");
     setIsSuccess(null);
-    setIsLoading(true); // ✅ Désactive le bouton pendant l'envoi
+    setIsLoading(true);
 
     try {
       await sendMessage(name, email, message);
@@ -42,7 +41,7 @@ export default function ContactForm() {
       setStatus("❌ Erreur lors de l'envoi du message.");
       setIsSuccess(false);
     } finally {
-      setIsLoading(false); // ✅ Réactive le bouton après l'envoi
+      setIsLoading(false);
     }
   };
 
@@ -81,7 +80,7 @@ export default function ContactForm() {
 
       <button
         type="submit"
-        disabled={isLoading} // ✅ Désactive le bouton pendant l'envoi
+        disabled={isLoading}
         className={`w-full py-3 rounded transition ${
           isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white font-orbitron-16-bold"
         }`}
@@ -89,11 +88,10 @@ export default function ContactForm() {
         {isLoading ? "⏳ Envoi..." : "Envoyer"}
       </button>
 
-      {/* ✅ Affichage du message de confirmation */}
       {status && (
         <p
           className={`mt-4 text-center ${isSuccess ? "text-green-600" : "text-red-600"}`}
-          aria-live="polite" // ✅ Accessibilité pour les lecteurs d’écran
+          aria-live="polite"
         >
           {status}
         </p>

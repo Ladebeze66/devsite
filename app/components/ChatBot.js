@@ -27,7 +27,7 @@ export default function ChatBot({ onClose }) {
     };
 
     return (
-        <div className="flex flex-col w-96 bg-white shadow-lg rounded-lg border border-gray-300">
+        <div className="flex flex-col w-96 bg-white/70 shadow-lg rounded-lg border border-gray-300">
             <div className="bg-blue-600 text-white p-3 rounded-t-lg flex justify-between items-center">
                 <span className="font-orbitron-16-bold">💬 GrasBot</span>
                 <button className="text-white hover:text-red-400 text-xl" onClick={onClose}>❌</button>

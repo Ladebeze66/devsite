@@ -1,16 +1,16 @@
 "use client"
 
-import Link from "next/link"; // Importation du composant Link de Next.js pour la navigation
-import { usePathname } from "next/navigation"; // Importation du hook usePathname pour obtenir le chemin actuel
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function NavLink(props) {
-  const pathname = usePathname(); // Obtention du chemin actuel
-  const active = pathname === props.path; // Vérification si le lien est actif
+  const pathname = usePathname();
+  const active = pathname === props.path;
 
   return (
     <Link
-      className={active ? "opacity-100" : "opacity-50 hover:opacity-65"} // Classes CSS pour le style du lien
-      href={props.path} // Chemin de navigation
+      className={active ? "opacity-100" : "opacity-50 hover:opacity-65"}
+      href={props.path}
     >
       {props.text} {/* Texte du lien */}
     </Link>

@@ -1,4 +1,4 @@
-"use client"; // ✅ Indique que ce composant fonctionne côté client
+"use client";
 
 import { useEffect, useState } from "react";
 import { fetchDataCompetences, fetchDataGlossaire } from "../utils/fetchDataCompetences";
@@ -14,7 +14,6 @@ interface ContentSectionProps {
 export default function ContentSectionCompetencesContainer({ collection, slug, titleClass, contentClass }: ContentSectionProps) {
   console.log("🔍 [ContentSectionCompetencesContainer] Chargement des données...");
 
-  // ✅ États pour stocker les données récupérées
   const [competenceData, setCompetenceData] = useState(null);
   const [glossaireData, setGlossaireData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,11 +23,9 @@ export default function ContentSectionCompetencesContainer({ collection, slug, t
       setLoading(true);
       try {
         const competence = await fetchDataCompetences(collection, slug);
-        console.log("✅ [ContentSectionCompetencesContainer] Données compétences :", competence);
         setCompetenceData(competence);
 
         const glossaire = await fetchDataGlossaire();
-        console.log("✅ [ContentSectionCompetencesContainer] Données glossaire :", glossaire);
         setGlossaireData(glossaire);
       } catch (error) {
         console.error("❌ [ContentSectionCompetencesContainer] Erreur lors de la récupération des données :", error);
@@ -38,9 +35,8 @@ export default function ContentSectionCompetencesContainer({ collection, slug, t
     }
 
     fetchData();
-  }, [collection, slug]); // ⚡ S'exécute à chaque changement de `collection` ou `slug`
+  }, [collection, slug]);
 
-  // ✅ Affichage d'un message de chargement
   if (loading) {
     return <div className="text-center text-gray-500">⏳ Chargement des compétences...</div>;
   }

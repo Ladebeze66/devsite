@@ -3,15 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getApiUrl } from "../utils/getApiUrl";
-import Carousel from "../components/Carousel"; // ✅ Import du carrousel
+import Carousel from "../components/Carousel";
 
 export default function Page() {
-  const [projects, setProjects] = useState([]); // ✅ Stocker les projets
+  const [projects, setProjects] = useState([]);
   const apiUrl = getApiUrl();
 
   useEffect(() => {
     async function fetchProjects() {
-      console.log("🔍 API utilisée pour les projets :", apiUrl);
       try {
         const response = await fetch(`${apiUrl}/api/projects?populate=picture`);
         if (!response.ok) {
@@ -30,8 +29,6 @@ export default function Page() {
   return (
     <main className="w-full p-3 mt-5 mb-5">
       
-
-      {/* Grille des projets */}
       <div className="grid gap-7 grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-w-7xl mx-auto">
         {projects.map((project) => {
           const pictures = project.picture ?? [];
@@ -45,10 +42,8 @@ export default function Page() {
               key={project.id}
               className="bg-white/80 rounded-lg shadow-md overflow-hidden w-80 h-96 flex flex-col transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4"
             >
-              {/* Lien vers la page de détail du projet */}
               <Link href={`/portfolio/${project.slug}`}>
                 <div className="overflow-hidden w-full h-48 mb-4">
-                  {/* ✅ Ajout du carrousel au lieu d'une image unique */}
                   {images.length > 1 ? (
                     <Carousel images={images} className="h-48" />
                   ) : (

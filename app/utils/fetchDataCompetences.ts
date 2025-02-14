@@ -24,7 +24,6 @@ export async function fetchDataCompetences(collection: string, slug: string) {
     }
 
     const data = await response.json();
-    console.log("✅ [fetchDataCompetences] Données reçues :", JSON.stringify(data, null, 2));
     return data.data?.[0] ?? null;
   } catch (error) {
     console.error("❌ [fetchDataCompetences] Erreur lors de la récupération des compétences :", error);
@@ -40,7 +39,6 @@ export async function fetchDataGlossaire() {
   }
 
   const fullUrl = `${apiUrl}/api/glossaires?populate=images`;
-  console.log("🔍 [fetchDataGlossaire] Requête API :", fullUrl);
 
   try {
     const response = await fetch(fullUrl, { cache: "no-store" });
@@ -50,7 +48,6 @@ export async function fetchDataGlossaire() {
     }
 
     const data = await response.json();
-    console.log("✅ [fetchDataGlossaire] Données reçues :", JSON.stringify(data, null, 2));
     return data.data ?? [];
   } catch (error) {
     console.error("❌ [fetchDataGlossaire] Erreur lors de la récupération du glossaire :", error);

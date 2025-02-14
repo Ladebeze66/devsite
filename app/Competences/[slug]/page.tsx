@@ -1,16 +1,16 @@
-"use client"; // ✅ Indique que ce composant fonctionne côté client
+"use client";
 
-import { useParams } from "next/navigation"; // ✅ Nouvelle méthode pour récupérer `params`
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ContentSectionCompetencesContainer from "../../components/ContentSectionCompetencesContainer";
 
 export default function CompetencePage() {
-  const params = useParams(); // ✅ Récupérer `params` correctement
+  const params = useParams();
   const [slug, setSlug] = useState<string | null>(null);
 
   useEffect(() => {
     if (params?.slug) {
-      setSlug(params.slug as string); // ✅ Assurer que `slug` est bien une string
+      setSlug(params.slug as string);
     }
   }, [params]);
 
