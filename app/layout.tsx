@@ -19,7 +19,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr">
       <body>
-        <div className="relative bg-wallpaper min-h-[100dvh] grid grid-rows-[auto_1fr_auto]">
+      <div className="relative bg-wallpaper min-h-[100dvh] w-full max-w-none grid grid-rows-[auto_1fr_auto]">
+
           {/* Cercles animés */}
           <div className="absolute z-0 inset-0 overflow-hidden">
             <div className="circle-one blur-3xl w-64 h-64 rounded-full bg-rose-400/60 top-0 right-28 absolute"></div>
