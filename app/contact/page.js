@@ -5,7 +5,7 @@ export default function ContactPage() {
   const apiUrl = getApiUrl();
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="max-w-3xl mx-auto p-6 flex flex-col justify-top min-h-screen">
       <h1 className="bg-white/50 rounded-md text-3xl font-orbitron-24-bold text-center mb-6 border-b-4 border-blue-500 pb-2">
         📬 Correspondance
       </h1>

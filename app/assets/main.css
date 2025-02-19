@@ -100,7 +100,7 @@
 @media (max-width: 768px) {
   .bg-wallpaper {
     background-size: auto 100%;
-    background-position: center center;
+    background-position: center;
     min-height: 100vh;
     min-width: 200vw;
   }

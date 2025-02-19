@@ -64,7 +64,7 @@ export default function RootLayout({ children }) {
 
           {/* Menu mobile */}
           {isMenuOpen && (
-            <div ref={menuRef} className="fixed inset-0 bg-black/50 z-40 flex items-start justify-end p-4">
+            <div ref={menuRef} className="fixed inset-0 bg-black/50 z-40 flex items-start justify-center p-4">
               <nav className="w-[60%] max-w-sm h-auto min-h-[50vh] max-h-[50vh] bg-gray-800/90 backdrop-blur-lg flex flex-col items-center justify-center space-y-4 z-50 md:hidden text-white font-orbitron-24-bold tracking-wide shadow-lg overflow-y-auto rounded-lg p-6">
                 {/* Bouton de fermeture */}
                 <button className="absolute top-4 right-4 text-2xl text-white" onClick={toggleMenu}>
