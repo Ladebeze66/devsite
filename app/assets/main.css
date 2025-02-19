@@ -88,25 +88,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.bg-wallpaper {
-  background-image: url('./images/wallpapersite_resultat.webp');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-  width: 100%;
-}
-
-@media (max-width: 768px) {
-  .bg-wallpaper {
-    background-size: auto 100%;
-    background-position: center;
-    min-height: 100vh;
-    min-width: 200vw;
-  }
-}
-
-
 .homepage-content {
   min-height: 50vh;
   max-height: 80vh;
@@ -179,3 +160,10 @@
 .show-scrollbar:hover::-webkit-scrollbar {
   display: block;
 }
+
+@media (max-width: 767px) and (orientation: landscape) {
+  .mobile-landscape {
+    grid-template-columns: repeat(2, minmax(150px, 1fr)) !important;
+  }
+}
+

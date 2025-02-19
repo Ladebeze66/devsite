@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      screens: {
+        'mobile-landscape': { 'raw': '(max-width: 767px) and (orientation: landscape)' },
+      },
       fontFamily: {
         sans: ['Helvetica', 'Arial', 'sans-serif'],
         serif: ['Georgia', 'serif'],

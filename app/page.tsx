@@ -35,7 +35,7 @@ export default function HomePage() {
   const imageUrl = homepage.photo?.url ? `${apiUrl}${homepage.photo.url}` : null;
 
   return (
-    <main className="max-w-3xl w-full mx-auto flex flex-col items-center justify-center p-6 bg-white/55 rounded-lg mt-12 mb-3">
+    <main className="w-full mx-auto flex flex-col items-center justify-center p-6 bg-white/55 rounded-lg mt-12 mb-3 max-w-7xl">
       <h1 className="text-3xl font-orbitron-24-bold-italic text-gray-800 mb-4">{title}</h1>
 
       {imageUrl ? (

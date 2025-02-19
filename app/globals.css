@@ -54,11 +54,38 @@ body {
   animation: blink 1s infinite 0.4s;
 }
 
-/* Alignement général pour la mise en page */
+.bg-wallpaper {
+  background-image: url('./assets/images/wallpapersite_resultat.webp');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  min-width: 100vw;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .bg-wallpaper {
+    background-size: cover; /* Ajuste pour que l’image soit totalement visible */
+    background-position: center;
+    width: 100vw;
+    min-height: 100vh;
+    height: auto;
+  }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 /* Gestion du footer */

@@ -7,6 +7,8 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "../globals.css";
+import "../assets/main.css";  
 
 interface CarouselProps {
   images: Array<{ url: string; alt: string }>;
