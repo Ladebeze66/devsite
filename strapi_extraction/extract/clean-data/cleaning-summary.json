@@ -1,0 +1,26 @@
+{
+  "cleanedAt": "2026-03-15T14:26:52.873Z",
+  "results": [
+    {
+      "type": "projects",
+      "success": true,
+      "itemCount": 17,
+      "rawSize": 426943,
+      "cleanSize": 70819,
+      "reduction": "83.4%"
+    },
+    {
+      "type": "competences",
+      "success": true,
+      "itemCount": 4,
+      "rawSize": 135078,
+      "cleanSize": 12478,
+      "reduction": "90.8%"
+    }
+  ],
+  "totalTypes": 3,
+  "successfulTypes": 2,
+  "totalReduction": "85.2%",
+  "rawSize": 562021,
+  "cleanSize": 83297
+}

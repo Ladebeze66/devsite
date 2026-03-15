@@ -1,0 +1,34 @@
+{
+  "executedAt": "2026-03-15T14:26:57.068Z",
+  "duration": "10s",
+  "totalSteps": 4,
+  "successfulSteps": 3,
+  "results": [
+    {
+      "script": "extract-api-data.js",
+      "success": true,
+      "stdout": "🚀 Début de l'extraction des données Strapi...\n\n🔄 Extraction de projects...\n✅ projects: 17 éléments sauvegardés dans projects-raw.json\n🔄 Extraction de competences...\n✅ competences: 4 éléments sauvegardés dans competences-raw.json\n🔄 Extraction de homepages...\n✅ homepages: 1 éléments sauvegardés dans homepages-raw.json\n\n📊 Résumé de l'extraction:\n================================\n✅ projects: 17 éléments\n✅ competences: 4 éléments\n✅ homepages: 1 éléments\n\n🎯 3/3 endpoints extraits avec succès\n📁 22 éléments au total sauvegardés dans ./extract/raw/\n📄 Résumé sauvegardé dans extraction-summary.json\n",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "script": "clean-api-data.js",
+      "success": true,
+      "stdout": "🧹 Début du nettoyage des données...\n\n🔄 Nettoyage de projects...\n✅ projects: 17 éléments nettoyés\n   📦 Taille réduite de 83.4% (426943 → 70819 bytes)\n🔄 Nettoyage de competences...\n✅ competences: 4 éléments nettoyés\n   📦 Taille réduite de 90.8% (135078 → 12478 bytes)\n⚠️  messages: fichier raw non trouvé, ignoré\n\n📊 Résumé du nettoyage:\n=========================\n✅ projects: 17 éléments (83.4% de réduction)\n✅ competences: 4 éléments (90.8% de réduction)\n\n🎯 2/3 types nettoyés avec succès\n📦 Réduction totale: 85.2% (562021 → 83297 bytes)\n📁 Données nettoyées sauvegardées dans ./extract/clean-data/\n📄 Résumé sauvegardé dans cleaning-summary.json\n",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "script": "generate-docs.js",
+      "success": true,
+      "stdout": "📝 Génération de la documentation...\n\n🔄 Génération de la documentation pour projects...\n✅ projects: 18 fichiers de documentation générés\n🔄 Génération de la documentation pour competences...\n✅ competences: 5 fichiers de documentation générés\n⚠️  homepages: fichier clean non trouvé, ignoré\n\n📊 Résumé de la génération:\n============================\n✅ projects: 18 docs (17 éléments)\n✅ competences: 5 docs (4 éléments)\n\n🎯 24 fichiers générés au total (+ README.md)\n📁 Documentation sauvegardée dans ./docs/\n🤖 Prêt pour intégration dans votre base vectorielle !\n📄 Résumé sauvegardé dans generation-summary.json\n",
+      "stderr": "",
+      "exitCode": 0
+    },
+    {
+      "script": "analyse-site-architecture.js",
+      "success": false,
+      "error": "   ❌ analyse-site-architecture.js a échoué (code: 1)"
+    }
+  ]
+}

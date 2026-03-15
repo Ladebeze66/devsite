@@ -1,0 +1,26 @@
+{
+  "extractedAt": "2026-03-15T14:26:50.792Z",
+  "results": [
+    {
+      "endpoint": "projects",
+      "success": true,
+      "count": 17,
+      "file": "projects-raw.json"
+    },
+    {
+      "endpoint": "competences",
+      "success": true,
+      "count": 4,
+      "file": "competences-raw.json"
+    },
+    {
+      "endpoint": "homepages",
+      "success": true,
+      "count": 1,
+      "file": "homepages-raw.json"
+    }
+  ],
+  "totalEndpoints": 3,
+  "successfulEndpoints": 3,
+  "totalItems": 22
+}

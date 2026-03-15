@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-03-15T14:26:54.969Z",
+  "results": [
+    {
+      "type": "projects",
+      "success": true,
+      "itemCount": 17,
+      "docCount": 18,
+      "files": [
+        "01-projects-index.md",
+        "project-pushswap.md",
+        "project-minitalk.md",
+        "project-philosopher.md",
+        "project-minishell.md",
+        "project-netpractice.md",
+        "project-inception.md",
+        "project-born2beroot.md",
+        "project-getnextline.md",
+        "project-cpp-partie1.md",
+        "project-cpp-partie2.md",
+        "project-cub3d.md",
+        "project-fract-ol.md",
+        "project-ft-irc.md",
+        "project-fttranscendence.md",
+        "project-prsentation-cole-42-.md",
+        "project-libft.md",
+        "project-ft-printf.md"
+      ]
+    },
+    {
+      "type": "competences",
+      "success": true,
+      "itemCount": 4,
+      "docCount": 5,
+      "files": [
+        "02-competences-index.md",
+        "competence-ia.md",
+        "competence-developpement-web-and-hebergement-sur-serveur-windows.md",
+        "competence-impression-3d.md",
+        "competence-competence.md"
+      ]
+    }
+  ],
+  "totalTypes": 3,
+  "successfulTypes": 2,
+  "totalSourceItems": 21,
+  "totalDocuments": 24
+}

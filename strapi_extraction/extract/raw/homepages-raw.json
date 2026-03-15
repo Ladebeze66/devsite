@@ -1,0 +1,55 @@
+{
+  "data": [
+    {
+      "id": 20,
+      "documentId": "u2xsgvgz3fieffv6j13qvte8",
+      "title": "Welcome!",
+      "cv": "# Bonjour, je suis Fernand Gras-Calvet\n\nÉtudiant à l’École 42 Perpignan, je me spécialise dans la conception de systèmes basés sur les LLM, l’automatisation et les architectures techniques auto-hébergées.  \nJe développe des solutions mêlant intelligence artificielle, infrastructure serveur et outils internes afin de transformer des besoins concrets en systèmes fiables, évolutifs et réellement utilisables.\n\n---\n\n##  Un parcours atypique devenu une force\n\nAncien infirmier après une première expérience dans l’entreprise familiale, j’ai entamé une reconversion vers l’informatique avec une approche pragmatique : **apprendre en construisant**.  \n\nAujourd’hui, mon parcours mêle rigueur médicale, logique technique et capacité d’adaptation, avec une attention particulière portée à la traçabilité, à la documentation et à l’utilité réelle des outils développés.\n\n---\n\n## Ce que je construis aujourd’hui\n\nLors de mon stage en entreprise logicielle, j’ai conçu une architecture de chatbot multi-agent intégrant analyse documentaire, traitement d’images techniques et pipeline RAG.\n\nEn parallèle, je développe un environnement personnel d’expérimentation autour de l’IA appliquée :\n\n- serveurs Linux et Windows auto-hébergés  \n- Docker, reverse proxy et services internes  \n- workflows LLM en Python (LangChain, Ollama, modèles open-source)  \n- bases vectorielles et pipelines RAG avec Ragflow  \n- gestion de connaissances augmentées via Obsidian  \n\n---\n\n##  Une approche orientée usage réel\n\nJe m’intéresse particulièrement aux projets où la technologie sert à structurer l’information, automatiser des processus et améliorer la collaboration entre équipes techniques et métiers.  \n\nPassionné également par l’impression 3D et le prototypage technique, j’aime explorer des solutions concrètes, expérimenter et documenter mes projets dans une logique d’amélioration continue.\n\n",
+      "createdAt": "2025-01-31T11:12:50.436Z",
+      "updatedAt": "2026-02-18T16:12:40.613Z",
+      "publishedAt": "2026-02-18T16:12:40.633Z",
+      "photo": {
+        "id": 455,
+        "documentId": "t34ayicrwe7vhirykydlm4w1",
+        "name": "photoprofil.jpg",
+        "alternativeText": null,
+        "caption": null,
+        "width": 346,
+        "height": 386,
+        "formats": {
+          "thumbnail": {
+            "name": "thumbnail_photoprofil.jpg",
+            "hash": "thumbnail_photoprofil_14ac3f00b8",
+            "ext": ".jpg",
+            "mime": "image/jpeg",
+            "path": null,
+            "width": 140,
+            "height": 156,
+            "size": 4.1,
+            "sizeInBytes": 4096,
+            "url": "/uploads/thumbnail_photoprofil_14ac3f00b8.jpg"
+          }
+        },
+        "hash": "photoprofil_14ac3f00b8",
+        "ext": ".jpg",
+        "mime": "image/jpeg",
+        "size": 20.09,
+        "url": "/uploads/photoprofil_14ac3f00b8.jpg",
+        "previewUrl": null,
+        "provider": "local",
+        "provider_metadata": null,
+        "createdAt": "2025-02-14T10:31:59.747Z",
+        "updatedAt": "2025-02-14T10:31:59.747Z",
+        "publishedAt": "2025-02-14T10:31:59.748Z"
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 25,
+      "pageCount": 1,
+      "total": 1
+    }
+  }
+}

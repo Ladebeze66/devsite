@@ -1,0 +1,58 @@
+[15/03/2026 15:26:46] 🚀 Début de la mise à jour de la documentation
+[15/03/2026 15:26:46] ==================================================
+[15/03/2026 15:26:46] 
+📋 Étape 1/4: 🔄 Extraction des données Strapi
+[15/03/2026 15:26:46] 🔄 Extraction des données Strapi...
+[15/03/2026 15:26:46]    📄 Exécution de: extract-api-data.js
+[15/03/2026 15:26:50]    ✅ extract-api-data.js terminé avec succès
+[15/03/2026 15:26:50]    ⏸️  Pause de 2 secondes...
+[15/03/2026 15:26:52] 
+📋 Étape 2/4: 🧹 Nettoyage des données
+[15/03/2026 15:26:52] 🧹 Nettoyage des données...
+[15/03/2026 15:26:52]    📄 Exécution de: clean-api-data.js
+[15/03/2026 15:26:52]    ✅ clean-api-data.js terminé avec succès
+[15/03/2026 15:26:52]    ⏸️  Pause de 2 secondes...
+[15/03/2026 15:26:54] 
+📋 Étape 3/4: 📝 Génération de la documentation
+[15/03/2026 15:26:54] 📝 Génération de la documentation...
+[15/03/2026 15:26:54]    📄 Exécution de: generate-docs.js
+[15/03/2026 15:26:54]    ✅ generate-docs.js terminé avec succès
+[15/03/2026 15:26:54]    ⏸️  Pause de 2 secondes...
+[15/03/2026 15:26:56] 
+📋 Étape 4/4: 🏗️ Analyse de l'architecture
+[15/03/2026 15:26:56] 🏗️ Analyse de l'architecture...
+[15/03/2026 15:26:56]    📄 Exécution de: analyse-site-architecture.js
+[15/03/2026 15:26:57]    ❌ analyse-site-architecture.js a échoué (code: 1)
+[15/03/2026 15:26:57]    Erreur: J:\my-next-site\strapi_extraction\analyse-site-architecture.js:418
+generateArchitectureDoc().catch(console.error);
+                               ^
+
+TypeError: generateArchitectureDoc(...).catch is not a function
+    at Object.<anonymous> (J:\my-next-site\strapi_extraction\analyse-site-architecture.js:418:32)
+    at Module._compile (node:internal/modules/cjs/loader:1469:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1548:10)
+    at Module.load (node:internal/modules/cjs/loader:1288:32)
+    at Module._load (node:internal/modules/cjs/loader:1104:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+    at node:internal/main/run_main_module:28:49
+
+Node.js v20.18.2
+
+[15/03/2026 15:26:57] 
+❓ Échec de l'étape 4. Continuer quand même ? (Les étapes suivantes pourraient échouer)
+[15/03/2026 15:26:57]    ⚠️  Continuation automatique malgré l'erreur...
+[15/03/2026 15:26:57] 
+==================================================
+[15/03/2026 15:26:57] 📊 RÉSUMÉ DE LA MISE À JOUR
+[15/03/2026 15:26:57] ==================================================
+[15/03/2026 15:26:57] ✅ Étape 1: extract-api-data.js - Succès
+[15/03/2026 15:26:57] ✅ Étape 2: clean-api-data.js - Succès
+[15/03/2026 15:26:57] ✅ Étape 3: generate-docs.js - Succès
+[15/03/2026 15:26:57] ❌ Étape 4: analyse-site-architecture.js - Échec
+[15/03/2026 15:26:57]    Erreur:    ❌ analyse-site-architecture.js a échoué (code: 1)
+[15/03/2026 15:26:57] 
+🎯 3/4 étapes réussies
+[15/03/2026 15:26:57] ⏱️  Durée totale: 10 secondes
+[15/03/2026 15:26:57] ⚠️  Mise à jour terminée avec des erreurs
+[15/03/2026 15:26:57] 🔍 Consultez les logs ci-dessus pour plus de détails
+[15/03/2026 15:26:57] 📄 Résumé sauvegardé dans ./logs/last-update-summary.json
