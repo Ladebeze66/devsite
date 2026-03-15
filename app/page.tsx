@@ -7,17 +7,60 @@ import { getApiUrl } from "./utils/getApiUrl";
 
 async function getHomepageData() {
   const apiUrl = getApiUrl();
-  try {
-    const response = await fetch(`${apiUrl}/api/homepages?populate=*`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch homepage content");
+  
+  // Configuration avec timeout et retry
+  const fetchWithTimeout = async (url: string, options: RequestInit = {}) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 secondes timeout
+    
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          ...options.headers,
+        },
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      throw error;
     }
-    const data = await response.json();
-    return data.data?.[0] ?? null;
-  } catch (error) {
-    console.error("Error fetching homepage:", error);
-    return null;
+  };
+
+  // Tentative avec retry
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      console.log(`🔄 [getHomepageData] Tentative ${attempt}/3 - URL: ${apiUrl}/api/homepages?populate=*`);
+      
+      const response = await fetchWithTimeout(`${apiUrl}/api/homepages?populate=*`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log("✅ [getHomepageData] Données récupérées avec succès");
+      return data.data?.[0] ?? null;
+      
+    } catch (error) {
+      console.error(`❌ [getHomepageData] Erreur tentative ${attempt}:`, error);
+      
+      if (attempt === 3) {
+        // Dernière tentative échouée
+        console.error("🚨 [getHomepageData] Toutes les tentatives ont échoué");
+        return null;
+      }
+      
+      // Attendre avant la prochaine tentative
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
   }
+  
+  return null;
 }
 
 export default function HomePage() {
@@ -35,7 +78,7 @@ export default function HomePage() {
   const imageUrl = homepage.photo?.url ? `${apiUrl}${homepage.photo.url}` : null;
 
   return (
-    <main className="w-full mx-auto flex flex-col items-center justify-center p-6 bg-white/55 rounded-lg mt-12 mb-3 max-w-7xl">
+    <main className="w-full mx-auto flex flex-col items-center justify-center p-6 bg-white/55 rounded-lg mt-12 mb-3 sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
       <h1 className="text-3xl font-orbitron-24-bold-italic text-gray-800 mb-4">{title}</h1>
 
       {imageUrl ? (

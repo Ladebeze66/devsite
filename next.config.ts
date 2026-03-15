@@ -11,13 +11,6 @@ const nextConfig = {
   compress: false,
   trailingSlash: false,
 
-  webpackDevMiddleware: (config: any) => {
-    config.watchOptions = {
-      poll: 1000,
-      aggregateTimeout: 300,
-    };
-    return config;
-  },
 
   async rewrites() {
     return [

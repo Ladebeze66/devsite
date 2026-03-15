@@ -105,3 +105,59 @@ Performance améliorée grâce au préchargement et à la mise en cache
 Expérience utilisateur fluide avec des animations et une navigation rapide
 
 [lien du site] [https://fernandgrascalvet.com]
+
+
+Pour lancer uvicrn:
+uvicorn api:app --host 0.0.0.0 --port 8000 --reload
+
+📋 Commandes manuelles individuelles
+
+1. Strapi (Backend CMS)
+cd J:\my-next-site\cmsbackend
+npm run develop
+cd J:\my-next-site\cmsbackendnpm run develop
+Interface admin : http://localhost:1337/admin
+API : http://localhost:1337/api
+
+2. Next.js (Frontend)
+cd J:\my-next-site
+npm run dev
+cd J:\my-next-sitenpm run dev
+Site web : http://localhost:3000
+Utilise Turbopack pour un rechargement rapide
+
+3. FastAPI (LLM API)
+cd J:\my-next-site\llm-api
+uvicorn api:app --host 0.0.0.0 --port 8000 --reload
+cd J:\my-next-site\llm-apiuvicorn api:app --host 0.0.0.0 --port 8000 --reload
+API IA : http://localhost:8000
+Endpoint : http://localhost:8000/ask?q=votre_question
+
+🔧 Commandes de dépannage
+Arrêter tous les processus Node.js
+taskkill /f /im node.exe
+taskkill /f /im python.exe
+taskkill /f /im node.exetaskkill /f /im python.exe
+Nettoyer les caches
+# Next.js
+cd J:\my-next-site
+rm -r .next -Force -ErrorAction SilentlyContinue
+
+# Strapi
+cd J:\my-next-site\cmsbackend
+rm -r .cache -Force -ErrorAction SilentlyContinue
+# Next.jscd J:\my-next-siterm -r .next -Force -ErrorAction SilentlyContinue# Strapicd J:\my-next-site\cmsbackendrm -r .cache -Force -ErrorAction SilentlyContinue
+Réinstaller les dépendances
+# Frontend
+cd J:\my-next-site
+npm install
+
+# Backend
+cd J:\my-next-site\cmsbackend
+npm install
+# Frontendcd J:\my-next-sitenpm install# Backendcd J:\my-next-site\cmsbackendnpm install
+📊 Ports utilisés
+Next.js : 3000
+Strapi : 1337
+FastAPI : 8000
+Ollama : 11434

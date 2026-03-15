@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
@@ -6,7 +7,7 @@ import "./assets/main.css";
 import "./globals.css";
 import NavLink from "./components/NavLink";
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [visitCount, setVisitCount] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null); // Référence pour le menu burger
@@ -95,3 +96,4 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
