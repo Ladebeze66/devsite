@@ -1,0 +1,51 @@
+# Documentation interne du site
+
+**Dernière mise à jour :** 2026-04-01 — captures WebP complètes dans `captures/` (voir INDEX).
+
+Ce dossier décrit l'architecture, le fonctionnement et les décisions du projet (Next.js + Strapi + FastAPI/Ollama). Il est destiné à l'équipe et à l'assistant IA pour retrouver vite le contexte.
+
+## Relation avec les autres fichiers
+
+| Fichier / zone | Rôle |
+|----------------|------|
+| `CONFIGURATION_SITE.md` (racine) | Guide opérationnel : ports, commandes, dépannage, planificateur de tâches Windows. |
+| Ce dossier | Conception : flux de données, schémas CMS, incohérences connues, feuille de route. |
+
+**Règle de maintenance :** après une modification notable, mettre à jour le fichier concerné ici ; si le démarrage ou les ports changent, compléter aussi `CONFIGURATION_SITE.md`.
+
+## Index des documents
+
+| Fichier | Contenu |
+|---------|---------|
+| [01-architecture.md](./01-architecture.md) | Services, ports, flux. |
+| [02-frontend-next.md](./02-frontend-next.md) | App Router, routes, fetch Strapi. |
+| [03-cms-strapi.md](./03-cms-strapi.md) | Content-types Strapi. |
+| [04-api-llm-et-chatbot.md](./04-api-llm-et-chatbot.md) | FastAPI, Ollama, GrasBot. |
+| [05-environnement-scripts.md](./05-environnement-scripts.md) | Env, scripts PowerShell. |
+| [06-strapi-extraction.md](./06-strapi-extraction.md) | Outils `strapi_extraction/`. |
+| [07-reference-visuelle-captures.md](./07-reference-visuelle-captures.md) | Référence visuelle ; dossier `captures/`. |
+| [captures/INDEX.md](./captures/INDEX.md) | Inventaire des captures WebP (noms réels, slugs, priorités). |
+| [etat-actuel.md](./etat-actuel.md) | État et dette technique. |
+| [feuille-de-route.md](./feuille-de-route.md) | Backlog priorisé. |
+
+## Arborescence utile
+
+```
+my-next-site/
+├── app/
+├── cmsbackend/
+├── llm-api/
+├── strapi_extraction/
+├── start-my-site.ps1
+├── next.config.ts
+├── CONFIGURATION_SITE.md
+└── docs-site-interne/
+    ├── captures/          # screenshots de référence (voir INDEX.md)
+    └── ...
+```
+
+**Workflow d’évolution (doc + captures + Git) :** skill Cursor `.cursor/skills/site-portfolio-evolution/SKILL.md`.
+
+## Reprise d’une session de travail
+
+Pour enchaîner après une pause : lire `feuille-de-route.md` (priorités), `etat-actuel.md`, puis `captures/INDEX.md` si le travail touche l’UI. Le skill `site-portfolio-evolution` rappelle la boucle modification → validation → mise à jour doc.
