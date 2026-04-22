@@ -10,19 +10,65 @@ import NavLink from "./components/NavLink";
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [visitCount, setVisitCount] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef(null); // Référence pour le menu burger
+  const menuRef = useRef<HTMLElement | null>(null);
+  const burgerRef = useRef<HTMLButtonElement | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const AUTO_CLOSE_MS = 4000;
+
+  const clearAutoClose = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
   };
 
+  const scheduleAutoClose = () => {
+    clearAutoClose();
+    closeTimerRef.current = setTimeout(() => setIsMenuOpen(false), AUTO_CLOSE_MS);
+  };
+
+  const openMenu = () => setIsMenuOpen(true);
+  const closeMenu = () => setIsMenuOpen(false);
+  const toggleMenu = () => setIsMenuOpen((v) => !v);
+
   useEffect(() => {
-    // Récupère le compteur de visites depuis localStorage
     const visits = localStorage.getItem("visitCount");
     const newVisitCount = visits ? parseInt(visits) + 1 : 1;
     localStorage.setItem("visitCount", newVisitCount.toString());
     setVisitCount(newVisitCount);
   }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) {
+      clearAutoClose();
+      return;
+    }
+
+    scheduleAutoClose();
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    };
+    const handleResize = () => {
+      if (window.innerWidth >= 768) setIsMenuOpen(false);
+    };
+
+    window.addEventListener("keydown", handleKey);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      clearAutoClose();
+      window.removeEventListener("keydown", handleKey);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (!isMenuOpen && burgerRef.current) {
+      burgerRef.current.focus({ preventScroll: true });
+    }
+  }, [isMenuOpen]);
 
   return (
     <html lang="fr">
@@ -48,8 +94,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </h2>
 
               {/* Bouton menu burger */}
-              <button className="md:hidden p-2 bg-gray-300 rounded" onClick={toggleMenu}>
-                ☰
+              <button
+                ref={burgerRef}
+                type="button"
+                className="md:hidden p-2 bg-gray-300 rounded"
+                onClick={toggleMenu}
+                aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-expanded={isMenuOpen}
+                aria-controls="mobile-drawer"
+              >
+                {isMenuOpen ? "✕" : "☰"}
               </button>
 
               {/* Menu desktop */}
@@ -64,25 +118,42 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </header>
 
-          {/* Menu mobile */}
-          {isMenuOpen && (
-            <div ref={menuRef} className="fixed inset-0 bg-black/50 z-40 flex items-start justify-left p-4">
-              <nav className="w-[60%] max-w-sm h-auto min-h-[50vh] max-h-[50vh] bg-gray-800/90 backdrop-blur-lg flex flex-col items-center justify-center space-y-4 z-50 md:hidden text-white font-orbitron-24-bold tracking-wide shadow-lg overflow-y-auto rounded-lg p-6">
-                {/* Bouton de fermeture */}
-                <button className="absolute top-4 right-4 text-2xl text-white" onClick={toggleMenu}>
-                  ✖
-                </button>
+          {/* Drawer mobile (tiroir gauche, 70%, fond sombre translucide) */}
+          <div
+            className={`mobile-drawer-root fixed inset-0 z-40 md:hidden transition-opacity duration-300 ease-out ${
+              isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
+            aria-hidden={!isMenuOpen}
+          >
+            {/* Voile : tap pour fermer */}
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={closeMenu}
+              aria-hidden="true"
+            />
 
-                {/* Liens du menu */}
-                <NavLink text="Accueil" path="/" onClick={toggleMenu} className="text-lg text-white hover:text-gray-900 px-4 py-2 bg-gray-700 rounded-lg transition-all duration-300 hover:bg-gray-500" />
-                <NavLink text="Portfolio" path="/portfolio" onClick={toggleMenu} className="text-lg text-white hover:text-gray-900 px-4 py-2 bg-gray-700 rounded-lg transition-all duration-300 hover:bg-gray-500" />
-                <NavLink text="Compétences" path="/competences" onClick={toggleMenu} className="text-lg text-white hover:text-gray-900 px-4 py-2 bg-gray-700 rounded-lg transition-all duration-300 hover:bg-gray-500" />
-                <NavLink text="Contact" path="/contact" onClick={toggleMenu} className="text-lg text-white hover:text-gray-900 px-4 py-2 bg-gray-700 rounded-lg transition-all duration-300 hover:bg-gray-500" />
-              </nav>
-            </div>
-          )}
+            {/* Colonne tiroir */}
+            <nav
+              id="mobile-drawer"
+              ref={menuRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menu de navigation"
+              className={`mobile-drawer-panel relative z-10 h-full w-[70%] max-w-sm bg-gray-900/70 backdrop-blur-md border-r border-white/10 shadow-2xl flex flex-col gap-3 px-6 pt-20 pb-8 text-white font-orbitron-24-bold tracking-wide transition-transform duration-300 ease-out ${
+                isMenuOpen ? "translate-x-0" : "-translate-x-full"
+              }`}
+              onClick={scheduleAutoClose}
+              onTouchStart={scheduleAutoClose}
+              onTouchMove={scheduleAutoClose}
+            >
+              <NavLink text="Accueil" path="/" onClick={closeMenu} className="text-lg text-white hover:text-gray-900 px-4 py-2 bg-gray-700/80 rounded-lg transition-all duration-300 hover:bg-gray-500" />
+              <NavLink text="Portfolio" path="/portfolio" onClick={closeMenu} className="text-lg text-white hover:text-gray-900 px-4 py-2 bg-gray-700/80 rounded-lg transition-all duration-300 hover:bg-gray-500" />
+              <NavLink text="Compétences" path="/competences" onClick={closeMenu} className="text-lg text-white hover:text-gray-900 px-4 py-2 bg-gray-700/80 rounded-lg transition-all duration-300 hover:bg-gray-500" />
+              <NavLink text="Contact" path="/contact" onClick={closeMenu} className="text-lg text-white hover:text-gray-900 px-4 py-2 bg-gray-700/80 rounded-lg transition-all duration-300 hover:bg-gray-500" />
+            </nav>
+          </div>
 
-          <main className="relative z-10 w-full min-w-0 max-w-full min-h-0">
+          <main className="relative z-10 w-full min-w-0 max-w-full min-h-0 pt-20 md:pt-24">
             {children}
           </main>
 

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Le Brief Digital66</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Manrope & Newsreader -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-tertiary-fixed-variant": "#384858",
+                "on-error": "#ffffff",
+                "on-surface-variant": "#42474d",
+                "tertiary-fixed": "#d3e4f7",
+                "outline-variant": "#c3c7cd",
+                "secondary-fixed-dim": "#b9c9d3",
+                "on-primary-container": "#b5d4f2",
+                "background": "#f8fafa",
+                "secondary-container": "#d2e2ec",
+                "tertiary-container": "#4a5b6b",
+                "on-background": "#191c1d",
+                "on-surface": "#191c1d",
+                "on-error-container": "#93000a",
+                "on-tertiary": "#ffffff",
+                "surface-tint": "#43617c",
+                "on-tertiary-fixed": "#0b1d2b",
+                "secondary": "#516169",
+                "error-container": "#ffdad6",
+                "inverse-surface": "#2e3131",
+                "surface-dim": "#d8dada",
+                "surface": "#f8fafa",
+                "inverse-primary": "#abcae8",
+                "surface-variant": "#e1e3e3",
+                "on-secondary-fixed": "#0e1d25",
+                "on-secondary-fixed-variant": "#3a4951",
+                "tertiary": "#334453",
+                "surface-container-lowest": "#ffffff",
+                "primary": "#26445d",
+                "surface-container": "#eceeee",
+                "on-tertiary-container": "#c1d2e5",
+                "surface-container-low": "#f2f4f4",
+                "on-primary-fixed-variant": "#2b4963",
+                "surface-container-high": "#e6e8e9",
+                "error": "#ba1a1a",
+                "on-primary-fixed": "#001d31",
+                "on-secondary": "#ffffff",
+                "primary-fixed": "#cce5ff",
+                "primary-fixed-dim": "#abcae8",
+                "tertiary-fixed-dim": "#b7c8db",
+                "outline": "#73777d",
+                "on-secondary-container": "#55656d",
+                "on-primary": "#ffffff",
+                "surface-bright": "#f8fafa",
+                "secondary-fixed": "#d5e5ef",
+                "inverse-on-surface": "#eff1f1",
+                "primary-container": "#3e5c76",
+                "surface-container-highest": "#e1e3e3"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Newsreader"],
+                "label": ["Manrope"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { -webkit-font-smoothing: antialiased; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- 1. Header / Brand Block -->
+<header class="bg-surface border-b border-outline-variant px-6 py-6 max-w-xl mx-auto flex justify-between items-center">
+<div class="flex flex-col">
+<span class="text-xl font-black tracking-tighter text-primary font-headline">Le Brief Digital66</span>
+<span class="font-headline font-bold text-[10px] tracking-[0.2em] uppercase text-secondary mt-1">Édition Hebdomadaire</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-headline font-bold text-[11px] uppercase text-secondary">12 Juin 2024</span>
+<div class="w-10 h-10 rounded-full bg-secondary-container overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a creative director" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG_2MabCQMZJ20eMCX-gQdAYzd1STuDfFnru-n-Gb-HizW1maLaedIU4moaArLFDjsWE0whuEG8sqnXPMkYv2PnYhGyrMQ33LjIJ_pH63teIhH2j31ymrkgRM1mdzhhN-cMMUhEWjqHW2nl-Ksd-mU71FxRgbJ-E6Y9M_OrWUIqR1nR6ys25cUJhY9EBf1bmjLYWv4Y1xkxihF8us6IfSuSI8mvx2P6s8cBeytILeYcg-GcLd01z3Dg7KBgVx3DVoGYzXZIxPScRA"/>
+</div>
+</div>
+</header>
+<main class="max-w-xl mx-auto px-6 py-12">
+<!-- 2. Intro Section -->
+<section class="mb-20">
+<h1 class="font-headline font-extrabold text-4xl mb-8 tracking-tight text-on-surface leading-[1.1]">
+            Bonjour, voici l'essentiel de la semaine...
+        </h1>
+<p class="text-2xl leading-relaxed text-secondary italic font-body">
+            Cette semaine, nous explorons comment l'intelligence artificielle redéfinit les frontières de la création éditoriale. Entre automatisation et intuition humaine, le curseur se déplace.
+        </p>
+</section>
+<!-- 3. Main Topic Section -->
+<section class="mb-24">
+<div class="bg-primary p-1 rounded-xl mb-8">
+<div class="relative rounded-lg overflow-hidden">
+<img class="w-full h-72 object-cover block" data-alt="abstract visualization of neural networks" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCn3hjW5ImhkEpemDHQKwRMabDzaChOQJ4zWR6ZBwk-vOi_1nTeox9JlfG4Buufnb8RiaEYJ2aMJPh3erKq-2si2HHDBw8pyu04mgpVhhO5YdGC16eafBz9HolVYRSG12pfHBOyzMpEmD5rdkoxb9JCQDpSS8QGIK5Lehi6Q-nCFh2cgAq5oMp4kDpYIeY07j60fVdUxvyDciMwc-z4TH2QfuoIMs1UT4NLqVrs4UpGB8rX4pHxI3CPSX5gJoxWlNAvnqZHvnaAHmk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-8 w-full">
+<span class="inline-block px-4 py-1.5 bg-primary-fixed text-on-primary-fixed text-xs font-headline font-extrabold uppercase tracking-widest rounded-full mb-4">Dossier Spécial</span>
+<h2 class="font-headline font-bold text-3xl text-white leading-tight">L'Ère Post-Prompt : Au-delà de la commande textuelle.</h2>
+</div>
+</div>
+</div>
+<div class="px-2">
+<p class="text-xl leading-relaxed text-on-surface">
+                Il ne s'agit plus de savoir "comment" demander, mais de comprendre "ce que" l'on veut réellement accomplir. L'IA devient un partenaire de réflexion plutôt qu'un simple outil d'exécution.
+            </p>
+</div>
+</section>
+<!-- 4. Key Takeaway Cards (Compact & Safe) -->
+<section class="mb-24 space-y-4">
+<div class="bg-surface-container-low border border-outline-variant p-5 rounded-xl">
+<div class="flex items-center gap-4">
+<div class="bg-primary text-white w-10 h-10 rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl">psychology</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-primary">Cognition Augmentée</h3>
+<p class="text-secondary text-sm">L'IA étend votre portée analytique pour des décisions plus rapides.</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-5 rounded-xl">
+<div class="flex items-center gap-4">
+<div class="bg-primary text-white w-10 h-10 rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl">auto_awesome</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-primary">Symphonie Créative</h3>
+<p class="text-secondary text-sm">Une collaboration permettant d'explorer des territoires inaccessibles.</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-5 rounded-xl">
+<div class="flex items-center gap-4">
+<div class="bg-primary text-white w-10 h-10 rounded flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl">shield</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-lg text-primary">Éthique par Design</h3>
+<p class="text-secondary text-sm">L'intégrité des données devient un avantage concurrentiel majeur.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Actionable Tip Block (Simple Layout) -->
+<section class="bg-primary text-white p-8 rounded-xl mb-24">
+<div class="mb-8 border-b border-primary-container pb-4">
+<h3 class="font-headline font-extrabold text-xl flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed">lightbulb</span>
+                Optimisez votre flux IA
+            </h3>
+</div>
+<table class="w-full border-collapse">
+<tbody><tr class="align-top">
+<td class="pr-4 py-3"><span class="w-6 h-6 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-headline font-bold text-[10px]">1</span></td>
+<td class="py-3 text-on-primary-container text-sm leading-relaxed">Définissez le rôle avant la tâche (ex: "Agis comme un expert UX").</td>
+</tr>
+<tr class="align-top">
+<td class="pr-4 py-3"><span class="w-6 h-6 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-headline font-bold text-[10px]">2</span></td>
+<td class="py-3 text-on-primary-container text-sm leading-relaxed">Utilisez des exemples concrets pour guider le style et le ton.</td>
+</tr>
+<tr class="align-top">
+<td class="pr-4 py-3"><span class="w-6 h-6 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-headline font-bold text-[10px]">3</span></td>
+<td class="py-3 text-on-primary-container text-sm leading-relaxed">Itérez par petites touches plutôt que de chercher la perfection immédiate.</td>
+</tr>
+</tbody></table>
+</section>
+<!-- 6. Tool / Resource Block -->
+<section class="mb-24 text-center bg-surface-container-lowest border border-outline-variant p-10 rounded-xl">
+<div class="w-16 h-16 bg-primary-container/10 rounded-full flex items-center justify-center mx-auto mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">deployed_code</span>
+</div>
+<h4 class="font-headline font-bold text-2xl mb-3 text-primary">Atelier GPT-V</h4>
+<p class="text-secondary mb-8 text-base max-w-sm mx-auto">Une suite d'outils open-source pour analyser vos données visuelles avec une précision chirurgicale.</p>
+<a class="inline-flex items-center justify-center gap-3 px-10 py-4 bg-primary text-white font-headline font-bold rounded-lg hover:bg-primary/90 transition-colors" href="#">
+            Découvrir l'outil
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</section>
+<!-- 7. Critical Reflection Block -->
+<section class="mb-24 border-l-4 border-primary pl-10 py-4">
+<span class="font-headline font-bold text-primary text-[10px] uppercase tracking-[0.2em] mb-4 block">Point de vue</span>
+<p class="font-body italic text-2xl text-on-surface leading-tight">
+            "La technologie ne doit pas être une fuite en avant, mais un retour à l'essentiel : libérer le temps humain pour ce qui ne peut être automatisé : l'empathie, la nuance et la vision."
+        </p>
+<p class="mt-6 font-headline font-bold text-secondary text-sm">— Jean-Marc S., Lead Strategist</p>
+</section>
+<!-- 8. Light Moment Block -->
+<section class="bg-surface-container-high p-8 rounded-xl mb-24 text-center">
+<span class="material-symbols-outlined text-tertiary mb-3 text-3xl">sentiment_satisfied</span>
+<h5 class="font-headline font-bold text-on-surface mb-2 text-lg italic">L'anecdote de la semaine</h5>
+<p class="text-secondary text-sm leading-relaxed mb-6">Saviez-vous que le premier "bug" informatique était une véritable mite (moth) coincée dans un relais du Harvard Mark II en 1947 ?</p>
+<a class="text-primary font-headline font-bold text-xs uppercase tracking-widest border-b-2 border-primary/20 pb-1 hover:border-primary transition-colors" href="#">Lire l'archive</a>
+</section>
+<!-- 9. Premium Footer -->
+<footer class="pt-16 pb-12 border-t border-outline-variant text-center">
+<div class="mb-10">
+<div class="font-headline font-black text-2xl text-primary tracking-tighter mb-2">Le Brief Digital66</div>
+<p class="font-body italic text-sm text-secondary">La prospective technologique au service de l'humain.</p>
+</div>
+<div class="flex justify-center gap-10 mb-10 text-xs font-headline font-bold uppercase tracking-widest text-primary">
+<a class="hover:text-secondary transition-colors" href="#">Confidentialité</a>
+<a class="hover:text-secondary transition-colors" href="#">Contact</a>
+</div>
+<div class="mb-10 flex justify-center gap-4">
+<a class="w-10 h-10 border border-outline-variant rounded-full flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">share</span>
+</a>
+<a class="w-10 h-10 border border-outline-variant rounded-full flex items-center justify-center text-secondary hover:bg-surface-container hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">mail</span>
+</a>
+</div>
+<div class="py-8 bg-surface-container-low rounded-xl">
+<p class="text-[10px] text-secondary font-headline font-semibold mb-3 uppercase tracking-widest">Vous recevez cet email car vous êtes abonné à Digital66</p>
+<a class="text-[10px] text-error font-headline font-bold uppercase tracking-widest underline decoration-error/30 hover:decoration-error" href="#">Se désabonner de cette liste</a>
+</div>
+<div class="mt-12 text-[10px] uppercase tracking-[0.3em] text-outline font-headline font-bold">
+            Perpignan • France
+        </div>
+</footer>
+</main>
+<!-- Bottom Nav (UI Only, simplified for mobile feel) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-white/95 border-t border-outline-variant backdrop-blur-md">
+<a class="flex flex-col items-center justify-center text-primary" href="#">
+<span class="material-symbols-outlined">newspaper</span>
+<span class="font-headline text-[9px] font-bold uppercase tracking-widest mt-1">Direct</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary opacity-60" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="font-headline text-[9px] font-bold uppercase tracking-widest mt-1">Dossiers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary opacity-60" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-headline text-[9px] font-bold uppercase tracking-widest mt-1">Favoris</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary opacity-60" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-headline text-[9px] font-bold uppercase tracking-widest mt-1">Profil</span>
+</a>
+</nav>
+<div class="h-24"></div> <!-- Spacer for fixed nav -->
+</body></html>

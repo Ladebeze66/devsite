@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Listmonk : sujet de campagne -->
+  <title>{{ .Campaign.Subject }}</title>
+  <!-- Stitch / DESIGN.md : Manrope (titres) + Newsreader (corps) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Newsreader:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet" />
+  <style>
+    /* --- Tokens alignés DESIGN.md (Stitch V1) — pas de #000 --- */
+    :root {
+      --surface: #f8fafa;
+      --on-surface: #191c1d;
+      --primary: #26445d;
+      --primary-container: #3e5c76;
+      --on-primary: #ffffff;
+      --on-primary-container: #c1d2e5;
+      --secondary: #516169;
+      --primary-fixed: #cce5ff;
+      --surface-container-low: #f2f4f4;
+      --surface-container: #eceeee;
+      --surface-container-high: #e6e8e9;
+      --surface-lowest: #ffffff;
+      --outline-variant: #c3c7cd;
+      --shadow: rgba(25, 28, 29, 0.06);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--surface);
+      font-family: "Newsreader", Georgia, "Times New Roman", serif;
+      font-size: 17px;
+      line-height: 1.65;
+      color: var(--on-surface);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .outer {
+      width: 100%;
+      background-color: var(--surface);
+      padding: 40px 16px 48px;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      background: var(--surface-lowest);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 40px 60px var(--shadow);
+    }
+
+    /* En-tête éditorial : gradient primary → primary-container (Stitch) */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-container) 100%);
+      color: var(--on-primary);
+      padding: 36px 40px 32px;
+    }
+
+    .header-kicker {
+      font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.75);
+      margin: 0 0 12px 0;
+    }
+
+    .brand {
+      font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0 0 8px 0;
+      line-height: 1.15;
+    }
+
+    .subject-line {
+      font-family: "Manrope", sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: rgba(255, 255, 255, 0.92);
+      margin: 0 0 14px 0;
+    }
+
+    .tagline {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.5;
+    }
+
+    /* Zone contenu : fragment Directus (.nd-issue) */
+    .content {
+      padding: 40px 36px 48px;
+      background: var(--surface-lowest);
+    }
+
+    .content .nd-issue {
+      margin: 0;
+    }
+
+    /* Séparation sans « ligne dure » : espace + léger décalage de fond (règle DESIGN) */
+    .content .nd-section {
+      margin: 0 0 40px 0;
+      padding: 0 0 36px 0;
+      border-bottom: none;
+    }
+
+    .content .nd-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .content .nd-section__title {
+      font-family: "Manrope", sans-serif;
+      margin: 0 0 14px 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--on-surface);
+      letter-spacing: -0.02em;
+    }
+
+    .content .nd-section__body {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--on-surface);
+    }
+
+    .content .nd-section__body p {
+      margin: 0 0 1rem 0;
+    }
+
+    .content .nd-section__body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .content .nd-section__body a {
+      color: var(--primary);
+      text-decoration: underline;
+      text-decoration-color: rgba(38, 68, 93, 0.35);
+      word-break: break-word;
+    }
+
+    /* Accroche + libellé sujet (fragment : `accroche · Tag` — issue_export._render_hook_line_html) */
+    .content .nd-section__body p.nd-hook {
+      font-family: "Manrope", sans-serif;
+      font-weight: 600;
+      font-size: 1.08rem;
+      line-height: 1.4;
+      color: var(--on-surface);
+    }
+
+    .content .nd-topic-tag {
+      display: inline-block;
+      font-family: "Manrope", sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: var(--surface-container);
+      border: 1px solid var(--outline-variant);
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-left: 8px;
+      vertical-align: middle;
+      white-space: nowrap;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Bloc « Pour aller plus loin » — barre type pull-quote (primary_fixed) */
+    .content .nd-more {
+      margin-top: 16px;
+      padding: 14px 16px 14px 18px;
+      background: var(--surface-container-low);
+      border-left: 4px solid var(--primary-fixed);
+      border-radius: 0 12px 12px 0;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .content .nd-more__label {
+      font-family: "Manrope", sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--primary);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    /* --- Par rôle (fragment issue_export.py data-role) — ordre éditorial :
+         light_moment → intro → main_topic → key_takeaway_* → critical_reflection → actionable_tip --- */
+
+    .content .nd-section[data-role="light_moment"] {
+      background: var(--surface-container-high);
+      padding: 24px 22px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .content .nd-section[data-role="light_moment"] .nd-section__title {
+      font-style: italic;
+      color: var(--on-surface);
+    }
+
+    .content .nd-section[data-role="light_moment"] .nd-section__body {
+      font-size: 0.95rem;
+      color: var(--secondary);
+    }
+
+    .content .nd-section[data-role="intro"] .nd-section__title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--secondary);
+    }
+
+    .content .nd-section[data-role="intro"] .nd-section__body p:first-of-type {
+      font-family: "Manrope", sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--on-surface);
+      font-style: normal;
+    }
+
+    .content .nd-section[data-role="intro"] .nd-section__body p + p {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--secondary);
+    }
+
+    .content .nd-section[data-role="main_topic"] {
+      padding: 28px 24px 32px;
+      margin-left: -8px;
+      margin-right: -8px;
+      background: var(--surface-container-low);
+      border-radius: 16px;
+    }
+
+    .content .nd-section[data-role="main_topic"] .nd-section__title {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .content .nd-section[data-role^="key_takeaway"] {
+      background: var(--surface-container-low);
+      padding: 22px 22px 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(195, 199, 205, 0.35);
+    }
+
+    .content .nd-section[data-role^="key_takeaway"] .nd-section__title {
+      font-size: 1.05rem;
+      color: var(--primary);
+    }
+
+    .content .nd-section[data-role="critical_reflection"] {
+      border-left: 4px solid var(--primary);
+      padding: 8px 0 8px 24px;
+      margin-left: 4px;
+      background: transparent;
+    }
+
+    .content .nd-section[data-role="critical_reflection"] .nd-section__title {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+
+    .content .nd-section[data-role="critical_reflection"] .nd-section__body {
+      font-size: 1.2rem;
+      font-style: italic;
+      line-height: 1.35;
+    }
+
+    .content .nd-section[data-role="actionable_tip"] {
+      background: linear-gradient(145deg, var(--primary) 0%, var(--primary-container) 100%);
+      color: var(--on-primary);
+      padding: 28px 24px;
+      border-radius: 16px;
+    }
+
+    .content .nd-section[data-role="actionable_tip"] .nd-section__title {
+      color: var(--on-primary);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .content .nd-section[data-role="actionable_tip"] .nd-section__body {
+      color: var(--on-primary-container);
+    }
+
+    .content .nd-section[data-role="actionable_tip"] .nd-section__body a {
+      color: #3d4f63;
+      text-decoration-color: rgba(61, 79, 99, 0.45);
+    }
+
+    .footer {
+      background: var(--surface-container-low);
+      padding: 28px 36px 32px;
+      border-top: 1px solid rgba(195, 199, 205, 0.45);
+      font-family: "Manrope", sans-serif;
+      font-size: 12px;
+      color: var(--secondary);
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .footer-brand {
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+      margin: 0 0 6px 0;
+    }
+
+    .footer-tagline {
+      font-family: "Newsreader", Georgia, serif;
+      font-style: italic;
+      font-size: 13px;
+      margin: 0 0 18px 0;
+    }
+
+    .footer a {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: rgba(38, 68, 93, 0.35);
+    }
+
+    .footer-legal {
+      margin-top: 20px;
+      padding: 18px 16px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 12px;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .track {
+      margin-top: 16px;
+      font-size: 1px;
+      line-height: 0;
+      color: transparent;
+    }
+
+    @media (max-width: 640px) {
+      .outer {
+        padding: 24px 12px 32px;
+      }
+
+      .header,
+      .content,
+      .footer {
+        padding-left: 22px;
+        padding-right: 22px;
+      }
+
+      .content {
+        padding-top: 32px;
+        padding-bottom: 36px;
+      }
+
+      .brand {
+        font-size: 22px;
+      }
+
+      .content .nd-section[data-role="main_topic"] .nd-section__title {
+        font-size: 1.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="outer">
+    <div class="container">
+      <div class="header">
+        <p class="header-kicker">Édition hebdomadaire</p>
+        <h1 class="brand">Le Brief Digital 66</h1>
+        <p class="subject-line">{{ .Campaign.Subject }}</p>
+        <p class="tagline">IA · Productivité · Veille · Pyrénées-Orientales</p>
+      </div>
+
+      <div class="content">
+        {{ template "content" . }}
+      </div>
+
+      <div class="footer">
+        <p class="footer-brand">Le Brief Digital 66</p>
+        <p class="footer-tagline">La prospective technologique au service de l'humain.</p>
+        <p>Vous recevez cet e-mail car vous êtes inscrit à la newsletter.</p>
+        <p>
+          <a href="{{ MessageURL }}">Voir dans le navigateur</a>
+          ·
+          <a href="{{ UnsubscribeURL }}">Se désabonner</a>
+        </p>
+        <div class="footer-legal">
+          Perpignan · France · Newsletter locale
+        </div>
+        <div class="track">{{ TrackView }}</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

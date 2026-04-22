@@ -78,7 +78,7 @@ export default function HomePage() {
   const imageUrl = homepage.photo?.url ? `${apiUrl}${homepage.photo.url}` : null;
 
   return (
-    <main className="mx-auto mb-3 mt-12 flex w-full min-w-0 max-w-full flex-col items-center justify-center rounded-lg bg-white/55 p-4 sm:max-w-2xl sm:p-6 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
+    <main className="mx-auto mb-3 flex w-full min-w-0 max-w-full flex-col items-center justify-center rounded-lg bg-white/55 p-4 sm:max-w-2xl sm:p-6 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
       <h1 className="text-3xl font-orbitron-24-bold-italic text-gray-800 mb-4">{title}</h1>
 
       {imageUrl ? (

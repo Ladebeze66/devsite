@@ -1,0 +1,92 @@
+/*
+ * Listmonk — CSS pages publiques (confirmation, abonnement, etc.)
+ *
+ * Coller le contenu (sans ce bloc commentaire si tu préfères) dans :
+ *   Admin → Settings → Appearance → Public → Custom CSS
+ *
+ * Référence visuelle : DESIGN.md + palette page d’inscription (newsletter-service).
+ * Carte multicanal (template mail, Directus, inscription) : docs/18_guide_visuel_multicanal.md
+ * Après modification : copier-coller dans Listmonk → Save → tester en navigation privée.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Newsreader:ital,wght@0,400;0,500&display=swap");
+
+body {
+  font-family: "Newsreader", Georgia, serif !important;
+  background: #f8fafa !important;
+  color: #191c1d !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Manrope", system-ui, sans-serif !important;
+  font-weight: 800 !important;
+  color: #26445d !important;
+  letter-spacing: -0.02em;
+}
+
+p,
+li,
+label {
+  font-family: "Newsreader", Georgia, serif !important;
+  color: #516169;
+}
+
+a {
+  color: #26445d !important;
+}
+
+a:hover {
+  color: #3e5c76 !important;
+}
+
+.button,
+button,
+input[type="submit"] {
+  font-family: "Manrope", system-ui, sans-serif !important;
+  font-weight: 600 !important;
+  background: linear-gradient(135deg, #26445d, #3e5c76) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 4px 14px rgba(38, 68, 93, 0.22);
+  padding: 0.65rem 1.25rem;
+}
+
+.button:hover,
+button:hover,
+input[type="submit"]:hover {
+  filter: brightness(1.05);
+}
+
+input[type="checkbox"] {
+  accent-color: #26445d;
+}
+
+.header .logo img {
+  display: block;
+  margin: 0 auto 1rem;
+  max-height: 3rem;
+  width: auto;
+}
+
+.container,
+main .container {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  box-shadow: 0 28px 56px rgba(25, 28, 29, 0.055);
+}
+
+footer.container {
+  margin-top: 1.5rem !important;
+  font-size: 0.85rem !important;
+  opacity: 0.55;
+}
+
+/* Pour masquer complètement le pied « Powered by listmonk » : décommenter si conforme à ta licence.
+footer.container {
+  display: none !important;
+}
+*/

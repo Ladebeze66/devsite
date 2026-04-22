@@ -118,3 +118,10 @@ footer {
     max-width: 100%;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-drawer-root,
+  .mobile-drawer-panel {
+    transition: none !important;
+  }
+}
