@@ -1,7 +1,7 @@
 # Refonte visuelle — Direction "Digital Atelier"
 
 **Créé :** 2026-04-22  
-**Statut :** en cours (étapes 1-5/8 terminées)  
+**Statut :** en cours (étapes 1-6/8 terminées)  
 **Source d'inspiration :** `stitch_V1/` (design newsletter Stitch — `DESIGN.md` et `code.html`).  
 **Audit préalable :** [`captures/AUDIT-VISUEL.md`](./captures/AUDIT-VISUEL.md).
 
@@ -59,7 +59,7 @@ Chaque étape = un lot cohérent + éventuelle mise à jour de `captures/AUDIT-V
 | 3 | Migration typographique globale (Orbitron → Manrope / Newsreader) | `app/**/*.{tsx,jsx,js}`, `app/assets/main.css` | **fait** (2026-04-22) |
 | 4 | Layout racine : header No-Line, burger ghost, palette cercles, compteur migré, drawer | `app/layout.tsx`, `app/components/NavLink.jsx`, `app/components/Footer.jsx` | **fait** (2026-04-22) |
 | 5 | Home : hero vellum, portrait frame, takeaways, pull-quote, CTAs | `app/page.tsx` | **fait** (2026-04-22) |
-| 6 | Listes portfolio + compétences : grille asymétrique, cartes éditoriales | `app/portfolio/page.jsx`, `app/competences/page.jsx`, composants `Carousel*` | à faire |
+| 6 | Listes portfolio + compétences : grille asymétrique, cartes éditoriales | `app/portfolio/page.jsx`, `app/competences/page.jsx`, composants `Carousel*` | **fait** (2026-04-22) |
 | 7 | Fiches détail + modale glossaire + GrasBot (jewel flottant) | `app/portfolio/[slug]/page.tsx`, `app/competences/[slug]/page.tsx`, `app/components/ModalGlossaire.tsx`, `app/components/ChatBot.js` | à faire |
 | 8 | Contact + Footer éditorial | `app/contact/page.js`, `app/components/ContactForm.tsx`, `app/components/Footer.jsx` | à faire |
 
@@ -149,6 +149,85 @@ Les icônes Material Symbols Outlined fonctionnent via **ligatures de font** : u
 **Règle permanente pour la refonte** : chaque `<span class="material-symbols-outlined">` doit porter **`translate="no"`** (attribut HTML). Pareil pour les éléments contenant un nom propre qui ne doit pas être déformé (titre du site, nom d'école « 42 », nom de ville, etc.). Le reste du contenu éditorial (CV, descriptions de projets, fiches compétences) reste traductible — la traduction automatique est un vrai plus pour un portfolio qu'on veut accessible à l'international.
 
 Composant wrapper `<Icon>` qui pose automatiquement `translate="no"` envisagé comme DRY à long terme (hors scope actuel).
+
+## 6. Étape 6 — Listes portfolio + compétences (2026-04-22)
+
+Les deux pages liste étaient héritées du design avant refonte : cartes `bg-white/80 rounded-lg` à taille **fixe** (`w-80 h-96` sur portfolio, `max-w-xs…2xl` en cascade sur compétences), `hover:scale-105` qui débordait sous le header, **chaque vignette embarquait un `Swiper` autoplay** (cf. `Carousel.tsx` et `CarouselCompetences.tsx`) — bruit visuel constant, coût réseau (3-5 images × N cartes chargées d'emblée), et incohérence avec l'arbitrage acté § 2 *"carousel réservé aux galeries intra-fiche"*. Sur mobile, la largeur fixe 320 px de la carte portfolio débordait un viewport 360 px + padding.
+
+### Direction Stitch appliquée
+
+**Règle DESIGN.md §6 "No-Grid-Lock"** interdit la grille 3 colonnes symétrique. On adopte une grille **asymétrique 2/3 + 1/3** qui donne un rythme éditorial plutôt qu'un catalogue :
+
+```
+md:grid-cols-6, pattern de spans par index modulo 4 :
+  idx 0 → md:col-span-4 (vedette, 2/3)
+  idx 1 → md:col-span-2 (1/3)
+  idx 2 → md:col-span-2 (1/3)
+  idx 3 → md:col-span-4 (vedette, 2/3)
+```
+
+Sur `sm` on bascule en `grid-cols-2` classique (pas de `col-span` tablette pour garder 2 cartes par ligne), sur mobile `grid-cols-1` pleine largeur. Le même pattern est répliqué pour les skeletons de chargement → l'empreinte visuelle est stable pendant le fetch.
+
+### Anatomie de carte "feuillet de vellum"
+
+Toutes les cartes sont des `Link` pleine-carte (plus de `Link` imbriqué ambigu) avec :
+
+- Wrapper : `rounded-sheet bg-surface-container-lowest/85 backdrop-blur-vellum shadow-ambient`, `group` pour propager le hover.
+- Hover : `hover:-translate-y-0.5 hover:shadow-jewel` (lift subtil + empreinte tactile Stitch) remplace l'ancien `scale-105` qui débordait et cassait l'alignement de la grille.
+- Média : `aspect-[4/3]` fixe (plus de hauteurs variables) + `overflow-hidden` + `object-cover` + `group-hover:scale-[1.03]` sur l'image (sensation vitrine, discret).
+- Placeholder `material-symbols-outlined image` centré si pas d'image — `translate="no"` en place (§ 4 quinquies).
+- Corps : kicker uppercase tracking-[0.3em] (« Projet » / « Compétence ») + titre Manrope extrabold `text-primary` + description Newsreader `text-on-surface-variant` clampée à 3 lignes (`line-clamp-3`, core Tailwind 3.4) pour homogénéiser les hauteurs.
+- CTA tertiaire « Découvrir → » / « Explorer → » Manrope uppercase `text-primary`, avec flèche Material Symbols `arrow_forward` qui se décale à droite au hover (`group-hover:translate-x-1`). Icône `translate="no"`.
+
+### États
+
+- **Chargement** : 4 skeletons animés (`animate-pulse bg-surface-container-low/80`) suivant le même pattern de spans que la grille réelle → pas de saut de layout.
+- **Vide** : carte centrée avec Material Symbol (`inbox` pour portfolio, `school` pour compétences) + message Newsreader italique. Remplace l'ancien `text-gray-500` orphelin.
+
+### Ce que ça règle
+
+- **Régression mobile** : `w-80 h-96` retiré, la carte prend la largeur de la colonne → plus de débordement S25 Ultra.
+- **Bruit visuel** : `Swiper` autoplay retiré des listes, le scroll n'est plus concurrencé par 3-5 carousels qui tournent simultanément.
+- **Poids réseau** : une image `loading="lazy"` par carte au lieu de toutes les images de toutes les galeries au chargement initial.
+- **Hiérarchie** : les pages liste ont désormais un **en-tête éditorial** (kicker + titre + pitch) cohérent avec le hero de la home.
+- **Cohérence Stitch** : palette `primary` / `on-surface-variant`, radius `rounded-sheet`, ombres `shadow-ambient` / `shadow-jewel`, typographie Manrope + Newsreader → alignement 1:1 avec la home.
+
+### Correctif post-étape 6 — wallpaper sur-zoomé sur pages longues
+
+Retour utilisateur une fois `/portfolio` en ligne : le wallpaper apparaît **beaucoup plus zoomé** sur les listes que sur la home, ce qui casse la cohérence visuelle entre les rubriques.
+
+**Cause** : dans `app/layout.tsx`, la div `.bg-wallpaper` était posée en `absolute inset-0` **à l'intérieur** du conteneur grid `min-h-[100dvh]`. Sur la home, le contenu tient en ≈ 1 viewport → le conteneur fait ≈ 1 viewport de haut → `background-size: cover` cadre l'image à sa taille naturelle. Sur les listes portfolio / compétences (en-tête + grille 4+ cartes + footer), le conteneur atteint 2 à 3 viewports de haut → `cover` redimensionne l'image pour couvrir **toute cette hauteur**, ce qui la fait apparaître zoomée et décalée. Effet amplifié au scroll car le wallpaper défile avec la page.
+
+**Fix** : sortir le wallpaper du conteneur grid et le passer en `fixed inset-0 z-0 pointer-events-none`. Il est désormais calé sur le **viewport**, garde ses dimensions naturelles indépendamment de la longueur de la page, et reste stable au scroll. Les cercles animés `circle-one` / `circle-two` restent en `absolute` dans le grid pour conserver le comportement de parallax léger au scroll.
+
+```tsx
+<div className="fixed inset-0 z-0 bg-wallpaper pointer-events-none" aria-hidden="true"></div>
+```
+
+**Impact transversal** : corrige au passage le même problème latent sur toutes les autres pages longues (futures fiches détail, page contact si elle s'allonge, etc.) — plus besoin d'y repenser page par page.
+
+### Points laissés pour l'étape 7
+
+- Les composants `Carousel.tsx` et `CarouselCompetences.tsx` **ne sont pas touchés** (ils restent utilisés par les pages détail `[slug]/page.tsx`). La refonte visuelle de ces carousels (pagination, flèches, lightbox) se fera dans le lot 7 avec les fiches détail et la modale glossaire.
+- Pas de filtre / tri côté liste pour l'instant (les items sont peu nombreux, `order` de Strapi suffit). À ré-évaluer si le catalogue grossit.
+
+### Correctif post-étape 6 — réintroduction du défilement automatique en vignette
+
+Premier retour utilisateur après l'étape 6 : *« j'ai perdu ma fonctionnalité précédente du carousel où les images des vignettes chargées depuis Strapi défilaient »*. L'arbitrage initial *"carousel réservé aux galeries intra-fiche"* (§ 2 — tableau d'arbitrages) était motivé par le bruit visuel et le poids réseau de **plusieurs `Swiper` autoplay** qui tournaient simultanément. Mais le défilement auto des images en vignette faisait partie intégrante de l'expérience de découverte du portfolio pour l'auteur. **L'arbitrage est donc révisé** : on conserve le défilement en vignette, mais via un composant **allégé et cadré** plutôt que le `Carousel.tsx` complet.
+
+**Nouveau composant `app/components/VignetteCarousel.tsx`** — différences délibérées avec `Carousel.tsx` / `CarouselCompetences.tsx` :
+
+- **Pas de flèches de navigation** (`Navigation` module non chargé). Les flèches créaient une **zone de clic ambiguë** avec le `<Link>` englobant la vignette : cliquer sur une flèche déclenchait la navigation vers la fiche détail au lieu de faire défiler le carousel. L'autoplay + le swipe tactile suffisent à l'échelle d'une vignette.
+- **Pas de lightbox** (pas de `createPortal` ni de `selectedImage`). L'ouverture plein écran reste une signature de la **fiche détail**, pas de la liste.
+- **Pagination bullets Stitch** : `--swiper-pagination-color: #26445d` (primary) et bullets inactifs blancs à 55 % d'opacité, taille 6 px. Surcharge inline via `style={...}` pour éviter de polluer `globals.css` avec un sélecteur `.swiper-pagination-bullet` global qui risquerait de toucher aussi les carousels de la fiche détail.
+- **Autoplay 3500 ms** (vs 3000 ms historique) pour laisser plus de temps à la lecture sur les cartes vedette 2/3.
+- **`loop` conditionnel** (`images.length > 1`) : sans ça Swiper loggait un warning quand une entrée Strapi n'avait qu'une seule image.
+
+**Intégration dans les listes** : dans `app/portfolio/page.jsx` et `app/competences/page.jsx`, la logique est `length > 1 ? <VignetteCarousel /> : <img statique />` — identique à la version pré-refonte pour les entrées mono-image, plus performante pour les entrées multi-images. Les `alt` sont générés à partir de `img.name` Strapi avec fallback sur le nom du projet / compétence.
+
+**Pourquoi ne pas avoir réutilisé `Carousel.tsx` tel quel** : il embarque flèches + lightbox + CSS de navigation. Dans le contexte d'un `<Link>` englobant, les flèches auraient conflit, et la lightbox serait inaccessible (capturée par le lien). Ajouter des `stopPropagation` sur ces zones nuirait à l'UX "clic n'importe où sur la carte = ouverture de la fiche". Un composant dédié aux vignettes, avec moins de surface d'interaction, est plus clair à maintenir. Les deux composants `Carousel*.tsx` restent intacts pour la fiche détail (étape 7).
+
+Les composants `app/components/Carousel.tsx` et `app/components/CarouselCompetences.tsx` deviennent donc formellement **"carousels de fiche détail"** dans la nomenclature interne ; `VignetteCarousel` est leur petit frère "liste". Un éventuel refactor plus tard pourra fusionner les deux premiers (quasi-doublons) — hors scope actuel.
 
 ## 5. Checklist relecture (à passer à la fin de chaque étape)
 

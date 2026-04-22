@@ -94,10 +94,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-w-0 overflow-x-hidden antialiased">
-        <div className="relative grid min-h-[100dvh] w-full min-w-0 grid-rows-[auto_1fr_auto]">
-          {/* Wallpaper plein écran (fondation, ne change pas avec la refonte). */}
-          <div className="absolute inset-0 bg-wallpaper"></div>
+        {/* Wallpaper plein écran (fondation).
+            `fixed inset-0` plutôt qu'`absolute` dans le grid : le wallpaper est
+            désormais calé sur le viewport, pas sur la hauteur totale de la page.
+            Sans ça, sur les pages longues (portfolio, compétences, fiches) le
+            conteneur grid atteignait 2-3 viewports de haut et `background-size: cover`
+            zoomait l'image pour couvrir cette hauteur — d'où le rendu incohérent
+            entre home (courte) et listes (longues). Corrigé le 2026-04-22. */}
+        <div className="fixed inset-0 z-0 bg-wallpaper pointer-events-none" aria-hidden="true"></div>
 
+        <div className="relative grid min-h-[100dvh] w-full min-w-0 grid-rows-[auto_1fr_auto]">
           {/* Cercles animés : repalette en ton indigo-ardoise (Stitch "Digital Atelier"). */}
           <div className="absolute z-0 inset-0 overflow-hidden pointer-events-none">
             <div className="circle-one blur-3xl w-40 md:w-64 h-40 md:h-64 rounded-full bg-primary/40 top-0 right-10 md:right-28 absolute"></div>

@@ -3,12 +3,24 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getApiUrl } from "../utils/getApiUrl";
-import CarouselCompetences from "../components/CarouselCompetences";
+import VignetteCarousel from "../components/VignetteCarousel";
 import "../globals.css";
 import "../assets/main.css";
 
+/**
+ * Liste des compétences — refonte "Digital Atelier" (étape 6).
+ *
+ * Même pattern de grille asymétrique 2/3 + 1/3 que `app/portfolio/page.jsx` pour
+ * garder une cohérence visuelle entre les deux rubriques principales. Le
+ * `CarouselCompetences` est retiré de la liste (arbitrage REFONTE-VISUELLE.md §2 :
+ * carousel réservé aux galeries intra-fiche) : seule la première image est
+ * affichée ici, ce qui allège le rendu et clarifie la lecture.
+ */
+const spanPattern = ["md:col-span-4", "md:col-span-2", "md:col-span-2", "md:col-span-4"];
+
 export default function Page() {
   const [competences, setCompetences] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const apiUrl = getApiUrl();
 
   useEffect(() => {
@@ -18,60 +30,144 @@ export default function Page() {
         if (!response.ok) {
           throw new Error(`Erreur de récupération des compétences : ${response.statusText}`);
         }
-  
+
         const data = await response.json();
-  
-        // Tri sécurisé des compétences par `order`
-        const sortedCompetences = (data.data ?? []).sort((a, b) => ((a.attributes?.order ?? 999) - (b.attributes?.order ?? 999)));
-  
+
+        const sortedCompetences = (data.data ?? []).sort(
+          (a, b) => ((a.attributes?.order ?? 999) - (b.attributes?.order ?? 999))
+        );
+
         setCompetences(sortedCompetences);
       } catch (error) {
         console.error("❌ Erreur lors de la récupération des compétences :", error);
+      } finally {
+        setIsLoading(false);
       }
     }
-  
+
     fetchCompetences();
   }, [apiUrl]);
-  
-  
-  
 
   return (
-    <main className="w-full p-3 mt-5 mb-5">
+    <div className="mx-auto flex w-full min-w-0 max-w-6xl flex-col gap-5 px-4 pb-10 sm:px-6">
+      {/* En-tête éditorial cohérent avec le portfolio. */}
+      <section
+        className="rounded-sheet bg-surface-container-lowest/85 p-5 shadow-ambient backdrop-blur-vellum sm:p-7 md:p-8"
+        aria-labelledby="competences-title"
+      >
+        <div className="flex flex-col gap-3 text-center md:text-left">
+          <span className="font-headline text-[11px] font-bold uppercase tracking-[0.3em] text-secondary">
+            Compétences · Savoir-faire
+          </span>
+          <h1
+            id="competences-title"
+            className="font-headline text-3xl font-extrabold tracking-tight text-on-surface md:text-4xl lg:text-5xl"
+          >
+            Ce que je sais faire, et comment
+          </h1>
+          <p className="font-body text-on-surface-variant sm:text-lg">
+            Chaque fiche détaille une compétence, son contexte d’apprentissage et des
+            exemples concrets — ouvrez une carte pour voir les outils mobilisés et les
+            projets associés.
+          </p>
+        </div>
+      </section>
 
-      
-      {competences.length === 0 ? (
-        <p className="text-center text-gray-500">Aucune compétence disponible.</p>
+      {isLoading ? (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-6">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <div
+              key={idx}
+              className={`${spanPattern[idx % spanPattern.length]} rounded-sheet bg-surface-container-lowest/60 p-5 shadow-ambient-sm backdrop-blur-vellum`}
+            >
+              <div className="aspect-[4/3] w-full animate-pulse rounded-tile bg-surface-container-low/80" />
+              <div className="mt-4 h-5 w-2/3 animate-pulse rounded-full bg-surface-container-low/80" />
+              <div className="mt-2 h-4 w-full animate-pulse rounded-full bg-surface-container-low/60" />
+              <div className="mt-1.5 h-4 w-5/6 animate-pulse rounded-full bg-surface-container-low/60" />
+            </div>
+          ))}
+        </div>
+      ) : competences.length === 0 ? (
+        <section className="rounded-sheet bg-surface-container-lowest/75 p-8 text-center shadow-ambient-sm backdrop-blur-vellum">
+          <span
+            className="material-symbols-outlined mb-3 text-4xl text-primary"
+            aria-hidden="true"
+            translate="no"
+          >
+            school
+          </span>
+          <p className="font-body italic text-on-surface-variant">
+            Aucune compétence disponible pour le moment.
+          </p>
+        </section>
       ) : (
-        <div className="flex flex-col gap-7 max-w-7xl mx-auto">
-          {competences.map((competence) => {
-            const pictures = competence.picture || [];
-            const images = pictures.map(picture => ({
-              url: picture.url ? `${apiUrl}${picture.url}` : "/placeholder.jpg",
-              alt: picture.name || "Competence image"
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-6">
+          {competences.map((competence, idx) => {
+            const pictures = competence.picture ?? [];
+            const images = pictures.map((img) => ({
+              url: img.url ? `${apiUrl}${img.url}` : "/placeholder.jpg",
+              alt: img.name || `Visuel de la compétence ${competence.name}`,
             }));
+            const firstImage = images[0];
 
             return (
-              <div
-  key={competence.id}
-  className="bg-white/70 rounded-lg shadow-md overflow-hidden w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-auto flex flex-col transform transition-all duration-300 hover:scale-105 hover:shadow-xl p-4"
->
-  <Link href={`/competences/${competence.slug}`}>
-    <div className="overflow-hidden w-full h-64 mb-4">
-      <CarouselCompetences images={images} className="w-full h-full object-cover" />
-    </div>
-    <div className="flex-grow overflow-y-auto max-h-32 hide-scrollbar show-scrollbar">
-      <p className="font-headline font-bold text-xl mb-2">{competence.name}</p>
-      <p className="text-gray-700 text-sm hover:text-base transition-all duration-200 ease-in-out">
-        {competence.description}
-      </p>
-    </div>
-  </Link>
-</div>
+              <Link
+                key={competence.id}
+                href={`/competences/${competence.slug}`}
+                className={`${spanPattern[idx % spanPattern.length]} group flex flex-col overflow-hidden rounded-sheet bg-surface-container-lowest/85 shadow-ambient backdrop-blur-vellum transition duration-300 hover:-translate-y-0.5 hover:shadow-jewel focus:outline-none focus-visible:ring-2 focus-visible:ring-primary`}
+              >
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-container-low">
+                  {images.length > 1 ? (
+                    <VignetteCarousel images={images} />
+                  ) : firstImage ? (
+                    <img
+                      src={firstImage.url}
+                      alt={firstImage.alt}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-sm text-on-surface-variant">
+                      <span
+                        className="material-symbols-outlined text-3xl"
+                        aria-hidden="true"
+                        translate="no"
+                      >
+                        image
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-1 flex-col gap-2 p-5 sm:p-6">
+                  <span className="font-headline text-[10px] font-bold uppercase tracking-[0.3em] text-secondary">
+                    Compétence
+                  </span>
+                  <h2 className="font-headline text-xl font-extrabold leading-tight tracking-tight text-primary">
+                    {competence.name}
+                  </h2>
+                  {competence.description && (
+                    <p className="font-body text-sm leading-relaxed text-on-surface-variant line-clamp-3 sm:text-base">
+                      {competence.description}
+                    </p>
+                  )}
+
+                  <span className="mt-auto inline-flex items-center gap-1.5 pt-3 font-headline text-sm font-bold uppercase tracking-[0.2em] text-primary">
+                    Explorer
+                    <span
+                      className="material-symbols-outlined text-lg transition-transform duration-300 group-hover:translate-x-1"
+                      aria-hidden="true"
+                      translate="no"
+                    >
+                      arrow_forward
+                    </span>
+                  </span>
+                </div>
+              </Link>
             );
           })}
         </div>
       )}
-    </main>
+    </div>
   );
 }
