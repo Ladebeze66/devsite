@@ -1,0 +1,13 @@
+# Dépendances Python pour l'API LLM du site (GrasBot v3).
+# Installer : pip install -r requirements.txt
+#
+# Historique :
+# - v1 : fastapi + requests (Mistral 7B sans contexte).
+# - v2 : ajout chromadb + pyyaml (RAG vectoriel avec nomic-embed-text).
+# - v3 : retour à un pipeline graph + BM25, 100 % pure Python, pas de
+#        compilation C++, pas d'embeddings (lecture directe de vault-grasbot/).
+
+fastapi>=0.110
+uvicorn[standard]>=0.27
+requests>=2.31
+pyyaml>=6.0

@@ -1,15 +1,16 @@
 # État actuel du site
 
-**Dernière mise à jour :** 2026-04-01
+**Dernière mise à jour :** 2026-04-22 (post-refonte GrasBot v3)
 
 ## Ce qui est en place
 
-- **Next.js 15** avec App Router, Tailwind, pages accueil / portfolio / compétences / contact, layout responsive avec menu burger.
+- **Next.js 15** avec App Router, Tailwind, pages accueil / portfolio / compétences / contact, layout responsive avec menu burger. Design system "Digital Atelier" (Manrope + Newsreader, palette primary indigo-ardoise, vellum cards).
 - **Strapi** avec content-types : homepage, projects, competences, messages, glossaire ; médias et texte riche.
 - **Formulaire contact** : POST vers Strapi `messages`.
-- **Chatbot GrasBot** : proxy Next vers API LLM hébergée (`llmapi.fernandgrascalvet.com`).
-- **FastAPI + Ollama** dans le dépôt pour usage local ou serveur ; modèle `mistral` dans `llm-api/api.py`.
-- **Scripts** d’extraction et de doc dans `strapi_extraction/`.
+- **Chatbot GrasBot v3** : FAB global (`GrasBotFab.tsx`) → proxy Next → API LLM hébergée (`llmapi.fernandgrascalvet.com`).
+- **FastAPI + Ollama** dans `llm-api/` : modèle `qwen3:8b`, pipeline `search.py` (graph + BM25 sur vault Obsidian `vault-grasbot/`, sans embeddings).
+- **Vault de connaissance `vault-grasbot/`** : 41 notes enrichies (aliases, answers, priority) — source de vérité du chatbot, régénéré depuis Strapi par `strapi_extraction/build-vault.py`.
+- **Scripts** d'extraction et de doc dans `strapi_extraction/`.
 - Documentation opérationnelle : `CONFIGURATION_SITE.md`.
 - **Captures d'écran** de référence (WebP) : `docs-site-interne/captures/` — voir `captures/INDEX.md`.
 

@@ -1,25 +1,28 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { askAI } from "../utils/askAI";
 
 /**
- * GrasBot — refonte Stitch (étape 7.d).
+ * GrasBot — UI du chatbot (Stitch).
  *
  * L'API publique ne change pas (`onClose` propagé par le parent). Le bouton
- * d'ouverture n'est plus dans ce composant : il est désormais porté par le FAB
- * global `GrasBotFab` monté dans `app/layout.tsx`. Ce composant se concentre
- * sur le panneau de conversation proprement dit.
+ * d'ouverture est porté par le FAB global `GrasBotFab` monté dans
+ * `app/layout.tsx`. Ce composant se concentre sur le panneau de conversation.
  *
- * Détails notables :
- * - Fond `surface-container-lowest/95 backdrop-blur-vellum rounded-sheet shadow-ambient`
- *   (plus de carte opaque `bg-white/70` + ombre lourde).
- * - Header primary avec Material Symbol `smart_toy` (`translate="no"`, règle § 4 quinquies).
- * - Bulles : user = `bg-primary text-white rounded-sheet` à droite, bot =
- *   `bg-surface-container text-on-surface rounded-sheet` à gauche. Corps Manrope.
- * - Input `bg-surface-container-low focus-visible:ring-2 focus-visible:ring-primary`,
- *   bouton envoyer jewel avec Material Symbol `send`.
- * - Auto-scroll en bas à chaque nouveau message, envoi à Enter.
+ * v3 (2026-04-22) — bascule retrieval graph + BM25 :
+ * - Affichage des `sources` renvoyées par l'API (pill par source, cliquable
+ *   vers `/portfolio/<slug>` ou `/competences/<slug>` si dispo).
+ * - Badge `grounded` sous chaque réponse (paperclip si sources exploitées,
+ *   info si réponse générale faute de contexte pertinent).
+ * - Timeout 45 s côté fetch (géré dans `askAI.js`) avec message éditorial.
+ *
+ * Design :
+ * - Fond `surface-container-lowest/95 backdrop-blur-vellum rounded-sheet shadow-ambient`.
+ * - Bulles : user = `bg-primary text-white` à droite, bot = `bg-surface-container` à gauche.
+ * - Sources : petites pills `bg-surface-container-low text-primary` sous la bulle bot.
+ * - Auto-scroll en bas, envoi à Enter, focus auto, disabled pendant attente.
  */
 export default function ChatBot({ onClose }) {
   const [question, setQuestion] = useState("");
@@ -47,12 +50,27 @@ export default function ChatBot({ onClose }) {
     setIsWaiting(true);
 
     try {
-      const botResponse = await askAI(userMessage.text);
-      setMessages((prev) => [...prev, { sender: "bot", text: botResponse }]);
+      const payload = await askAI(userMessage.text);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: payload.response,
+          sources: payload.sources || [],
+          grounded: Boolean(payload.grounded),
+          timeout: Boolean(payload._timeout),
+        },
+      ]);
     } catch (_error) {
       setMessages((prev) => [
         ...prev,
-        { sender: "bot", text: "Erreur de réponse. Réessayez plus tard." },
+        {
+          sender: "bot",
+          text: "Erreur de réponse. Réessayez plus tard.",
+          sources: [],
+          grounded: false,
+          error: true,
+        },
       ]);
     } finally {
       setIsWaiting(false);
@@ -110,18 +128,28 @@ export default function ChatBot({ onClose }) {
           </p>
         )}
 
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`max-w-[80%] rounded-sheet px-3 py-2 font-headline text-xs leading-relaxed ${
-              msg.sender === "user"
-                ? "ml-auto bg-primary text-white"
-                : "mr-auto bg-surface-container text-on-surface"
-            }`}
-          >
-            {msg.text}
-          </div>
-        ))}
+        {messages.map((msg, index) => {
+          if (msg.sender === "user") {
+            return (
+              <div
+                key={index}
+                className="ml-auto max-w-[80%] rounded-sheet bg-primary px-3 py-2 font-headline text-xs leading-relaxed text-white"
+              >
+                {msg.text}
+              </div>
+            );
+          }
+          return (
+            <div key={index} className="mr-auto flex max-w-[85%] flex-col gap-1.5">
+              <div className="rounded-sheet bg-surface-container px-3 py-2 font-headline text-xs leading-relaxed text-on-surface">
+                {msg.text}
+              </div>
+              {(msg.sources?.length > 0 || msg.grounded !== undefined) && !msg.error && !msg.timeout && (
+                <BotFooter sources={msg.sources} grounded={msg.grounded} />
+              )}
+            </div>
+          );
+        })}
 
         {isWaiting && (
           <div
@@ -164,6 +192,53 @@ export default function ChatBot({ onClose }) {
           </span>
         </button>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Sous-composant : pied d'une réponse bot avec badge grounded + sources.
+ * Extrait pour alléger la lisibilité et garder les styles groupés.
+ */
+function BotFooter({ sources, grounded }) {
+  // Filtrer les sources internes sans url + dédoublonner par slug
+  const uniqueSources = [];
+  const seen = new Set();
+  for (const s of sources || []) {
+    if (!s?.slug || seen.has(s.slug)) continue;
+    seen.add(s.slug);
+    uniqueSources.push(s);
+  }
+  const clickable = uniqueSources.filter((s) => s.url);
+  const displayed = clickable.slice(0, 4);
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 pl-1 text-[10px]">
+      <span
+        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-headline uppercase tracking-[0.15em] ${
+          grounded
+            ? "bg-primary/10 text-primary"
+            : "bg-surface-container text-on-surface-variant"
+        }`}
+      >
+        <span className="material-symbols-outlined text-[12px]" aria-hidden="true" translate="no">
+          {grounded ? "verified" : "info"}
+        </span>
+        {grounded ? "Basé sur le vault" : "Réponse générale"}
+      </span>
+      {displayed.map((s) => (
+        <Link
+          key={s.slug}
+          href={s.url}
+          className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-2 py-0.5 font-headline text-[10px] text-primary transition-colors hover:bg-primary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          title={s.title}
+        >
+          <span className="material-symbols-outlined text-[12px]" aria-hidden="true" translate="no">
+            {s.type === "competence" ? "psychology" : "folder"}
+          </span>
+          {s.slug}
+        </Link>
+      ))}
     </div>
   );
 }

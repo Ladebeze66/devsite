@@ -24,9 +24,11 @@ Ce dossier décrit l'architecture, le fonctionnement et les décisions du projet
 | [05-environnement-scripts.md](./05-environnement-scripts.md) | Env, scripts PowerShell. |
 | [06-strapi-extraction.md](./06-strapi-extraction.md) | Outils `strapi_extraction/`. |
 | [07-reference-visuelle-captures.md](./07-reference-visuelle-captures.md) | Référence visuelle ; dossier `captures/`. |
+| [08-vault-obsidian-retrieval.md](./08-vault-obsidian-retrieval.md) | Vault GrasBot + pipeline de retrieval graph + BM25 (v3, sans embeddings). |
 | [captures/INDEX.md](./captures/INDEX.md) | Inventaire des captures WebP (noms réels, slugs, priorités). |
 | [etat-actuel.md](./etat-actuel.md) | État et dette technique. |
 | [feuille-de-route.md](./feuille-de-route.md) | Backlog priorisé. |
+| [REFONTE-VISUELLE.md](./REFONTE-VISUELLE.md) | Journal de bord de la refonte UI Stitch. |
 
 ## Arborescence utile
 
