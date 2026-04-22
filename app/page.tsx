@@ -91,7 +91,7 @@ export default function HomePage() {
         </div>
       )}
 
-      <div className="mt-6 w-full min-w-0 max-w-2xl px-4 text-center text-lg font-headline font-bold text-black-700 sm:px-6">
+      <div className="mt-6 w-full min-w-0 max-w-2xl px-4 text-center text-lg font-headline font-bold text-gray-700 sm:px-6">
         <ReactMarkdown>{cv}</ReactMarkdown>
       </div>
     </main>

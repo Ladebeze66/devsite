@@ -108,7 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               {/* Menu desktop */}
               <nav className="hidden md:flex">
-                <ul className="flex gap-x-4 text-black-500 font-headline font-bold">
+                <ul className="flex gap-x-4 text-gray-700 font-headline font-bold">
                   <li><NavLink text="Accueil" path="/" /></li>
                   <li><NavLink text="Portfolio" path="/portfolio" /></li>
                   <li><NavLink text="Compétences" path="/competences" /></li>

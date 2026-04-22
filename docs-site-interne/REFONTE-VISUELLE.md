@@ -63,6 +63,21 @@ Chaque étape = un lot cohérent + éventuelle mise à jour de `captures/AUDIT-V
 | 7 | Fiches détail + modale glossaire + GrasBot (jewel flottant) | `app/portfolio/[slug]/page.tsx`, `app/competences/[slug]/page.tsx`, `app/components/ModalGlossaire.tsx`, `app/components/ChatBot.js` | à faire |
 | 8 | Contact + Footer éditorial | `app/contact/page.js`, `app/components/ContactForm.tsx`, `app/components/Footer.jsx` | à faire |
 
+## 4 bis. Correctif post-étape 3 (2026-04-22) — cohérence desktop/mobile
+
+Après l'étape 3, retour utilisateur : **couleurs de texte différentes** entre desktop et mobile.
+
+**Cause** : le template Next de base définissait dans `globals.css` un bloc `@media (prefers-color-scheme: dark)` qui basculait `--foreground` à `#ededed` (texte clair) selon le **thème système** de chaque appareil. Avant l'étape 3, les classes `.font-orbitron-*` forçaient `color: #333333` partout et masquaient ce mode sombre. En les retirant, la variable `--foreground` a pris effet et le rendu est devenu dépendant du thème OS (Windows clair → texte foncé ; mobile sombre → texte clair quasi invisible sur wallpaper clair).
+
+**Fix** :
+
+- Retrait du bloc `@media (prefers-color-scheme: dark)` dans `app/globals.css` (incohérent avec l'arbitrage "light-only").
+- `--foreground` figé à `#191c1d` (= `on-surface` Stitch, jamais `#000`).
+- `body.color` fixé à `#191c1d` en dur pour ne plus dépendre d'aucune variable conditionnelle.
+- Classes Tailwind invalides `text-black-500` / `text-black-700` (qui n'existent pas et ne rendaient donc aucune couleur) remplacées par `text-gray-700` dans `app/layout.tsx`, `app/page.tsx`, `app/components/ContentSectionCompetences.tsx`.
+
+**Leçon retenue (à appliquer aux étapes suivantes)** : quand on supprime un "masque" CSS (comme la couleur forcée d'Orbitron), toujours vérifier que la valeur qui va ré-émerger par héritage est bien la valeur attendue, pas une variable dépendante du contexte d'exécution.
+
 ## 5. Checklist relecture (à passer à la fin de chaque étape)
 
 - [ ] Aucune colonne unique globale `max-w-xl` (c'est le format newsletter).

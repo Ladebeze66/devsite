@@ -133,7 +133,7 @@ export default function ContentSectionCompetences({
         {name}
       </h1>
       <CarouselCompetences images={images} className="w-full h-64" />
-      <div className={contentClass || "bg-white/70 rounded-md p-4 mt-6 text-lg font-headline font-bold text-black-700"}>
+      <div className={contentClass || "bg-white/70 rounded-md p-4 mt-6 text-lg font-headline font-bold text-gray-700"}>
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>{contentWithLinks}</ReactMarkdown>
       </div>
       {selectedMot && <ModalGlossaire mot={selectedMot} onClose={() => setSelectedMot(null)} />}
