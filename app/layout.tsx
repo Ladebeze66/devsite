@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import "./assets/main.css";
 import "./globals.css";
 import NavLink from "./components/NavLink";
+import GrasBotFab from "./components/GrasBotFab";
 import { manrope, newsreader } from "./fonts";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -244,6 +245,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </div>
         </div>
+
+        {/* GrasBot : FAB global Stitch (étape 7.e). Accessible depuis toutes les
+            pages, écoute aussi `CustomEvent("grasbot:open")` dispatché depuis
+            les fiches compétences quand l'utilisateur clique sur « IA locale ». */}
+        <GrasBotFab />
       </body>
     </html>
   );

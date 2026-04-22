@@ -60,6 +60,30 @@ body {
   overflow-x: hidden;
 }
 
+/* Keywords glossaire & chatbot dans les fiches compétences (étape 7.c).
+   Les spans sont injectés via `transformMarkdownWithKeywords` + `rehype-raw`.
+   Avant la refonte : styles inline `style="color:red/blue"` → incohérent avec
+   la palette Stitch et intraçable. Désormais : deux classes utilitaires alignées
+   sur `primary` (#26445d), soulignement pointillé éditorial (underline dotted
+   offset 3px) pour signaler l'interactivité sans rompre le flux de lecture. */
+.glossary-keyword,
+.chatbot-keyword {
+  color: #26445d;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.glossary-keyword:hover,
+.chatbot-keyword:hover,
+.glossary-keyword:focus-visible,
+.chatbot-keyword:focus-visible {
+  color: #3e5c76;
+  outline: none;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;

@@ -1,7 +1,7 @@
 # Refonte visuelle — Direction "Digital Atelier"
 
 **Créé :** 2026-04-22  
-**Statut :** en cours (étapes 1-6/8 terminées)  
+**Statut :** en cours (étapes 1-7/8 terminées)  
 **Source d'inspiration :** `stitch_V1/` (design newsletter Stitch — `DESIGN.md` et `code.html`).  
 **Audit préalable :** [`captures/AUDIT-VISUEL.md`](./captures/AUDIT-VISUEL.md).
 
@@ -60,7 +60,7 @@ Chaque étape = un lot cohérent + éventuelle mise à jour de `captures/AUDIT-V
 | 4 | Layout racine : header No-Line, burger ghost, palette cercles, compteur migré, drawer | `app/layout.tsx`, `app/components/NavLink.jsx`, `app/components/Footer.jsx` | **fait** (2026-04-22) |
 | 5 | Home : hero vellum, portrait frame, takeaways, pull-quote, CTAs | `app/page.tsx` | **fait** (2026-04-22) |
 | 6 | Listes portfolio + compétences : grille asymétrique, cartes éditoriales | `app/portfolio/page.jsx`, `app/competences/page.jsx`, composants `Carousel*` | **fait** (2026-04-22) |
-| 7 | Fiches détail + modale glossaire + GrasBot (jewel flottant) | `app/portfolio/[slug]/page.tsx`, `app/competences/[slug]/page.tsx`, `app/components/ModalGlossaire.tsx`, `app/components/ChatBot.js` | à faire |
+| 7 | Fiches détail + modale glossaire + GrasBot (jewel flottant) | `app/portfolio/[slug]/page.tsx`, `app/competences/[slug]/page.tsx`, `app/components/ModalGlossaire.tsx`, `app/components/ChatBot.js` | **fait** (2026-04-22) |
 | 8 | Contact + Footer éditorial | `app/contact/page.js`, `app/components/ContactForm.tsx`, `app/components/Footer.jsx` | à faire |
 
 ## 4 bis. Correctif post-étape 3 (2026-04-22) — cohérence desktop/mobile
@@ -228,6 +228,83 @@ Premier retour utilisateur après l'étape 6 : *« j'ai perdu ma fonctionnalité
 **Pourquoi ne pas avoir réutilisé `Carousel.tsx` tel quel** : il embarque flèches + lightbox + CSS de navigation. Dans le contexte d'un `<Link>` englobant, les flèches auraient conflit, et la lightbox serait inaccessible (capturée par le lien). Ajouter des `stopPropagation` sur ces zones nuirait à l'UX "clic n'importe où sur la carte = ouverture de la fiche". Un composant dédié aux vignettes, avec moins de surface d'interaction, est plus clair à maintenir. Les deux composants `Carousel*.tsx` restent intacts pour la fiche détail (étape 7).
 
 Les composants `app/components/Carousel.tsx` et `app/components/CarouselCompetences.tsx` deviennent donc formellement **"carousels de fiche détail"** dans la nomenclature interne ; `VignetteCarousel` est leur petit frère "liste". Un éventuel refactor plus tard pourra fusionner les deux premiers (quasi-doublons) — hors scope actuel.
+
+## 7. Étape 7 — Fiches détail + glossaire + GrasBot flottant (2026-04-22)
+
+L'étape 7 touche cinq composants et introduit un sixième (le FAB). Elle est découpée en cinq sous-lots décrits ci-dessous.
+
+### 7.a Carousels fiche détail (`Carousel.tsx` + `CarouselCompetences.tsx`)
+
+Les deux composants sont quasi-doublons historiques ; on les refait **à l'identique** pour ne pas risquer de régression sur la modale glossaire qui consomme `CarouselCompetences`. Un futur refactor pourra les fusionner une fois le périmètre de la refonte clos (pas dans le scope étape 7).
+
+Changements appliqués :
+- **Pagination bullets `primary`** via surcharge inline des variables Swiper (`--swiper-pagination-color: #26445d`, bullets 8 px). Même approche que `VignetteCarousel` pour ne pas polluer `globals.css` avec un sélecteur `.swiper-pagination-bullet` global.
+- **Flèches** : on conserve les chevrons natifs Swiper, recolorés via `--swiper-navigation-color: #26445d`, taille 28 px. Remplacement par Material Symbols écarté (demande un override complet du markup via slots Swiper, sans bénéfice visuel proportionnel).
+- **Conteneur** : `rounded-tile overflow-hidden shadow-ambient-sm` (vs `rounded-md shadow-md` pré-refonte).
+- **`autoplay: 3500` + `disableOnInteraction: false`** : l'autoplay reprend après un swipe manuel plutôt que de rester figé.
+- **`loop` conditionnel** (`images.length > 1`) : évite le warning Swiper sur les entrées mono-image.
+- **Lightbox Stitch** : voile `bg-on-surface/80 backdrop-blur-sm` (vs `bg-black/10 backdrop-blur-2xl` qui noyait l'image dans un flou 2xl contre-productif), image en `object-contain max-h-[92vh] max-w-[92vw] rounded-sheet shadow-ambient` (ne déforme plus les portraits), bouton close rond 40 px Material Symbol `close` (`translate="no"`), verrouillage du scroll body + fermeture `Escape` + fermeture sur clic voile avec `stopPropagation` sur l'image.
+
+### 7.b Fiche portfolio (`ContentSection.tsx`)
+
+Avant : cartes `bg-white/50 text-blue-700 font-headline font-extrabold` hardcodées, lien externe `bg-white/65 text-red-700 hover:text-blue-700`, pas de retour vers la liste, pas de hiérarchie éditoriale. Contenu Markdown sans `prose`.
+
+Après :
+- **Gabarit aligné** sur les listes (étape 6) : wrapper `max-w-3xl` centré, fil d'Ariane minimaliste (pastille ronde `bg-surface-container-lowest/70 backdrop-blur-vellum` avec Material Symbol `arrow_back` + label « Portfolio »), carte vellum principale (`rounded-sheet bg-surface-container-lowest/85 shadow-ambient backdrop-blur-vellum`).
+- **En-tête éditorial** : kicker `Projet · Portfolio` uppercase tracking-[0.3em] + titre Manrope extrabold `text-on-surface`.
+- **Carousel détail** : `<Carousel>` plein cadre (`h-64 sm:h-80 md:h-96`) réutilise la version 7.a.
+- **Corps Markdown en `prose` Stitch** : mêmes overrides que la home (`prose-headings:text-primary`, `prose-p:text-on-surface-variant`, `prose-hr:` transformés en pastille primary via le fix § 4 sexies). Le CV et les fiches partagent désormais la **même charte typographique**.
+- **CTA externe jewel** : `bg-primary text-white shadow-jewel` avec Material Symbol `open_in_new` (`translate="no"`) et hover `-translate-y-0.5`. Le `linkText` Strapi reste utilisé, fallback « Voir plus » (au lieu de « Voir plus/lien externe » qui mélangeait 2 intentions).
+- **États loading + not-found** en vellum plutôt qu'en ligne `text-gray-500` orpheline. Le not-found propose un retour explicite vers `/portfolio`.
+
+### 7.c Fiche compétences (`ContentSectionCompetences.tsx` + `Container`)
+
+Trois chantiers en un :
+
+**Style** : gabarit identique à 7.b (pastille retour, en-tête vellum, carousel 16/9, prose Stitch). Les `titleClass` / `contentClass` historiques ne sont plus consommés mais on les garde dans l'interface TS pour ne pas casser le call-site.
+
+**Keywords glossaire/chatbot sans styles inline** : avant, `transformMarkdownWithKeywords` injectait `<span style="color: blue">...</span>` — visuellement criard et non thématisable. Après, on injecte les classes `.glossary-keyword` et `.chatbot-keyword` (définies dans `globals.css`), stylées en `color: #26445d` (primary), `text-decoration: underline dotted`, `text-underline-offset: 3px`. Le soulignement pointillé signale l'interactivité sans rompre le flux de lecture, la couleur cohérente avec toute la charte Stitch. Attributs `role="button" tabindex="0"` ajoutés au passage pour l'accessibilité clavier (touche Entrée peut être câblée plus tard si besoin).
+
+**Event listeners scopés** : avant, `document.body.addEventListener("click", ...)` × 2. Après, un seul listener attaché à `contentRef` (ref sur le wrapper prose). Les clics remontent en bubbling depuis les spans Markdown jusqu'au wrapper ; gain en clarté, pas de fuite, pas de risque de conflit avec d'autres zones du DOM. Le handler `keyword` → ouvre `ModalGlossaire`. Le handler `chatbot` → dispatch `CustomEvent("grasbot:open")` sur `window` pour réveiller le FAB global (7.e) au lieu d'instancier un `<ChatBot />` local.
+
+**Container** (`ContentSectionCompetencesContainer.tsx`) : l'état de chargement `⏳ Chargement des compétences...` remplacé par un skeleton vellum (kicker + titre + carousel + 3 lignes de texte en `animate-pulse`), cohérent avec les listes et `ContentSection`.
+
+### 7.d ChatBot (`ChatBot.js`)
+
+Le composant garde son API (`onClose`) mais tout le shell visuel est refait :
+
+| Zone | Avant | Après |
+|------|-------|-------|
+| Carte | `bg-white/70 shadow-lg rounded-lg border border-gray-300` | `bg-surface-container-lowest/95 backdrop-blur-vellum rounded-sheet shadow-ambient` (= gabarit vellum partagé) |
+| Header | `bg-blue-600 text-white` + 💬 emoji + ❌ | `bg-primary text-white` + Material Symbol `smart_toy` + sous-titre Manrope uppercase « Assistant IA locale » + bouton close rond Material Symbol |
+| Bulle user | `bg-blue-500 ml-auto` | `bg-primary text-white rounded-sheet` |
+| Bulle bot | `bg-gray-500 mr-auto` | `bg-surface-container text-on-surface rounded-sheet` |
+| Indicateur attente | `wait...` sur bulle grise | « GrasBot réfléchit... » en italique atténué avec 3 points animés `.dot-1/2/3` existants |
+| Input | `border border-gray-300 rounded-l-lg` | `bg-surface-container-low rounded-tile focus-visible:ring-2 focus-visible:ring-primary` |
+| Envoyer | `bg-blue-500 text-white ➤` | Bouton rond Material Symbol `send` jewel `bg-primary shadow-jewel hover:-translate-y-0.5`, disabled si vide ou en attente |
+
+Ajouts fonctionnels : auto-scroll en bas à chaque nouveau message (ref `scrollRef`), focus auto sur l'input à l'ouverture, envoi à Entrée (`handleKeyDown`), input désactivé pendant l'attente (plus de double envoi possible), message d'accueil éditorial quand la conversation est vide.
+
+### 7.e GrasBotFab (`GrasBotFab.tsx`)
+
+Nouveau composant monté une seule fois dans `app/layout.tsx` → le chatbot est désormais accessible **depuis toutes les pages**, plus seulement les fiches compétences.
+
+**Anatomie** :
+- **Bouton** : `fixed bottom-6 right-6 z-30`, rond 56 px (64 px md), `bg-primary text-white shadow-jewel` avec Material Symbol `smart_toy` (→ `close` quand ouvert). Hover `-translate-y-0.5 hover:bg-primary-container`. `aria-expanded` tenu à jour.
+- **Panneau** : `fixed inset-x-4 bottom-24` mobile (plein largeur - 16 px de chaque côté), `sm:inset-auto sm:bottom-24 sm:right-6 sm:w-96 sm:h-[560px]` desktop. `role="dialog"` avec `aria-label`. Monte le `<ChatBot>` refait en 7.d avec `onClose` qui ferme le panneau.
+- **Fermeture Esc** globale dès que le panneau est ouvert.
+
+**Flux d'entrée** :
+- Clic direct sur le FAB → ouvre le panneau.
+- Clic sur `.chatbot-keyword` (« IA locale ») dans une fiche compétence → `ContentSectionCompetences` dispatch `window.dispatchEvent(new CustomEvent("grasbot:open"))`, le FAB écoute et ouvre. Pas de Context, pas de store : un `CustomEvent` suffit pour un besoin one-shot et garde les composants découplés.
+
+**Z-index** : le FAB est en `z-30`. Header en `z-20`, drawer mobile en `z-40`. On passe donc le FAB **devant** le header (sinon invisible sous la bande fixe) mais **derrière** le drawer (pour ne pas masquer la navigation). Si le drawer est ouvert, le FAB est recouvert ; acceptable, le drawer étant un mode modal de navigation.
+
+### Points laissés pour l'étape 8
+
+- Fusion de `Carousel.tsx` et `CarouselCompetences.tsx` (doublons) : hors scope étape 7 (pas de gain visuel, risque de régression non justifié). À reprendre en lot "dette technique" après l'étape 8.
+- `ModalGlossaire` déjà aligné Stitch au correctif § 4 ter ; aucun changement nécessaire en 7, juste une vérification que son `CarouselCompetences` hérite bien de la lightbox 7.a — oui, c'est automatique.
+- Persistance du fil de conversation GrasBot (refresh = historique perdu) : pas demandé, pas introduit. Ajouter un `localStorage` si besoin plus tard.
 
 ## 5. Checklist relecture (à passer à la fin de chaque étape)
 
