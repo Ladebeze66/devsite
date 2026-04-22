@@ -100,9 +100,9 @@ Les captures suivantes **n’ont pas révélé de problème spécifique** après
 | 14 | Compétences fiche mobile | `/competences/slug` | `14-competences-detail-ia-mobile.webp` | `OK` |
 | 15 | GrasBot ouvert desktop | `/competences/slug` | `15-competences-grasbot-ouvert-desktop.webp` | `OK` |
 | 16 | Glossaire modal desktop | `/competences/slug` | `16-competences-glossaire-ouvert-desktop.webp` | `OK` |
-| 17 | Contact formulaire desktop | `/contact` | `17-contact-formulaire-desktop.webp` | `OK` |
-| 18 | Contact formulaire mobile | `/contact` | `18-contact-formulaire-mobile.webp` | `OK` |
-| 19 | Footer desktop | `/` | `19-layout-footer-desktop.webp` | `OK` |
+| 17 | Contact formulaire desktop | `/contact` | `17-contact-formulaire-desktop.webp` | `fait` (étape 8, 2026-04-22) |
+| 18 | Contact formulaire mobile | `/contact` | `18-contact-formulaire-mobile.webp` | `fait` (étape 8, 2026-04-22) |
+| 19 | Footer desktop | `/` | `19-layout-footer-desktop.webp` | `fait` (étape 8, 2026-04-22) |
 | 20 | Compteur visites desktop | `/` | `20-layout-compteur-visites-desktop.webp` | `OK` |
 | 21 | Admin messages desktop | `/admin/messages` | `21-admin-messages-desktop.webp` | `OK` |
 
@@ -110,4 +110,6 @@ Les captures suivantes **n’ont pas révélé de problème spécifique** après
 
 ## Suite
 
-Passage à la **refonte visuelle globale** : direction artistique (palette, typographie, rythme vertical), hiérarchie des pages, traitement des cartes portfolio / compétences, header et footer. À cadrer avec l’utilisateur avant toute modification.
+- **Étape 8 Digital Atelier bouclée** (2026-04-22) : contact + formulaire + footer migrés à la charte Stitch (voir `docs-site-interne/REFONTE-VISUELLE.md §8`).
+- Prendre de **nouvelles captures** 17 / 18 / 19 pour figer le rendu post-refonte (remplacement des WebP existants dans `docs-site-interne/captures/`).
+- Dette technique identifiée pour une future passe : fusion `Carousel.tsx` / `CarouselCompetences.tsx` (doublons), persistance serveur du compteur de visites, validation anti-spam du formulaire.

@@ -3,98 +3,158 @@
 import { useState } from "react";
 import { sendMessage } from "../utils/sendMessage";
 
+/**
+ * Formulaire de contact — refonte "Digital Atelier" (étape 8).
+ *
+ * - Plus de `bg-white shadow-lg rounded-lg` sur le form : il est désormais
+ *   monté dans la carte vellum de `app/contact/page.js`.
+ * - Champs : `bg-surface-container-low`, radius `rounded-tile`, `focus-visible:ring-2 focus-visible:ring-primary`.
+ * - CTA jewel : `bg-primary text-on-primary shadow-jewel` avec Material Symbol
+ *   `send` + effet `-translate-y-0.5` au hover, état disabled en `bg-outline-variant/60`.
+ * - Bandeau status Stitch : succès en `primary-fixed`, erreur en `error-container`,
+ *   chargement en `surface-container`. Chaque état porte une Material Symbol.
+ */
 export default function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
-  const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [statusKind, setStatusKind] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+
+  const isLoading = statusKind === "loading";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name.trim() || !email.trim() || !message.trim()) {
-      setStatus("❌ Tous les champs sont obligatoires.");
-      setIsSuccess(false);
+      setStatus("Tous les champs sont obligatoires.");
+      setStatusKind("error");
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setStatus("❌ Email invalide.");
-      setIsSuccess(false);
+      setStatus("Email invalide.");
+      setStatusKind("error");
       return;
     }
 
-    setStatus("⏳ Envoi en cours...");
-    setIsSuccess(null);
-    setIsLoading(true);
+    setStatus("Envoi en cours…");
+    setStatusKind("loading");
 
     try {
       await sendMessage(name, email, message);
-      setStatus("✅ Message envoyé avec succès !");
-      setIsSuccess(true);
+      setStatus("Message envoyé. Merci, je reviens vers vous rapidement.");
+      setStatusKind("success");
       setName("");
       setEmail("");
       setMessage("");
     } catch (error) {
-      setStatus("❌ Erreur lors de l'envoi du message.");
-      setIsSuccess(false);
-    } finally {
-      setIsLoading(false);
+      setStatus("Erreur lors de l'envoi du message.");
+      setStatusKind("error");
     }
   };
 
+  const statusStyles: Record<typeof statusKind, string> = {
+    idle: "",
+    loading:
+      "bg-surface-container text-on-surface-variant",
+    success:
+      "bg-primary-fixed/70 text-on-primary-fixed",
+    error: "bg-error-container text-on-error-container",
+  };
+
+  const statusIcon: Record<typeof statusKind, string> = {
+    idle: "",
+    loading: "hourglass_top",
+    success: "check_circle",
+    error: "error",
+  };
+
+  const fieldClass =
+    "w-full rounded-tile bg-surface-container-low/90 px-4 py-3 font-body text-base text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary";
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg animate-fade-in"
-    >
-      <h2 className="text-2xl font-headline font-bold mb-4 text-center">📩 Contactez-moi</h2>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3" noValidate>
+      <label className="flex flex-col gap-1">
+        <span className="font-headline text-[11px] font-bold uppercase tracking-[0.3em] text-secondary">
+          Votre nom
+        </span>
+        <input
+          type="text"
+          placeholder="Prénom Nom"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className={fieldClass}
+          required
+          autoComplete="name"
+        />
+      </label>
 
-      <input
-        type="text"
-        placeholder="Votre nom"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="w-full p-3 border border-gray-300 font-headline font-bold rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        required
-      />
+      <label className="flex flex-col gap-1">
+        <span className="font-headline text-[11px] font-bold uppercase tracking-[0.3em] text-secondary">
+          Votre email
+        </span>
+        <input
+          type="email"
+          placeholder="adresse@exemple.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className={fieldClass}
+          required
+          autoComplete="email"
+        />
+      </label>
 
-      <input
-        type="email"
-        placeholder="Votre email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded font-headline font-bold mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        required
-      />
-
-      <textarea
-        placeholder="Votre message"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded mb-3 font-headline font-bold focus:outline-none focus:ring-2 focus:ring-blue-400"
-        required
-      />
+      <label className="flex flex-col gap-1">
+        <span className="font-headline text-[11px] font-bold uppercase tracking-[0.3em] text-secondary">
+          Votre message
+        </span>
+        <textarea
+          placeholder="Quelques mots sur votre projet, question ou intention…"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          rows={5}
+          className={`${fieldClass} min-h-[9rem] resize-y`}
+          required
+        />
+      </label>
 
       <button
         type="submit"
         disabled={isLoading}
-        className={`w-full py-3 rounded transition ${
-          isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white font-headline font-bold"
+        className={`mt-1 inline-flex items-center justify-center gap-2 rounded-tile px-6 py-3 font-headline text-sm font-bold uppercase tracking-widest transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+          isLoading
+            ? "cursor-not-allowed bg-outline-variant/60 text-on-surface-variant"
+            : "bg-primary text-on-primary shadow-jewel hover:-translate-y-0.5"
         }`}
       >
-        {isLoading ? "⏳ Envoi..." : "Envoyer"}
+        <span
+          className="material-symbols-outlined text-base"
+          aria-hidden="true"
+          translate="no"
+        >
+          {isLoading ? "hourglass_top" : "send"}
+        </span>
+        {isLoading ? "Envoi…" : "Envoyer"}
       </button>
 
-      {status && (
-        <p
-          className={`mt-4 text-center ${isSuccess ? "text-green-600" : "text-red-600"}`}
+      {statusKind !== "idle" && status && (
+        <div
+          role="status"
           aria-live="polite"
+          className={`mt-2 flex items-center gap-2 rounded-tile px-4 py-3 font-body text-sm ${statusStyles[statusKind]}`}
         >
-          {status}
-        </p>
+          <span
+            className="material-symbols-outlined text-base"
+            aria-hidden="true"
+            translate="no"
+          >
+            {statusIcon[statusKind]}
+          </span>
+          <span className="min-w-0">{status}</span>
+        </div>
       )}
     </form>
   );

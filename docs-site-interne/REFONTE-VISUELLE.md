@@ -1,7 +1,7 @@
 # Refonte visuelle — Direction "Digital Atelier"
 
 **Créé :** 2026-04-22  
-**Statut :** en cours (étapes 1-7/8 terminées)  
+**Statut :** terminé — 8/8 étapes (2026-04-22)  
 **Source d'inspiration :** `stitch_V1/` (design newsletter Stitch — `DESIGN.md` et `code.html`).  
 **Audit préalable :** [`captures/AUDIT-VISUEL.md`](./captures/AUDIT-VISUEL.md).
 
@@ -61,7 +61,7 @@ Chaque étape = un lot cohérent + éventuelle mise à jour de `captures/AUDIT-V
 | 5 | Home : hero vellum, portrait frame, takeaways, pull-quote, CTAs | `app/page.tsx` | **fait** (2026-04-22) |
 | 6 | Listes portfolio + compétences : grille asymétrique, cartes éditoriales | `app/portfolio/page.jsx`, `app/competences/page.jsx`, composants `Carousel*` | **fait** (2026-04-22) |
 | 7 | Fiches détail + modale glossaire + GrasBot (jewel flottant) | `app/portfolio/[slug]/page.tsx`, `app/competences/[slug]/page.tsx`, `app/components/ModalGlossaire.tsx`, `app/components/ChatBot.js` | **fait** (2026-04-22) |
-| 8 | Contact + Footer éditorial | `app/contact/page.js`, `app/components/ContactForm.tsx`, `app/components/Footer.jsx` | à faire |
+| 8 | Contact + Footer éditorial | `app/contact/page.js`, `app/components/ContactForm.tsx`, `app/components/Footer.jsx` | **fait** (2026-04-22) |
 
 ## 4 bis. Correctif post-étape 3 (2026-04-22) — cohérence desktop/mobile
 
@@ -305,6 +305,61 @@ Nouveau composant monté une seule fois dans `app/layout.tsx` → le chatbot est
 - Fusion de `Carousel.tsx` et `CarouselCompetences.tsx` (doublons) : hors scope étape 7 (pas de gain visuel, risque de régression non justifié). À reprendre en lot "dette technique" après l'étape 8.
 - `ModalGlossaire` déjà aligné Stitch au correctif § 4 ter ; aucun changement nécessaire en 7, juste une vérification que son `CarouselCompetences` hérite bien de la lightbox 7.a — oui, c'est automatique.
 - Persistance du fil de conversation GrasBot (refresh = historique perdu) : pas demandé, pas introduit. Ajouter un `localStorage` si besoin plus tard.
+
+## 8. Étape 8 — Contact + Footer éditorial (2026-04-22)
+
+Dernière page héritée d'avant refonte. Avant : `app/contact/page.js` utilisait `bg-white/50 rounded-md`, `border-b-4 border-blue-500 pb-2` sous les titres, et `ContactForm` affichait un formulaire `bg-white shadow-lg rounded-lg` bleu Tailwind (`bg-blue-500`). Incohérent avec le reste du site depuis l'étape 5 (tokens Stitch `primary = #26445d`, radius `sheet` / `tile`, ombres `shadow-ambient` / `shadow-jewel`).
+
+### 8.a Page contact (`app/contact/page.js`)
+
+Gabarit aligné sur les listes (étape 6) et le hero home (étape 5) :
+
+- **Colonne utile `max-w-3xl`** (format "lettre", plus intime que les `max-w-6xl` des listes).
+- **Hero éditorial vellum** : kicker uppercase tracking-[0.3em] « Contact · Prendre la parole » + titre Manrope extrabold `text-on-surface` « Correspondance » + pitch Newsreader `text-on-surface-variant`. Plus d'emoji `📬` dans le titre (cohérence avec les autres pages qui utilisent Material Symbols, pas des emojis).
+- **Section « canaux directs »** : carte vellum principale avec titre secondaire (`text-primary`) puis grille 3 tuiles imbriquées `rounded-tile bg-surface-container-low/80 hover:bg-surface-container/80`. Chaque tuile = pastille primaire ronde avec Material Symbol (`link` pour LinkedIn, `public` pour Facebook, `alternate_email` pour email) + label kicker + handle tronqué + chevron `arrow_forward` qui se décale au hover. Mêmes codes visuels que les cartes vignette portfolio / compétences, sans l'aspect 2/3+1/3 (3 canaux = symétrie assumée).
+- **Carte vellum principale pour le formulaire** : `rounded-sheet bg-surface-container-lowest/85 p-5 shadow-ambient backdrop-blur-vellum sm:p-7 md:p-8`, titre secondaire « Écrire un message » `text-primary` + pitch italique Newsreader « Temps de réponse habituel : 48 h ». Le form est rendu **sans** sa propre carte blanche (la carte parente suffit).
+- Les **liens externes** (LinkedIn, Facebook) ont `target="_blank" rel="noopener noreferrer"` ; l'email ouvre un `mailto:` standard.
+
+### 8.b ContactForm (`app/components/ContactForm.tsx`)
+
+Refonte interne complète :
+
+- **Suppression** du wrapper `bg-white shadow-lg rounded-lg` : le formulaire vit dans la carte vellum parente (page 8.a). Empêche le "double carton" incohérent avec la charte.
+- **Labels visibles** en Manrope uppercase tracking-[0.3em] (au-dessus de chaque champ) — améliore l'accessibilité et aligne sur les kickers de la page. Les placeholders restent là à titre indicatif.
+- **Champs** : `bg-surface-container-low/90`, `rounded-tile`, padding `px-4 py-3`, focus `focus-visible:ring-2 focus-visible:ring-primary`, placeholder en `text-on-surface-variant/70`. Le `textarea` gagne `min-h-[9rem] resize-y` (contrôle vertical par l'utilisateur, pas de hauteur figée gênante).
+- **Bouton CTA jewel** : `bg-primary text-on-primary shadow-jewel hover:-translate-y-0.5 rounded-tile px-6 py-3 font-headline uppercase tracking-widest` + Material Symbol `send` (`translate="no"`). État `disabled` en `bg-outline-variant/60 text-on-surface-variant cursor-not-allowed` avec icône `hourglass_top`.
+- **Feedback status** : plus de chaîne emoji `❌`/`✅`/`⏳` — un petit bandeau `rounded-tile` avec Material Symbol + texte, couleur selon l'état :
+  - `success` → `bg-primary-fixed/70 text-on-primary-fixed` + `check_circle`
+  - `error` → `bg-error-container text-on-error-container` + `error`
+  - `loading` → `bg-surface-container text-on-surface-variant` + `hourglass_top`
+- **Accessibilité** : `role="status" aria-live="polite"` sur le bandeau, `autoComplete` (`name`, `email`), `noValidate` sur le form (on fait la validation en JS pour maîtriser les messages FR). L'ancien `isSuccess: boolean | null` à double état est remplacé par un `statusKind: "idle" | "loading" | "success" | "error"` unique, plus lisible.
+
+### 8.c Footer (`app/components/Footer.jsx`)
+
+Avant : `bg-white/50 rounded-lg backdrop-blur` + `text-gray-700`. Déjà partiellement migré (font-headline, `visite n°` en kicker) mais surface + radius hors charte.
+
+Après : **carte vellum légère** centrée, sans ombre ambient (le footer ne doit pas flotter autant que le contenu principal) :
+
+- Conteneur : `rounded-tile bg-surface-container-lowest/70 backdrop-blur-vellum px-6 py-5 text-center`.
+- Trois lignes éditoriales :
+  1. **Signature** Manrope `text-primary` « Fernand Gras-Calvet » (identité).
+  2. **Pitch** Newsreader italic `text-on-surface-variant` « Portfolio — Étudiant 42 Perpignan · © {year} » (ton éditorial cohérent avec le hero home).
+  3. **Compteur** de visites Manrope `text-[10px] uppercase tracking-[0.3em] text-outline` (méta discrète).
+- **SSR-safe** : `new Date().getFullYear()` est calculé côté client (via `useState` init + `useEffect`) pour éviter un mismatch SSR / CSR si l'année bascule pile à minuit.
+
+### Ce que ça règle
+
+- **Dernière page hors charte migrée** : le site est désormais 100 % « Digital Atelier » (home, layout, listes, fiches, glossaire, chatbot, contact, footer).
+- **Cohérence typo** : plus aucune référence à `font-headline font-extrabold border-b-4 border-blue-500 pb-2` (motif ancien).
+- **Cohérence iconographique** : plus aucun emoji `📬 📩 🚀` résiduel dans les titres de page contact / form ; tout est passé en Material Symbols (seuls emojis acceptés = message utilisateur dans le chatbot, et l'emoji `📅` dans `sendMessage` qui reste un détail de payload côté Strapi, pas d'affichage direct).
+- **Accessibilité contact** : labels visibles, `role="status"`, `aria-live="polite"`, `autoComplete` — améliore l'usage clavier / lecteur d'écran.
+- **Footer** : plus de double lecture (`text-gray-700` sur `bg-white/50` contrastait mal sur wallpaper clair) — `text-on-surface-variant` sur vellum reste lisible partout.
+
+### Points laissés en dehors de l'étape 8
+
+- **Persistance du compteur de visites** côté serveur (Strapi) : hors scope refonte visuelle. Reste en `localStorage` comme avant.
+- **Validation serveur des champs du form** (anti-spam, honeypot, reCAPTCHA) : hors scope refonte visuelle. Strapi ne filtre pour l'instant que sur la structure JSON attendue.
+- **Fusion Carousel.tsx / CarouselCompetences.tsx** : reste en dette technique (déjà noté §7).
 
 ## 5. Checklist relecture (à passer à la fin de chaque étape)
 
