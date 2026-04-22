@@ -78,7 +78,7 @@ export default function HomePage() {
   const imageUrl = homepage.photo?.url ? `${apiUrl}${homepage.photo.url}` : null;
 
   return (
-    <main className="w-full mx-auto flex flex-col items-center justify-center p-6 bg-white/55 rounded-lg mt-12 mb-3 sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
+    <main className="mx-auto mb-3 mt-12 flex w-full min-w-0 max-w-full flex-col items-center justify-center rounded-lg bg-white/55 p-4 sm:max-w-2xl sm:p-6 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
       <h1 className="text-3xl font-orbitron-24-bold-italic text-gray-800 mb-4">{title}</h1>
 
       {imageUrl ? (
@@ -91,7 +91,7 @@ export default function HomePage() {
         </div>
       )}
 
-      <div className="mt-6 text-lg text-black-700 max-w-2xl font-orbitron-16-bold px-6 text-center">
+      <div className="mt-6 w-full min-w-0 max-w-2xl px-4 text-center text-lg font-orbitron-16-bold text-black-700 sm:px-6">
         <ReactMarkdown>{cv}</ReactMarkdown>
       </div>
     </main>

@@ -26,8 +26,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="fr">
-      <body>
-        <div className="relative min-h-[100dvh] w-full grid grid-rows-[auto_1fr_auto]">
+      <body className="min-w-0 overflow-x-hidden antialiased">
+        <div className="relative grid min-h-[100dvh] w-full min-w-0 grid-rows-[auto_1fr_auto]">
           {/* Conserve le fond en plein écran */}
           <div className="absolute inset-0 bg-wallpaper"></div>
 
@@ -41,9 +41,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
 
           {/* Header */}
-          <header className="relative h-16 md:h-16 z-20 bg-white/50 backdrop-blur-md border-b-2 border-gray-500 px-4 py-2 md:px-6 fixed top-0 left-0 w-full shadow-md">
-            <div className="max-w-4xl mx-auto flex items-center justify-between">
-              <h2 className="text-xl md:text-2xl font-orbitron-24-bold-italic">
+          <header className="fixed left-0 top-0 z-20 h-16 w-full min-w-0 border-b-2 border-gray-500 bg-white/50 px-4 py-2 shadow-md backdrop-blur-md md:h-16 md:px-6">
+            <div className="mx-auto flex max-w-4xl min-w-0 items-center justify-between gap-2">
+              <h2 className="min-w-0 truncate pr-1 text-xl font-orbitron-24-bold-italic md:text-2xl">
                 Portfolio Gras-Calvet Fernand
               </h2>
 
@@ -82,11 +82,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           )}
 
-          <main className="relative z-10">
+          <main className="relative z-10 w-full min-w-0 max-w-full min-h-0">
             {children}
           </main>
 
-          <Footer />
+          <div className="relative z-10 w-full min-w-0 shrink-0">
+            <Footer />
+          </div>
 
           <div className="absolute bottom-0 right-0 p-4 text-sm text-gray-500">
             NV : {visitCount}
