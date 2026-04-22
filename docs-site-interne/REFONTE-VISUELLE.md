@@ -1,7 +1,7 @@
 # Refonte visuelle — Direction "Digital Atelier"
 
 **Créé :** 2026-04-22  
-**Statut :** en cours (étapes 1-3/8 terminées)  
+**Statut :** en cours (étapes 1-4/8 terminées)  
 **Source d'inspiration :** `stitch_V1/` (design newsletter Stitch — `DESIGN.md` et `code.html`).  
 **Audit préalable :** [`captures/AUDIT-VISUEL.md`](./captures/AUDIT-VISUEL.md).
 
@@ -57,7 +57,7 @@ Chaque étape = un lot cohérent + éventuelle mise à jour de `captures/AUDIT-V
 | 1 | Fondations : tokens Tailwind + import polices + icônes | `tailwind.config.ts`, `app/globals.css` | **fait** (2026-04-22) |
 | 2 | Garde-fou doc + mise à jour feuille de route | `docs-site-interne/REFONTE-VISUELLE.md`, `docs-site-interne/feuille-de-route.md` | **fait** (2026-04-22) |
 | 3 | Migration typographique globale (Orbitron → Manrope / Newsreader) | `app/**/*.{tsx,jsx,js}`, `app/assets/main.css` | **fait** (2026-04-22) |
-| 4 | Layout racine : header No-Line, burger ghost, palette cercles, compteur migré, drawer | `app/layout.tsx`, `app/globals.css` | à faire |
+| 4 | Layout racine : header No-Line, burger ghost, palette cercles, compteur migré, drawer | `app/layout.tsx`, `app/components/NavLink.jsx`, `app/components/Footer.jsx` | **fait** (2026-04-22) |
 | 5 | Home : hero vellum, portrait frame, takeaways, pull-quote, CTAs | `app/page.tsx` | à faire |
 | 6 | Listes portfolio + compétences : grille asymétrique, cartes éditoriales | `app/portfolio/page.jsx`, `app/competences/page.jsx`, composants `Carousel*` | à faire |
 | 7 | Fiches détail + modale glossaire + GrasBot (jewel flottant) | `app/portfolio/[slug]/page.tsx`, `app/competences/[slug]/page.tsx`, `app/components/ModalGlossaire.tsx`, `app/components/ChatBot.js` | à faire |
@@ -77,6 +77,30 @@ Après l'étape 3, retour utilisateur : **couleurs de texte différentes** entre
 - Classes Tailwind invalides `text-black-500` / `text-black-700` (qui n'existent pas et ne rendaient donc aucune couleur) remplacées par `text-gray-700` dans `app/layout.tsx`, `app/page.tsx`, `app/components/ContentSectionCompetences.tsx`.
 
 **Leçon retenue (à appliquer aux étapes suivantes)** : quand on supprime un "masque" CSS (comme la couleur forcée d'Orbitron), toujours vérifier que la valeur qui va ré-émerger par héritage est bien la valeur attendue, pas une variable dépendante du contexte d'exécution.
+
+## 4 ter. Correctif urgent modale glossaire (2026-04-22) — blocage mobile
+
+Après l'étape 4, retour utilisateur sur Samsung S25 Ultra : les mots-clés du glossaire (compétences) ouvrent bien la modale mais **la modale déborde de l'écran**, **la croix de fermeture est hors champ**, impossible de refermer sans recharger la page.
+
+**Causes identifiées** dans `app/components/ModalGlossaire.tsx` (pré-existantes avant la refonte) :
+
+- Carte interne en `w-[114vw] max-w-6xl` : force une largeur > viewport sur mobile (114 % de 400 px = 456 px dans une fenêtre de 400 px), et sur desktop la contrainte est masquée par `max-w-6xl`.
+- Hauteur figée `h-[72vh]` sans scroll interne : le contenu est simplement tronqué quand il dépasse.
+- Aucune fermeture au tap sur le voile, ni à Esc. Seule issue = bouton `✖` en haut à droite, hors champ sur mobile.
+- Bouton de fermeture en `text-sm p-1` : zone tactile < 44 px, sous le seuil Material Design pour le tactile.
+
+**Fix** (anticipe les besoins de l'étape 7) :
+
+- Carte interne : `w-full max-w-4xl max-h-[90vh]` + padding 4 sur le voile pour la marge latérale sur mobile.
+- Contenu intérieur en `overflow-y-auto` pour scroll interne si nécessaire.
+- Voile cliquable pour fermer, `stopPropagation` sur la carte pour ne pas fermer en interagissant avec.
+- Fermeture `Escape` via `keydown` global.
+- Bouton de fermeture rond `h-10 w-10` avec Material Symbol `close`, focus-visible, position `absolute top-3 right-3`.
+- Alignement palette Stitch : voile `bg-on-surface/75 backdrop-blur-sm`, carte `bg-surface-container-lowest/95 backdrop-blur-vellum shadow-ambient rounded-sheet`, titre `text-primary`, description en `font-body` serif (Newsreader) pour lisibilité, texte `text-on-surface-variant`.
+- Ajout de `"use client"` (manquant).
+- `role="dialog" aria-modal="true" aria-label={...}` sur le conteneur, `aria-label` explicite sur le bouton de fermeture.
+
+Ce correctif concerne uniquement le composant `ModalGlossaire`. L'étape 7 reprendra la refonte globale de cette zone (cohérence visuelle avec les fiches détail) mais le blocage UX mobile est levé dès maintenant.
 
 ## 5. Checklist relecture (à passer à la fin de chaque étape)
 
