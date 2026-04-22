@@ -89,7 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* Header */}
           <header className="fixed left-0 top-0 z-20 h-16 w-full min-w-0 border-b-2 border-gray-500 bg-white/50 px-4 py-2 shadow-md backdrop-blur-md md:h-16 md:px-6">
             <div className="mx-auto flex max-w-4xl min-w-0 items-center justify-between gap-2">
-              <h2 className="min-w-0 truncate pr-1 text-xl font-orbitron-24-bold-italic md:text-2xl">
+              <h2 className="min-w-0 truncate pr-1 text-xl font-headline font-extrabold italic tracking-tight md:text-2xl">
                 Portfolio Gras-Calvet Fernand
               </h2>
 
@@ -108,7 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               {/* Menu desktop */}
               <nav className="hidden md:flex">
-                <ul className="flex gap-x-4 text-black-500 font-orbitron-16-bold">
+                <ul className="flex gap-x-4 text-black-500 font-headline font-bold">
                   <li><NavLink text="Accueil" path="/" /></li>
                   <li><NavLink text="Portfolio" path="/portfolio" /></li>
                   <li><NavLink text="Compétences" path="/competences" /></li>
@@ -139,7 +139,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               role="dialog"
               aria-modal="true"
               aria-label="Menu de navigation"
-              className={`mobile-drawer-panel relative z-10 h-full w-[70%] max-w-sm bg-gray-900/70 backdrop-blur-md border-r border-white/10 shadow-2xl flex flex-col gap-3 px-6 pt-20 pb-8 text-white font-orbitron-24-bold tracking-wide transition-transform duration-300 ease-out ${
+              className={`mobile-drawer-panel relative z-10 h-full w-[70%] max-w-sm bg-gray-900/70 backdrop-blur-md border-r border-white/10 shadow-2xl flex flex-col gap-3 px-6 pt-20 pb-8 text-white font-headline font-extrabold text-2xl tracking-tight transition-transform duration-300 ease-out ${
                 isMenuOpen ? "translate-x-0" : "-translate-x-full"
               }`}
               onClick={scheduleAutoClose}

@@ -29,7 +29,7 @@ export default function ChatBot({ onClose }) {
     return (
         <div className="flex flex-col w-96 bg-white/70 shadow-lg rounded-lg border border-gray-300">
             <div className="bg-blue-600 text-white p-3 rounded-t-lg flex justify-between items-center">
-                <span className="font-orbitron-16-bold">💬 GrasBot</span>
+                <span className="font-headline font-bold">💬 GrasBot</span>
                 <button className="text-white hover:text-red-400 text-xl" onClick={onClose}>❌</button>
             </div>
 
@@ -37,7 +37,7 @@ export default function ChatBot({ onClose }) {
                 {messages.map((msg, index) => (
                     <div
                         key={index}
-                        className={`p-2 rounded-lg text-white font-orbitron-12 ${msg.sender === "user" ? "bg-blue-500 ml-auto" : "bg-gray-500 mr-auto"}`}
+                        className={`p-2 rounded-lg text-white font-headline text-xs ${msg.sender === "user" ? "bg-blue-500 ml-auto" : "bg-gray-500 mr-auto"}`}
                         style={{ maxWidth: "80%" }}
                     >
                         {msg.text}
@@ -53,7 +53,7 @@ export default function ChatBot({ onClose }) {
             <div className="flex p-3 border-t border-gray-300">
                 <input
                     type="text"
-                    className="flex-1 p-2 border border-gray-300 font-orbitron-12 rounded-l-lg focus:outline-none"
+                    className="flex-1 p-2 border border-gray-300 font-headline text-xs rounded-l-lg focus:outline-none"
                     placeholder="Posez votre question..."
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}

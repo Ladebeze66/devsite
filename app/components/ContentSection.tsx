@@ -57,11 +57,11 @@ export default function ContentSection({ collection, slug, titleClass, contentCl
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className={titleClass || "bg-white/50 rounded-md text-3xl mb-6 font-orbitron-24-bold p-2 text-blue-700"}>{name}</h1>
+      <h1 className={titleClass || "bg-white/50 rounded-md text-3xl mb-6 font-headline font-extrabold tracking-tight p-2 text-blue-700"}>{name}</h1>
 
       <Carousel images={images} className="w-full h-64" />
 
-      <div className={contentClass || "bg-white/80 rounded-md p-4 font-orbitron-16-bold shadow-md mt-6"}>
+      <div className={contentClass || "bg-white/80 rounded-md p-4 font-headline font-bold shadow-md mt-6"}>
         <ReactMarkdown>{richText}</ReactMarkdown>
       </div>
 
@@ -71,7 +71,7 @@ export default function ContentSection({ collection, slug, titleClass, contentCl
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white/65 rounded-md p-1 text-red-700 hover:underline transition duration-300 ease-in-out transform hover:scale-105 font-orbitron-16-bold hover:text-blue-700"
+            className="bg-white/65 rounded-md p-1 text-red-700 hover:underline transition duration-300 ease-in-out transform hover:scale-105 font-headline font-bold hover:text-blue-700"
           >
             {linkText || "Voir plus/lien externe"}
           </a>

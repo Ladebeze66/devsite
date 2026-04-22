@@ -49,8 +49,8 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
         <div className="flex flex-col md:flex-row gap-6 h-full">
           {/* Description */}
           <div className="md:w-1/2">
-            <h2 className="text-3xl font-orbitron-16-bold mb-4">{mot.mot_clef}</h2>
-            <p className="font-orbitron-12-bold text-gray-700 mb-6">{mot.description}</p>
+            <h2 className="text-3xl font-headline font-bold mb-4">{mot.mot_clef}</h2>
+            <p className="font-headline font-bold text-xs text-gray-700 mb-6">{mot.description}</p>
           </div>
 
           <div className="md:w-1/2 h-full">

@@ -79,7 +79,7 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto mb-3 flex w-full min-w-0 max-w-full flex-col items-center justify-center rounded-lg bg-white/55 p-4 sm:max-w-2xl sm:p-6 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl">
-      <h1 className="text-3xl font-orbitron-24-bold-italic text-gray-800 mb-4">{title}</h1>
+      <h1 className="text-3xl font-headline font-extrabold italic tracking-tight text-gray-800 mb-4">{title}</h1>
 
       {imageUrl ? (
         <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-lg border-4 border-gray-300 transition-transform duration-300 hover:scale-110 hover:rotate-3">
@@ -91,7 +91,7 @@ export default function HomePage() {
         </div>
       )}
 
-      <div className="mt-6 w-full min-w-0 max-w-2xl px-4 text-center text-lg font-orbitron-16-bold text-black-700 sm:px-6">
+      <div className="mt-6 w-full min-w-0 max-w-2xl px-4 text-center text-lg font-headline font-bold text-black-700 sm:px-6">
         <ReactMarkdown>{cv}</ReactMarkdown>
       </div>
     </main>

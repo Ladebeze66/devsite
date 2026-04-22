@@ -61,7 +61,7 @@ export default function Page() {
       <CarouselCompetences images={images} className="w-full h-full object-cover" />
     </div>
     <div className="flex-grow overflow-y-auto max-h-32 hide-scrollbar show-scrollbar">
-      <p className="font-orbitron-16-bold text-xl mb-2">{competence.name}</p>
+      <p className="font-headline font-bold text-xl mb-2">{competence.name}</p>
       <p className="text-gray-700 text-sm hover:text-base transition-all duration-200 ease-in-out">
         {competence.description}
       </p>

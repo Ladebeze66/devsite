@@ -50,14 +50,14 @@ export default function ContactForm() {
       onSubmit={handleSubmit}
       className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg animate-fade-in"
     >
-      <h2 className="text-2xl font-orbitron-16-bold mb-4 text-center">📩 Contactez-moi</h2>
+      <h2 className="text-2xl font-headline font-bold mb-4 text-center">📩 Contactez-moi</h2>
 
       <input
         type="text"
         placeholder="Votre nom"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="w-full p-3 border border-gray-300 font-orbitron-16-bold rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full p-3 border border-gray-300 font-headline font-bold rounded mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
         required
       />
 
@@ -66,7 +66,7 @@ export default function ContactForm() {
         placeholder="Votre email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded font-orbitron-16-bold mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full p-3 border border-gray-300 rounded font-headline font-bold mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
         required
       />
 
@@ -74,7 +74,7 @@ export default function ContactForm() {
         placeholder="Votre message"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        className="w-full p-3 border border-gray-300 rounded mb-3 font-orbitron-16-bold focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full p-3 border border-gray-300 rounded mb-3 font-headline font-bold focus:outline-none focus:ring-2 focus:ring-blue-400"
         required
       />
 
@@ -82,7 +82,7 @@ export default function ContactForm() {
         type="submit"
         disabled={isLoading}
         className={`w-full py-3 rounded transition ${
-          isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white font-orbitron-16-bold"
+          isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white font-headline font-bold"
         }`}
       >
         {isLoading ? "⏳ Envoi..." : "Envoyer"}

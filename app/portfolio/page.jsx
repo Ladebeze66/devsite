@@ -62,8 +62,8 @@ export default function Page() {
             </div>
 
             <div className="flex-grow overflow-y-auto max-h-32 hide-scrollbar show-scrollbar">
-              <p className="font-orbitron-16-bold text-xl mb-2">{project.name}</p>
-              <p className="text-gray-700 text-sm font-orbitron-12 hover:text-base transition-all duration-200 ease-in-out">
+              <p className="font-headline font-bold text-xl mb-2">{project.name}</p>
+              <p className="text-gray-700 text-sm font-headline hover:text-base transition-all duration-200 ease-in-out">
                 {project.description}
               </p>
             </div>
