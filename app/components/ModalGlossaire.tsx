@@ -68,7 +68,11 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
           onClick={onClose}
           aria-label="Fermer la fenêtre du glossaire"
         >
-          <span className="material-symbols-outlined" aria-hidden="true">
+          <span
+            className="material-symbols-outlined"
+            aria-hidden="true"
+            translate="no"
+          >
             close
           </span>
         </button>

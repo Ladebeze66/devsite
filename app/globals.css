@@ -1,8 +1,14 @@
 /* Polices Stitch "Digital Atelier" : Manrope (titres/UI) + Newsreader (corps éditorial).
-   Voir docs-site-interne/REFONTE-VISUELLE.md. Les anciennes classes font-orbitron-*
-   ont été retirées à l'étape 3 de la refonte (2026-04-22). */
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap');
+   Voir docs-site-interne/REFONTE-VISUELLE.md.
+   --
+   Les `@import url(...)` vers Google Fonts étaient strippés en production par la
+   chaîne PostCSS + Tailwind de Next 15 (diagnostic confirmé 2026-04-22 via DevTools
+   Network sur Chrome desktop et mobile). Depuis :
+   - Manrope et Newsreader passent par `next/font/google` (voir `app/fonts.ts`)
+     avec les variables CSS `--font-manrope` et `--font-newsreader`.
+   - Material Symbols Outlined est chargée via `<link rel="stylesheet">` injecté
+     directement dans le `<head>` par `app/layout.tsx` (contourne le pipeline
+     PostCSS strippant, conserve le CDN Google pour une icon-font). */
 
 @tailwind base;
 @tailwind components;
@@ -17,8 +23,12 @@
   --foreground: #191c1d; /* on-surface Stitch : jamais #000 pur */
 }
 
-/* Icônes Material Symbols : utilitaire <span class="material-symbols-outlined">name</span>. */
+/* Icônes Material Symbols : utilitaire <span class="material-symbols-outlined">name</span>.
+   Sans la règle font-family explicite, le span affiche littéralement le nom de l'icône
+   (ex. "psychology") dans la font par défaut — l'import Google Fonts ne la pose pas
+   automatiquement sur la classe, c'est au site de le faire. */
 .material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   display: inline-block;
   line-height: 1;
@@ -38,10 +48,13 @@ html {
 }
 
 body {
-  /* Couleur texte et fond fixés en clair, pas de dépendance au thème système. */
+  /* Couleur et fond fixés en clair, pas de dépendance au thème système.
+     Font par défaut : Newsreader (corps éditorial Stitch). Les éléments avec
+     `font-headline` passeront en Manrope, ceux sans classe explicite hériteront
+     de Newsreader au lieu d'Arial. */
   color: #191c1d;
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-newsreader), Georgia, serif;
   max-width: 100%;
   min-width: 0;
   overflow-x: hidden;

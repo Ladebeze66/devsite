@@ -1,7 +1,7 @@
 # Refonte visuelle — Direction "Digital Atelier"
 
 **Créé :** 2026-04-22  
-**Statut :** en cours (étapes 1-4/8 terminées)  
+**Statut :** en cours (étapes 1-5/8 terminées)  
 **Source d'inspiration :** `stitch_V1/` (design newsletter Stitch — `DESIGN.md` et `code.html`).  
 **Audit préalable :** [`captures/AUDIT-VISUEL.md`](./captures/AUDIT-VISUEL.md).
 
@@ -58,7 +58,7 @@ Chaque étape = un lot cohérent + éventuelle mise à jour de `captures/AUDIT-V
 | 2 | Garde-fou doc + mise à jour feuille de route | `docs-site-interne/REFONTE-VISUELLE.md`, `docs-site-interne/feuille-de-route.md` | **fait** (2026-04-22) |
 | 3 | Migration typographique globale (Orbitron → Manrope / Newsreader) | `app/**/*.{tsx,jsx,js}`, `app/assets/main.css` | **fait** (2026-04-22) |
 | 4 | Layout racine : header No-Line, burger ghost, palette cercles, compteur migré, drawer | `app/layout.tsx`, `app/components/NavLink.jsx`, `app/components/Footer.jsx` | **fait** (2026-04-22) |
-| 5 | Home : hero vellum, portrait frame, takeaways, pull-quote, CTAs | `app/page.tsx` | à faire |
+| 5 | Home : hero vellum, portrait frame, takeaways, pull-quote, CTAs | `app/page.tsx` | **fait** (2026-04-22) |
 | 6 | Listes portfolio + compétences : grille asymétrique, cartes éditoriales | `app/portfolio/page.jsx`, `app/competences/page.jsx`, composants `Carousel*` | à faire |
 | 7 | Fiches détail + modale glossaire + GrasBot (jewel flottant) | `app/portfolio/[slug]/page.tsx`, `app/competences/[slug]/page.tsx`, `app/components/ModalGlossaire.tsx`, `app/components/ChatBot.js` | à faire |
 | 8 | Contact + Footer éditorial | `app/contact/page.js`, `app/components/ContactForm.tsx`, `app/components/Footer.jsx` | à faire |
@@ -102,6 +102,54 @@ Après l'étape 4, retour utilisateur sur Samsung S25 Ultra : les mots-clés du 
 
 Ce correctif concerne uniquement le composant `ModalGlossaire`. L'étape 7 reprendra la refonte globale de cette zone (cohérence visuelle avec les fiches détail) mais le blocage UX mobile est levé dès maintenant.
 
+## 4 quater. Correctifs post-étape 5 (2026-04-22) — home
+
+Retour utilisateur sur la home fraichement refaite. Trois points, trois causes distinctes :
+
+### Icônes Material Symbols affichées comme texte littéral
+
+Les `<span class="material-symbols-outlined">psychology</span>` affichaient **le mot "psychology"** dans la font par défaut au lieu du glyphe, rendant les takeaways illisibles (texte blanc sur fond bleu = juste du texte). La règle `.material-symbols-outlined` de `app/globals.css` déclarait bien `font-variation-settings`, `display`, `line-height`… mais pas `font-family: 'Material Symbols Outlined'`. L'import Google Fonts pose le `@font-face`, il ne pose pas automatiquement la `font-family` sur la classe — c'est au site de le faire.
+
+**Fix** : ajout de la ligne `font-family: 'Material Symbols Outlined';` dans la règle. Impact : toutes les icônes du site (takeaways, burger, modale glossaire, CTAs hero, icônes CTAs des futures étapes) s'affichent désormais comme icônes.
+
+### Pull-quote "Démarche" peu lisible sur wallpaper
+
+La règle DESIGN.md §5 "Editorial Pull-Quote" dit *"no background card, let the typography breathe on the surface"*. Valide quand la surface de base est un `bg-surface #f8fafa` uni (Stitch newsletter). Chez nous la surface de base est un wallpaper photographique, donc *respirer dessus = se fondre dedans*.
+
+**Fix** : adaptation contextuelle — carte vellum **légère** (`bg-surface-container-lowest/65 backdrop-blur-vellum rounded-tile`, padding réduit, pas de `shadow-ambient`) pour rester lisible sans uniformiser les 3 sections en cartes identiques. La barre gauche `border-l-4 border-primary` et la typo Newsreader italique sont conservées.
+
+**Leçon** : les règles DESIGN.md sont un langage, pas un dogme. Elles supposent une surface de base uniforme. Chaque fois qu'on est sur wallpaper, vérifier si la règle reste applicable telle quelle ou si elle demande une adaptation (ici : carte légère plutôt que zéro carte).
+
+### Espace excessif entre les 3 sections de la home
+
+`gap-8` (32 px) entre les sections + `py-6 md:py-8` sur la pull-quote donnaient ~80 px d'air vertical entre "Trois axes" et "Démarche".
+
+**Fix** : `gap-8` → `gap-5` sur le container racine (20 px), `py-6 md:py-8` retiré sur la pull-quote (désormais remplacé par le padding interne de sa nouvelle carte). Les paddings internes des cartes (hero `p-6 sm:p-8 md:p-10`, takeaways `p-6 sm:p-8`) sont conservés — l'espace de contenu n'était pas le problème.
+
+## 4 sexies. Séparateurs `<hr>` invisibles dans le hero (2026-04-22)
+
+Le CV rendu par `ReactMarkdown` contient des `---` Markdown convertis en `<hr>`. Par défaut Tailwind Typography les stylise en bordure 1 px `border-gray-300` + `my-8` (32 px). Sur notre carte vellum semi-transparente, cette bordure grise est quasi invisible sur le wallpaper, mais les 64 px de marge verticale (my-8 en haut **et** en bas) restent et donnent l'illusion d'un espace excessif entre les paragraphes du hero.
+
+**Fix (Option B — barre décorative)** : on surcharge `prose-hr` pour transformer la règle en **petite pastille Stitch** centrée. Classes ajoutées sur le wrapper `ReactMarkdown` :
+
+```
+prose-hr:border-0 prose-hr:w-16 prose-hr:mx-auto
+prose-hr:bg-primary/30 prose-hr:h-0.5 prose-hr:rounded-full
+prose-hr:my-6
+```
+
+Résultat : une barre 64 × 2 px, couleur primaire à 30 % d'opacité, arrondie, avec 24 px de marge au lieu de 32 px. Le séparateur redevient un **signal visuel intentionnel** cohérent avec la palette Stitch, et l'espace perçu entre les paragraphes tombe à un niveau confortable sans perdre la structure éditoriale du CV.
+
+**Alternatives considérées** : Option A (`prose-hr:hidden`, perd la structure), Option C (`prose-hr:my-4` seul, garde la bordure grise invisible — n'adresse pas la cause).
+
+## 4 quinquies. Compatibilité Chrome Auto-Translate (2026-04-22)
+
+Les icônes Material Symbols Outlined fonctionnent via **ligatures de font** : un `<span class="material-symbols-outlined">psychology</span>` n'affiche « psychology » qu'en fallback — si la font est chargée, la ligature transforme ce texte en glyphe « cerveau ». Google Chrome propose à l'utilisateur mobile de traduire automatiquement une page dès que sa langue par défaut n'est pas celle du document. Lorsque la traduction s'active, **Chrome réécrit le `textContent`** (« psychology » → « psychologie ») : la ligature ne correspond plus à aucun glyphe dans la font, l'icône redevient du texte brut, et les layouts se décalent.
+
+**Règle permanente pour la refonte** : chaque `<span class="material-symbols-outlined">` doit porter **`translate="no"`** (attribut HTML). Pareil pour les éléments contenant un nom propre qui ne doit pas être déformé (titre du site, nom d'école « 42 », nom de ville, etc.). Le reste du contenu éditorial (CV, descriptions de projets, fiches compétences) reste traductible — la traduction automatique est un vrai plus pour un portfolio qu'on veut accessible à l'international.
+
+Composant wrapper `<Icon>` qui pose automatiquement `translate="no"` envisagé comme DRY à long terme (hors scope actuel).
+
 ## 5. Checklist relecture (à passer à la fin de chaque étape)
 
 - [ ] Aucune colonne unique globale `max-w-xl` (c'est le format newsletter).
@@ -112,3 +160,4 @@ Ce correctif concerne uniquement le composant `ModalGlossaire`. L'étape 7 repre
 - [ ] La hiérarchie Manrope / Newsreader est respectée (pas de Orbitron résiduel).
 - [ ] Les CTAs principaux ont `shadow-jewel`.
 - [ ] Radius Stitch (`rounded-sheet` / `rounded-tile`) utilisés sur les cartes de la refonte.
+- [ ] Chaque nouvelle icône Material Symbols Outlined ajoutée porte `translate="no"` (voir §4 quinquies).

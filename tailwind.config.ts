@@ -89,9 +89,10 @@ export default {
         bebas: ['Bebas Neue', 'sans-serif'],
 
         // Stitch "Digital Atelier" : Manrope pour titres/UI, Newsreader pour corps éditorial.
-        headline: ['Manrope', 'system-ui', 'sans-serif'],
-        body: ['Newsreader', 'Georgia', 'serif'],
-        label: ['Manrope', 'system-ui', 'sans-serif'],
+        // Variables CSS posées par next/font/google (voir app/fonts.ts + app/layout.tsx).
+        headline: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
+        body: ['var(--font-newsreader)', 'Georgia', 'serif'],
+        label: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         // Additifs : ne remplacent pas les radius Tailwind (xl, 2xl, etc.) pour ne rien casser.

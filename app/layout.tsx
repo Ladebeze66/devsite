@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import "./assets/main.css";
 import "./globals.css";
 import NavLink from "./components/NavLink";
+import { manrope, newsreader } from "./fonts";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -72,7 +73,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     "text-on-surface-variant hover:text-primary transition-colors";
 
   return (
-    <html lang="fr">
+    <html lang="fr" className={`${manrope.variable} ${newsreader.variable}`}>
+      <head>
+        {/* Material Symbols : chargés via <link> plutôt que via @import CSS qui est
+            strippé par la chaîne PostCSS + Tailwind de Next 15 (diagnostic 2026-04-22).
+            Ressource critique côté UI → preload pour éviter un flash de texte brut
+            sur les icônes des CTAs, du burger et des cartes de la home. */}
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+      </head>
       <body className="min-w-0 overflow-x-hidden antialiased">
         <div className="relative grid min-h-[100dvh] w-full min-w-0 grid-rows-[auto_1fr_auto]">
           {/* Wallpaper plein écran (fondation, ne change pas avec la refonte). */}
@@ -87,7 +107,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* Header "No-Line" : pas de bordure pleine, juste un shift tonal + ombre ambient diffuse. */}
           <header className="fixed left-0 top-0 z-20 h-16 w-full min-w-0 bg-surface/80 px-4 py-2 shadow-ambient-sm backdrop-blur-vellum md:h-16 md:px-6">
             <div className="mx-auto flex max-w-4xl min-w-0 items-center justify-between gap-2">
-              <h2 className="min-w-0 truncate pr-1 text-xl font-headline font-extrabold italic tracking-tight text-primary md:text-2xl">
+              <h2
+                className="min-w-0 truncate pr-1 text-xl font-headline font-extrabold italic tracking-tight text-primary md:text-2xl"
+                translate="no"
+              >
                 Portfolio Gras-Calvet Fernand
               </h2>
 
@@ -101,7 +124,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 aria-expanded={isMenuOpen}
                 aria-controls="mobile-drawer"
               >
-                <span className="material-symbols-outlined" aria-hidden="true">
+                <span
+                  className="material-symbols-outlined"
+                  aria-hidden="true"
+                  translate="no"
+                >
                   {isMenuOpen ? "close" : "menu"}
                 </span>
               </button>
