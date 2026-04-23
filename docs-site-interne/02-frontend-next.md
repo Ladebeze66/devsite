@@ -17,8 +17,8 @@
 | `/portfolio/[slug]` | `app/portfolio/[slug]/page.tsx` | Détail projet (`fetchData('projects', slug)`) |
 | `/competences` | `app/competences/page.jsx` | Liste compétences |
 | `/competences/[slug]` | `app/competences/[slug]/page.tsx` | Détail (`fetchData('competences', slug)`) |
-| `/contact` | `app/contact/page.js` | Formulaire → Strapi `messages` |
-| `/admin/messages` | `app/admin/messages/page.tsx` | Consultation messages (côté Next) |
+| `/contact` | `app/contact/page.js` | Formulaire → `/api/contact` (Brevo, voir `contact-flow.md`) |
+| `/api/contact` | `app/api/contact/route.ts` | Endpoint serveur : envoie un email via Brevo, honeypot + rate-limit |
 | `/api/proxy` | `app/api/proxy/route.js` | Proxy GET vers API LLM distante |
 
 ## Layout
@@ -42,7 +42,7 @@
 
 - Carrousels : `Carousel.tsx`, `CarouselCompetences.tsx` (swiper / react-responsive-carousel).
 - Sections : `ContentSection.tsx`, `ContentSectionCompetences*.tsx`.
-- `ContactForm.tsx` → `sendMessage.ts`.
+- `ContactForm.tsx` → `POST /api/contact` → Brevo API (voir `docs-site-interne/contact-flow.md`).
 - `ChatBot.js` → `askAI.js` → `/api/proxy`.
 - `ModalGlossaire.tsx` — glossaire (données Strapi selon usage dans les pages).
 
@@ -53,6 +53,6 @@ app/layout.tsx
 app/page.tsx
 app/utils/getApiUrl.ts
 app/utils/fetchData.ts
-app/utils/sendMessage.ts
+app/api/contact/route.ts
 next.config.ts
 ```

@@ -43,15 +43,9 @@ Utilisation front : `app/page.tsx` — premier enregistrement `populate=*`, imag
 | `slug` | uid ← `name` | requis |
 | `order` | integer | optionnel |
 
-### `message` (collection `messages`)
+### `message` (supprimé le 2026-04-23)
 
-| Champ | Type | Notes |
-|-------|------|--------|
-| `name` | string | requis |
-| `email` | email | requis |
-| `message` | text | requis |
-
-Création via **POST** `/api/messages` depuis `sendMessage.ts` (permissions Strapi **create** publique à valider en prod).
+Ancien content-type pour stocker les soumissions du formulaire de contact. Supprimé car le formulaire envoie désormais une notification email via **Brevo** (voir `docs-site-interne/contact-flow.md`) — plus besoin de stockage Strapi. Les 4 fichiers `cmsbackend/src/api/message/**` ont été supprimés ; la table SQLite `messages` reste orpheline (inoffensive, peut être droppée manuellement).
 
 ### `glossaire` (collection `glossaires`)
 

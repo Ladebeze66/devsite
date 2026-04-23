@@ -104,12 +104,13 @@ Les captures suivantes **n’ont pas révélé de problème spécifique** après
 | 18 | Contact formulaire mobile | `/contact` | `18-contact-formulaire-mobile.webp` | `fait` (étape 8, 2026-04-22) |
 | 19 | Footer desktop | `/` | `19-layout-footer-desktop.webp` | `fait` (étape 8, 2026-04-22) |
 | 20 | Compteur visites desktop | `/` | `20-layout-compteur-visites-desktop.webp` | `OK` |
-| 21 | Admin messages desktop | `/admin/messages` | `21-admin-messages-desktop.webp` | `OK` |
+| 21 | ~~Admin messages desktop~~ | ~~`/admin/messages`~~ | `21-admin-messages-desktop.webp` | `obsolète` (route supprimée le 2026-04-23, voir `contact-flow.md`) |
 
 ---
 
 ## Suite
 
 - **Étape 8 Digital Atelier bouclée** (2026-04-22) : contact + formulaire + footer migrés à la charte Stitch (voir `docs-site-interne/REFONTE-VISUELLE.md §8`).
-- Prendre de **nouvelles captures** 17 / 18 / 19 pour figer le rendu post-refonte (remplacement des WebP existants dans `docs-site-interne/captures/`).
-- Dette technique identifiée pour une future passe : fusion `Carousel.tsx` / `CarouselCompetences.tsx` (doublons), persistance serveur du compteur de visites, validation anti-spam du formulaire.
+- **Formulaire de contact rendu effectif** (2026-04-23) : envoi via **Brevo** au lieu de Strapi. Content-type `message` supprimé, page `/admin/messages` supprimée, honeypot + rate-limit ajoutés. Voir `docs-site-interne/contact-flow.md` et `REFONTE-VISUELLE.md §9`.
+- Prendre de **nouvelles captures** 17 / 18 / 19 pour figer le rendu post-refonte (remplacement des WebP existants dans `docs-site-interne/captures/`). La capture 21 est désormais **obsolète** (route supprimée).
+- Dette technique identifiée : fusion `Carousel.tsx` / `CarouselCompetences.tsx` (doublons), persistance serveur du compteur de visites. Anti-spam formulaire : **fait** (honeypot + rate-limit, 2026-04-23).

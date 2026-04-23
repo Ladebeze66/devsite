@@ -16,6 +16,7 @@ my-next-site/
 ├── cmsbackend/            # Backend Strapi
 ├── llm-api/               # API FastAPI pour IA
 ├── start-my-site.ps1      # Script de démarrage
+├── stop-my-site.ps1       # Script d'arrêt propre
 └── package.json           # Dépendances frontend
 ```
 
@@ -28,6 +29,23 @@ cd J:\my-next-site
 ```
 
 Ce script lance automatiquement les 3 services dans des fenêtres PowerShell séparées.
+
+**Améliorations :**
+- Configuration centralisée via un tableau `$services` (plus de duplication entre les 3 blocs).
+- **Détection du port déjà occupé** : si un service tourne déjà, il n'est pas relancé (évite `EADDRINUSE`).
+- **Portabilité** : chemins résolus via `$PSScriptRoot`, pas de `J:\my-next-site` codé en dur.
+- **`-NoExit`** sur chaque fenêtre : le message d'erreur reste visible si un service crashe au démarrage.
+- **Bilan final** : nombre de services lancés / déjà actifs / échecs.
+
+### Arrêt des services
+```powershell
+cd J:\my-next-site
+.\stop-my-site.ps1
+```
+
+Termine les processus qui écoutent les ports **1337** (Strapi), **3000** (Next.js) et **8000** (FastAPI). Ne touche pas aux autres processus Node de ta machine. Les fenêtres PowerShell lancées par `start-my-site.ps1` restent ouvertes (à fermer manuellement). En cas d'échec sur certains PIDs → relancer dans un PowerShell admin.
+
+> Note encodage : les deux scripts PowerShell sont encodés en **UTF-8 avec BOM**. C'est nécessaire pour que Windows PowerShell 5.1 (version par défaut) les lise correctement avec les emojis et accents. PowerShell 7 n'a pas ce souci mais reste compatible avec le BOM.
 
 ## 🔧 Commandes Manuelles
 

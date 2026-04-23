@@ -361,6 +361,51 @@ Après : **carte vellum légère** centrée, sans ombre ambient (le footer ne do
 - **Validation serveur des champs du form** (anti-spam, honeypot, reCAPTCHA) : hors scope refonte visuelle. Strapi ne filtre pour l'instant que sur la structure JSON attendue.
 - **Fusion Carousel.tsx / CarouselCompetences.tsx** : reste en dette technique (déjà noté §7).
 
+## 9. Post-refonte — Contact effectif via Brevo (2026-04-23)
+
+La refonte visuelle a laissé le formulaire de contact en état "joli mais non fonctionnel" : il stockait les messages dans Strapi (content-type `message`), à consulter via `/admin/messages` (page publique, non protégée). Aucune notification.
+
+**Décision** (discutée avec l'utilisateur) : supprimer le passage par Strapi, passer à une **notification email directe** via l'**API HTTP Brevo** (compte existant pour la newsletter). Plus simple, moins de surface d'attaque, notification immédiate.
+
+### Changements
+
+- **Nouveau** : `app/api/contact/route.ts` (Next.js App Router, runtime Node) — reçoit le form, valide, applique honeypot + rate-limit, appelle `POST https://api.brevo.com/v3/smtp/email`, retourne `{ ok: true | false, error }`.
+- **Modifié** : `app/components/ContactForm.tsx` — appel vers `/api/contact` au lieu de `sendMessage(...)`. Ajout d'un **champ honeypot** `website` caché (position absolue hors écran + `aria-hidden` + `tabindex=-1`). Codes d'erreur serveur mappés en messages FR.
+- **Supprimé** : `app/utils/sendMessage.ts` (plus utilisé), `app/admin/messages/page.tsx` (plus de consultation Strapi nécessaire, et cette page était exposée publiquement sans auth).
+- **Supprimé côté Strapi** : `cmsbackend/src/api/message/` (content-type + routes + services + controllers). La table SQLite `messages` est laissée en place (orpheline, inoffensive).
+- **Nouveau** : `.env.example` en racine pour documenter les variables requises, `docs-site-interne/contact-flow.md` pour l'architecture complète.
+
+### Variables d'env (.env.local)
+
+```env
+BREVO_API_KEY=xkeysib-...
+CONTACT_FROM_EMAIL=<expéditeur vérifié Brevo>
+CONTACT_FROM_NAME=Portfolio — nouveau message
+CONTACT_TO_EMAIL=grascalvet.fernand@gmail.com
+CONTACT_TO_NAME=Fernand Gras-Calvet
+```
+
+### Anti-abus
+
+- **Honeypot** : champ caché `website`. Si rempli → 200 silencieux + log warning (pas d'erreur pour ne pas signaler aux bots).
+- **Rate-limit** : 3 envois / IP / 10 min (Map en mémoire). Limité en serverless multi-instance — acceptable pour un portfolio.
+- **Validation serveur** : longueurs (120 / 160 / 5000), regex email, codes d'erreur en `UPPER_SNAKE_CASE` stables.
+
+### Email reçu
+
+- Sujet : `Nouveau message portfolio — {Nom}`
+- Expéditeur : `CONTACT_FROM_NAME <CONTACT_FROM_EMAIL>`
+- Reply-To : email du visiteur (un clic "Répondre" dans Gmail et le mail part au visiteur).
+- Corps HTML : carte Stitch simplifiée (primary/secondary/surface-container-low) avec table nom/email/date/IP + zone message `pre-wrap`.
+
+### Leçons retenues
+
+1. **Surveiller les pages admin "dev"** qui fuitent en prod : `/admin/messages` listait les emails de tous les visiteurs en clair, sans auth. Avec la page supprimée, plus d'exposition.
+2. **Clé API fuitant en clair dans un chat** : considérer comme compromise et régénérer. Documenté dans `contact-flow.md` § "Sécurité — rappels".
+3. **Pour un besoin "1 seul destinataire" avec faible volume**, une route Next + API transactionnelle bat clairement une solution SMTP + plugin Strapi : moins de pièces, moins de config, même garantie de délivrabilité.
+
+Voir `docs-site-interne/contact-flow.md` pour la procédure de test, les codes d'erreur, et le rollback éventuel.
+
 ## 5. Checklist relecture (à passer à la fin de chaque étape)
 
 - [ ] Aucune colonne unique globale `max-w-xl` (c'est le format newsletter).

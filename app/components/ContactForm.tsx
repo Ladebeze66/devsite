@@ -1,23 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { sendMessage } from "../utils/sendMessage";
 
 /**
- * Formulaire de contact — refonte "Digital Atelier" (étape 8).
+ * Formulaire de contact — refonte "Digital Atelier" (étape 8) + envoi via Brevo (étape 9).
  *
- * - Plus de `bg-white shadow-lg rounded-lg` sur le form : il est désormais
- *   monté dans la carte vellum de `app/contact/page.js`.
- * - Champs : `bg-surface-container-low`, radius `rounded-tile`, `focus-visible:ring-2 focus-visible:ring-primary`.
- * - CTA jewel : `bg-primary text-on-primary shadow-jewel` avec Material Symbol
- *   `send` + effet `-translate-y-0.5` au hover, état disabled en `bg-outline-variant/60`.
- * - Bandeau status Stitch : succès en `primary-fixed`, erreur en `error-container`,
- *   chargement en `surface-container`. Chaque état porte une Material Symbol.
+ * Architecture :
+ *   Form → POST /api/contact (Next.js server route, voir app/api/contact/route.ts)
+ *         ↓
+ *     Brevo API HTTP → Gmail
+ *
+ * Plus de passage par Strapi pour les messages : la route serveur valide,
+ * filtre (honeypot + rate-limit), puis envoie une notification email. Voir
+ * `docs-site-interne/contact-flow.md` pour l'architecture détaillée.
+ *
+ * Anti-spam :
+ *   - Champ honeypot `website` caché (sr-only + tabindex=-1). Les bots le
+ *     remplissent systématiquement, les humains non. Côté serveur, un champ
+ *     rempli → succès silencieux (aucun email envoyé).
+ *   - Rate-limit côté serveur : 3 envois / 10 min / IP (voir route.ts).
+ *   - Validation longueur + format email côté serveur en plus du client.
  */
 export default function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  // Honeypot : doit rester vide. S'il est rempli, on soumet quand même pour ne
+  // rien changer côté UX (le serveur ignore silencieusement ces payloads).
+  const [website, setWebsite] = useState("");
   const [status, setStatus] = useState("");
   const [statusKind, setStatusKind] = useState<
     "idle" | "loading" | "success" | "error"
@@ -44,24 +54,55 @@ export default function ContactForm() {
     setStatusKind("loading");
 
     try {
-      await sendMessage(name, email, message);
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message, website }),
+      });
+
+      if (res.status === 429) {
+        setStatus(
+          "Trop d'envois depuis votre IP. Réessayez dans quelques minutes."
+        );
+        setStatusKind("error");
+        return;
+      }
+
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        const errorCode = data.error ?? "UNKNOWN";
+        setStatus(
+          errorCode === "INVALID_EMAIL"
+            ? "Email invalide."
+            : errorCode === "MISSING_FIELDS"
+              ? "Tous les champs sont obligatoires."
+              : errorCode === "TOO_LONG"
+                ? "Message trop long."
+                : "Erreur lors de l'envoi du message."
+        );
+        setStatusKind("error");
+        return;
+      }
+
       setStatus("Message envoyé. Merci, je reviens vers vous rapidement.");
       setStatusKind("success");
       setName("");
       setEmail("");
       setMessage("");
+      setWebsite("");
     } catch (error) {
-      setStatus("Erreur lors de l'envoi du message.");
+      console.error("[ContactForm] submit failed:", error);
+      setStatus("Erreur réseau. Vérifiez votre connexion et réessayez.");
       setStatusKind("error");
     }
   };
 
   const statusStyles: Record<typeof statusKind, string> = {
     idle: "",
-    loading:
-      "bg-surface-container text-on-surface-variant",
-    success:
-      "bg-primary-fixed/70 text-on-primary-fixed",
+    loading: "bg-surface-container text-on-surface-variant",
+    success: "bg-primary-fixed/70 text-on-primary-fixed",
     error: "bg-error-container text-on-error-container",
   };
 
@@ -77,6 +118,32 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3" noValidate>
+      {/* Honeypot : caché visuellement ET aux lecteurs d'écran. tabindex=-1 pour
+          qu'un utilisateur clavier ne tombe jamais dessus. Les bots qui
+          parsent le DOM le remplissent quasi-systématiquement. */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          left: "-10000px",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+        }}
+      >
+        <label>
+          Ne pas remplir ce champ
+          <input
+            type="text"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
+        </label>
+      </div>
+
       <label className="flex flex-col gap-1">
         <span className="font-headline text-[11px] font-bold uppercase tracking-[0.3em] text-secondary">
           Votre nom
@@ -88,6 +155,7 @@ export default function ContactForm() {
           onChange={(e) => setName(e.target.value)}
           className={fieldClass}
           required
+          maxLength={120}
           autoComplete="name"
         />
       </label>
@@ -103,6 +171,7 @@ export default function ContactForm() {
           onChange={(e) => setEmail(e.target.value)}
           className={fieldClass}
           required
+          maxLength={160}
           autoComplete="email"
         />
       </label>
@@ -116,6 +185,7 @@ export default function ContactForm() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={5}
+          maxLength={5000}
           className={`${fieldClass} min-h-[9rem] resize-y`}
           required
         />
