@@ -33,8 +33,12 @@ export default function Page() {
 
         const data = await response.json();
 
+        // Strapi v4 : `attributes.order` — Strapi v5 (souvent) : `order` à la racine.
+        const getOrder = (item) =>
+          item?.order ?? item?.attributes?.order ?? 999;
+
         const sortedCompetences = (data.data ?? []).sort(
-          (a, b) => ((a.attributes?.order ?? 999) - (b.attributes?.order ?? 999))
+          (a, b) => getOrder(a) - getOrder(b)
         );
 
         setCompetences(sortedCompetences);

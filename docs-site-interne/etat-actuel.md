@@ -1,6 +1,6 @@
 # État actuel du site
 
-**Dernière mise à jour :** 2026-04-22 (post-refonte GrasBot v3)
+**Dernière mise à jour :** 2026-04-23 (post-tuning GrasBot + observabilité Langfuse)
 
 ## Ce qui est en place
 
@@ -9,7 +9,8 @@
 - **Formulaire contact** : POST vers Strapi `messages`.
 - **Chatbot GrasBot v3** : FAB global (`GrasBotFab.tsx`) → proxy Next → API LLM hébergée (`llmapi.fernandgrascalvet.com`).
 - **FastAPI + Ollama** dans `llm-api/` : modèle `qwen3:8b`, pipeline `search.py` (graph + BM25 sur vault Obsidian `vault-grasbot/`, sans embeddings).
-- **Vault de connaissance `vault-grasbot/`** : 41 notes enrichies (aliases, answers, priority) — source de vérité du chatbot, régénéré depuis Strapi par `strapi_extraction/build-vault.py`.
+- **Vault de connaissance `vault-grasbot/`** : 42 notes enrichies (aliases, answers, priority) — source de vérité du chatbot, régénéré depuis Strapi par `strapi_extraction/build-vault.py`. Inclut une note `bio-fernand` courte (priority 10) dédiée aux questions biographiques et un CV complet complémentaire.
+- **Observabilité Langfuse** : instance self-hosted `langfuse.fernandgrascalvet.com`, instrumentation Python (`llm-api/observability.py`) traçant chaque requête `/ask` (retrieval / prompt_build / ollama-chat) avec session/user IDs anonymes côté front. Mode no-op automatique si les clés sont absentes. Voir [`langfuse-observability.md`](./langfuse-observability.md).
 - **Scripts** d'extraction et de doc dans `strapi_extraction/`.
 - Documentation opérationnelle : `CONFIGURATION_SITE.md`.
 - **Captures d'écran** de référence (WebP) : `docs-site-interne/captures/` — voir `captures/INDEX.md`.

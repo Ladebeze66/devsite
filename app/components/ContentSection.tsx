@@ -19,7 +19,18 @@ interface ImageData {
 
 interface ContentData {
   name: string;
-  Resum: string;
+  /**
+   * Champ richtext Markdown de la fiche.
+   *
+   * Dette historique : le content-type Strapi `project` utilise `Resum` avec
+   * majuscule (legacy Strapi 4). Les nouveaux content-types (ex.
+   * `realisation-ia`) utilisent `resum` en minuscule, cohérent avec tous les
+   * autres champs (`name`, `slug`, `link`, `order`…). On tolère les deux
+   * orthographes dans le rendu pour ne pas avoir à renommer `Resum` côté
+   * `project` (ce qui casserait les 15+ fiches projet déjà saisies).
+   */
+  Resum?: string;
+  resum?: string;
   picture?: ImageData[];
   link?: string;
   linkText?: string;
@@ -30,6 +41,26 @@ interface ContentSectionProps {
   slug: string;
   titleClass?: string;
   contentClass?: string;
+  /**
+   * Lien du bouton retour discret posé en haut de la page.
+   * Défaut : `/portfolio` (comportement historique pour les fiches projet).
+   */
+  backHref?: string;
+  /**
+   * Libellé du bouton retour. Défaut : `"Portfolio"`.
+   */
+  backLabel?: string;
+  /**
+   * Kicker affiché au-dessus du titre dans l'en-tête vellum.
+   * Défaut : `"Projet · Portfolio"` (fiches du portfolio).
+   * Exemple pour une réalisation de compétence : `"Réalisation · Compétence IA"`.
+   */
+  kickerLabel?: string;
+  /**
+   * Message affiché dans l'état 404 (fiche introuvable).
+   * Défaut : `"Ce projet est introuvable."`
+   */
+  notFoundLabel?: string;
 }
 
 /**
@@ -41,10 +72,21 @@ interface ContentSectionProps {
  * héritées du composant pré-refonte restent acceptées pour compatibilité mais
  * sont ignorées (styles tokenisés désormais) — on les garde dans l'interface
  * pour ne pas casser les consommateurs.
+ *
+ * 2026-04-23 : composant rendu paramétrable pour être réutilisé par la page
+ * détail des réalisations IA (`/competences/[slug]/[realisation]`) avec un
+ * retour vers la compétence parente au lieu du portfolio. Les 4 props
+ * `backHref` / `backLabel` / `kickerLabel` / `notFoundLabel` ont des défauts
+ * strictement identiques au comportement historique → 100 % rétro-compatible
+ * pour les fiches projet existantes.
  */
 export default function ContentSection({
   collection,
   slug,
+  backHref = "/portfolio",
+  backLabel = "Portfolio",
+  kickerLabel = "Projet · Portfolio",
+  notFoundLabel = "Ce projet est introuvable.",
 }: ContentSectionProps) {
   const [data, setData] = useState<ContentData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -89,10 +131,10 @@ export default function ContentSection({
             search_off
           </span>
           <p className="font-body italic text-on-surface-variant">
-            Ce projet est introuvable.
+            {notFoundLabel}
           </p>
           <Link
-            href="/portfolio"
+            href={backHref}
             className="mt-5 inline-flex items-center gap-1.5 font-headline text-sm font-bold uppercase tracking-[0.2em] text-primary hover:underline"
           >
             <span
@@ -102,14 +144,16 @@ export default function ContentSection({
             >
               arrow_back
             </span>
-            Retour au portfolio
+            Retour
           </Link>
         </section>
       </div>
     );
   }
 
-  const { name, Resum: richText, picture, link, linkText } = data;
+  const { name, picture, link, linkText } = data;
+  // Legacy `Resum` (content-type `project`) OU `resum` moderne (nouveaux content-types).
+  const richText = data.Resum ?? data.resum ?? "";
 
   const images =
     picture?.map((img: ImageData) => ({
@@ -121,7 +165,7 @@ export default function ContentSection({
     <div className="mx-auto flex w-full min-w-0 max-w-3xl flex-col gap-5 px-4 pb-10 sm:px-6">
       {/* Bouton retour discret, posé sur le wallpaper comme une miette de fil d'Ariane. */}
       <Link
-        href="/portfolio"
+        href={backHref}
         className="inline-flex w-fit items-center gap-1.5 rounded-full bg-surface-container-lowest/70 px-3 py-1.5 font-headline text-xs font-bold uppercase tracking-[0.2em] text-primary backdrop-blur-vellum transition-colors hover:bg-surface-container-lowest/95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         <span
@@ -131,7 +175,7 @@ export default function ContentSection({
         >
           arrow_back
         </span>
-        Portfolio
+        {backLabel}
       </Link>
 
       {/* En-tête "feuillet de vellum" aligné sur la home et les listes. */}
@@ -141,7 +185,7 @@ export default function ContentSection({
       >
         <div className="flex flex-col gap-3">
           <span className="font-headline text-[11px] font-bold uppercase tracking-[0.3em] text-secondary">
-            Projet · Portfolio
+            {kickerLabel}
           </span>
           <h1
             id="project-title"
