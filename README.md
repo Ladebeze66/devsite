@@ -73,3 +73,5 @@ Projet personnel ; contenu et code sont fournis tels quels pour illustration du 
 ---
 
 *Dernière révision du README : 2026-04 — aligné sur `docs-site-interne` et `CONFIGURATION_SITE.md`.*
+
+Pour lancer tâches planifiées: taskschd.msc
