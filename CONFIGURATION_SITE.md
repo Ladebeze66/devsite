@@ -79,6 +79,10 @@ uvicorn api:app --host 0.0.0.0 --port 8000 --reload
 - **API** : http://localhost:8000
 - **Endpoint IA** : http://localhost:8000/ask?q=votre_question
 - **Documentation** : http://localhost:8000/docs
+- **Santé** : http://localhost:8000/health — renvoie `status`, `ollama_url`, `llm_model`, métadonnées vault, et `observability.langfuse_enabled`.
+- **Recharger le vault à chaud** : `POST http://localhost:8000/reload-vault` — à appeler après création/modification d'une note dans `vault-grasbot/` (sinon `load_vault()` reste en cache mémoïsé jusqu'au prochain redémarrage d'uvicorn).
+
+> **Tuning du pipeline LLM** : les paramètres Ollama (`num_ctx`, `num_predict`, `think`), la troncature des sources RAG secondaires (`SEARCH_SECONDARY_MAX_CHARS`, `SEARCH_SECONDARY_KEEP_RATIO`), le system prompt anti-hallucination et la note `bio-fernand` sont documentés en détail dans `docs-site-interne/langfuse-observability.md` (section *Tuning du pipeline — 2026-04-23*).
 
 ## 📊 Ports Utilisés
 

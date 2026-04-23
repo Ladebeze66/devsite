@@ -105,12 +105,16 @@ Les variables Langfuse **ne sont pas** dans `.env.local` de Next.js — elles ne
   - `relevant_notes` : notes effectivement incluses dans le contexte
   - `system_chars`, `user_chars` : tailles utiles pour debug de fenêtre de contexte
   - `min_score_threshold` : valeur du `MIN_SCORE` au moment de l'appel
+  - `truncation` : `{ secondary_max_chars, secondary_keep_ratio, truncated_notes: [...] }` —
+    liste des sources rank 2+ résumées automatiquement (avec leur slug, score,
+    taille d'origine et taille tronquée). Vide s'il n'y a eu aucune troncature.
 
 ### Span `ollama-chat` (type **generation**)
 - **input** : `[{role: "system", content}, {role: "user", content}]`
 - **output** : réponse brute du modèle
 - **model** : `LLM_MODEL` (ex. `qwen3:8b`)
-- **model_parameters** : `{temperature: 0.4, num_predict: 512}`
+- **model_parameters** : `{temperature: 0.4, num_ctx: 8192, num_predict: 1024, think: false}`
+  (voir section "Tuning 2026-04-23" ci-dessous pour le rationnel).
 - **usage** : `{input, output, total}` — extraits de `prompt_eval_count` / `eval_count` si Ollama les renvoie
 - Si réponse vide → span `level: ERROR` avec le payload Ollama brut en metadata.
 
@@ -181,6 +185,39 @@ Si Langfuse tombe en panne ou si l'instrumentation pose un souci :
 - **Rotation** : en cas de doute, **Project Settings → API Keys → Delete** puis recréer. Les traces déjà ingérées ne sont pas affectées.
 - Le client Langfuse envoie les traces **en asynchrone** avec un buffer → bien appeler `flush()` au shutdown pour ne rien perdre (déjà fait via le `lifespan` FastAPI).
 - **Contenu sensible** : les prompts complets passent dans Langfuse. Vérifier que **le vault ne contient pas d'infos privées** (`visibility: private` est filtré côté search, mais si tu ajoutais un jour un vault mixte public/privé, il faudrait un filtre supplémentaire avant l'envoi à Langfuse).
+
+## Tuning du pipeline — 2026-04-23
+
+Audit des premières traces après mise en production : les réponses sur les
+questions biographiques ("qui est Fernand ?") étaient parfois **hallucinées**
+(âge erroné, statut inventé) et les réponses longues **tronquées** en plein
+milieu. Quatre ajustements ciblés ont stabilisé le comportement :
+
+| # | Fichier | Changement | Effet attendu |
+|---|---------|------------|---------------|
+| 1 | `search.py` · `generate()` | `num_ctx` explicite à **8192** | Fin de la troncature silencieuse du prompt (le défaut Ollama à 2048/4096 coupait le début du contexte quand plusieurs notes entières étaient injectées). |
+| 1 | `search.py` · `generate()` | `num_predict` **512 → 1024** | Réponses longues (descriptions de projet, explications) ne sont plus coupées en plein milieu. |
+| 1 | `search.py` · `generate()` | `think: false` **top-level** | Désactive le mode *thinking* de qwen3. Le modèle n'utilise plus de budget de sortie pour du raisonnement interne. |
+| 2 | `search.py` · `build_prompt()` | Troncature conditionnelle des sources **rank 2+** | Les notes secondaires (ex. `inception` sur une question bio) sont résumées à `SEARCH_SECONDARY_MAX_CHARS` chars quand leur score est < `SEARCH_SECONDARY_KEEP_RATIO` × score(#1). Réduit le bruit sans supprimer de source. |
+| 3 | `vault-grasbot/30-Parcours/bio-fernand.md` | **Nouvelle note** dédiée à la présentation courte | Source canonique pour les questions du type *"qui est Fernand"*. Priorité 10, aliases biographiques courts. Renvoie vers le CV complet pour le détail. |
+| 3 | CV (`cv-grascalvet-fernand.md`) | Incohérence d'âge corrigée (46 → 47 ans) | Supprime la contradiction interne qui alimentait les hallucinations sur l'âge. |
+| 4 | `search.py` · `SYSTEM_PROMPT` | Section "Règles de fidélité aux sources" | Force le modèle à (a) s'appuyer en priorité sur `type=parcours` pour les questions bio, (b) ne jamais inventer un fait factuel, (c) écrire *« non précisé dans les notes »* si l'info manque, (d) gérer les contradictions, (e) signaler les notes tronquées. |
+
+Observabilité : dans les spans Langfuse, `prompt_build.metadata.truncation`
+liste chaque source tronquée automatiquement → sert de point de vigilance pour
+vérifier que la troncature reste pertinente (et n'écrase pas une source qu'on
+aurait dû garder entière).
+
+Variables d'environnement associées (dans `llm-api/.env` ou shell) :
+
+| Variable | Défaut | Effet |
+|----------|--------|-------|
+| `SEARCH_SECONDARY_MAX_CHARS` | `1500` | Taille max des sources secondaires dans le prompt |
+| `SEARCH_SECONDARY_KEEP_RATIO` | `0.8` | Tant que score(rank≥2) ≥ ratio × score(#1) → source gardée entière |
+
+Rappel : `load_vault()` est mémoïsé. Après création/modification d'une note du
+vault, appeler `POST /reload-vault` pour recharger le cache sans redémarrer
+uvicorn (voir `api.py`).
 
 ## Évolutions futures possibles
 

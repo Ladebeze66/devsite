@@ -22,12 +22,20 @@ Pipeline :
 
 Variables d'environnement (toutes optionnelles) :
 
-- `OLLAMA_URL`        (default: http://localhost:11434)
-- `LLM_MODEL`         (default: qwen3:8b)
-- `VAULT_DIR`         (default: <repo_root>/vault-grasbot)
-- `SEARCH_TOP_K`      (default: 5)
-- `SEARCH_MIN_SCORE`  (default: 1.0) — seuil en-dessous duquel on considère
-                     qu'aucune note pertinente n'a été trouvée.
+- `OLLAMA_URL`                  (default: http://localhost:11434)
+- `LLM_MODEL`                   (default: qwen3:8b)
+- `VAULT_DIR`                   (default: <repo_root>/vault-grasbot)
+- `SEARCH_TOP_K`                (default: 5)
+- `SEARCH_MIN_SCORE`            (default: 1.0) — seuil en-dessous duquel on
+                                considère qu'aucune note pertinente n'a été trouvée.
+- `SEARCH_SECONDARY_MAX_CHARS`  (default: 1500) — taille max (en chars) du body
+                                des sources rank 2+ dans le prompt. Les sources
+                                dépassant cette limite sont tronquées à la
+                                frontière de paragraphe la plus proche.
+- `SEARCH_SECONDARY_KEEP_RATIO` (default: 0.8) — seuil relatif au score de la
+                                source #1. Tant que score(rank>=2) est ≥
+                                ratio × score(#1), la source est gardée
+                                entière (considérée aussi pertinente).
 
 Instrumentation Langfuse (2026-04-23) :
 
@@ -65,6 +73,16 @@ VAULT_DIR = Path(os.environ.get("VAULT_DIR", _DEFAULT_VAULT))
 
 TOP_K = int(os.environ.get("SEARCH_TOP_K", "5"))
 MIN_SCORE = float(os.environ.get("SEARCH_MIN_SCORE", "1.0"))
+
+# Troncature des sources secondaires dans le prompt (étape 2, 2026-04-23).
+# Rationnel : BM25 peut remonter des projets entiers (ex. `inception`, `cpp-partie2`)
+# avec un score respectable pour des questions biographiques — ils polluent le
+# contexte sans apporter d'info pertinente. On garde la source #1 entière et on
+# tronque uniquement les sources rank 2+ dont le score est < SECONDARY_KEEP_RATIO
+# fois celui de la #1, ET dont le body dépasse SECONDARY_MAX_CHARS caractères.
+# Aucune source n'est jamais supprimée : le modèle voit toujours le top-K complet.
+SECONDARY_MAX_CHARS = int(os.environ.get("SEARCH_SECONDARY_MAX_CHARS", "1500"))
+SECONDARY_KEEP_RATIO = float(os.environ.get("SEARCH_SECONDARY_KEEP_RATIO", "0.8"))
 
 # ---------------------------------------------------------------------------
 # Tokenisation FR (stop-words minimalistes, suffisants pour 36 notes)
@@ -573,29 +591,93 @@ Ton rôle :
 - Répondre aux visiteurs du site sur le parcours, les projets, les compétences de Fernand.
 - T'appuyer sur les notes du vault personnel fournies dans le contexte.
 
-Règles :
+Règles de ton :
 - Réponds en français, ton sobre et précis, sans emojis.
 - Cite tes sources entre crochets carrés en utilisant le slug (ex. [push-swap], [ia]).
-- Si l'information n'apparaît pas dans les notes fournies, dis-le honnêtement et oriente vers le site (/portfolio, /competences, /contact) sans inventer.
 - Reste concis (3 à 6 phrases en général), sauf demande explicite de détail.
-- Si la question est hors sujet (ex. question généraliste sans rapport avec Fernand), indique poliment ton rôle et invite à poser une question sur son parcours."""
+- Si la question est hors sujet (ex. question généraliste sans rapport avec Fernand), indique poliment ton rôle et invite à poser une question sur son parcours.
+
+Règles de fidélité aux sources (important) :
+- Chaque source fournie est annotée `type=parcours | projet | moc | competence | glossaire`.
+- Pour toute question biographique (qui est Fernand, âge, situation, école, objectif, contact, localisation), appuie-toi **en priorité** sur les sources de `type=parcours` (ex. [bio-fernand], [cv-grascalvet-fernand]). Ne **déduis jamais** d'informations biographiques depuis une source `type=projet` ou `type=moc`.
+- Ne **jamais inventer** un fait factuel (âge, date, diplôme, école, entreprise, technologie utilisée) qui n'apparaît pas littéralement dans les sources. Si l'info n'est pas présente, écris « non précisé dans les notes » et oriente vers /portfolio, /competences ou /contact.
+- En cas de contradiction entre deux sources, privilégie la source de plus haut score, mentionne brièvement la divergence, et ne choisis jamais une valeur absente des deux.
+- Une note dont le body se termine par « note tronquée » a été résumée : signale-le si tu t'appuies dessus pour un point précis, ou invite à consulter la note complète."""
+
+
+_TRUNCATION_MARKER = "\n\n… *(note tronquée — voir le vault pour le détail)*"
+
+
+def _truncate_body(body: str, max_chars: int) -> str:
+    """Coupe `body` à `max_chars` en essayant de finir sur une frontière propre.
+
+    Stratégie :
+    1. Si le body est déjà ≤ max_chars → inchangé.
+    2. Sinon on garde `body[:max_chars]` puis on cherche la dernière coupure
+       "naturelle" (double saut de ligne = fin de paragraphe, sinon fin de
+       phrase). On ne recule que si la coupure trouvée est dans la moitié
+       haute de la fenêtre, pour éviter de perdre trop de contenu.
+    3. On ajoute un marqueur explicite pour signaler au modèle que la note
+       a été résumée (évite qu'il conclue "il n'y a pas d'info sur ...").
+    """
+    if len(body) <= max_chars:
+        return body
+
+    truncated = body[:max_chars]
+    cutoff = -1
+    for sep in ("\n\n", ". ", "\n", " "):
+        idx = truncated.rfind(sep)
+        if idx >= max_chars * 0.6:
+            cutoff = idx + (len(sep) if sep.endswith(" ") else 0)
+            break
+    if cutoff > 0:
+        truncated = truncated[:cutoff]
+    return truncated.rstrip() + _TRUNCATION_MARKER
 
 
 def build_prompt(query: str, scored_notes: list[ScoredNote]) -> tuple[str, str]:
-    """Assemble (system, user) pour Qwen3. Notes **entières** dans le contexte."""
-    # Seuil : si toutes les notes sont en-dessous, on considère "pas de contexte pertinent"
+    """Assemble (system, user) pour Qwen3.
+
+    - Sources gardées : celles dont le score ≥ MIN_SCORE.
+    - Troncature : la source #1 (top score) reste **entière**. Les sources
+      rank 2+ dont le score est < SECONDARY_KEEP_RATIO × score(#1) et dont le
+      body dépasse SECONDARY_MAX_CHARS sont résumées par `_truncate_body`.
+      Aucune source n'est supprimée — le modèle voit toujours tout le top-K.
+    """
     relevant = [s for s in scored_notes if s.score >= MIN_SCORE]
 
     with langfuse.start_as_current_span(
         name="prompt_build",
         input={"query": query, "scored_count": len(scored_notes)},
     ) as span:
+        truncated_log: list[dict[str, Any]] = []
+
         if relevant:
+            top_score = relevant[0].score
+            keep_full_threshold = top_score * SECONDARY_KEEP_RATIO
             context_blocks = []
             for i, s in enumerate(relevant, 1):
                 n = s.note
+                body = n.body
+                original_chars = len(body)
+                should_truncate = (
+                    i > 1
+                    and s.score < keep_full_threshold
+                    and original_chars > SECONDARY_MAX_CHARS
+                )
+                if should_truncate:
+                    body = _truncate_body(body, SECONDARY_MAX_CHARS)
+                    truncated_log.append(
+                        {
+                            "rank": i,
+                            "slug": n.slug,
+                            "score": round(s.score, 2),
+                            "original_chars": original_chars,
+                            "truncated_chars": len(body),
+                        }
+                    )
                 header = f"[SOURCE {i} · slug={n.slug} · type={n.type} · score={s.score:.1f}] {n.title}"
-                context_blocks.append(f"{header}\n{n.body}")
+                context_blocks.append(f"{header}\n{body}")
             context = "\n\n---\n\n".join(context_blocks)
             user = (
                 "Voici les notes pertinentes du vault personnel de Fernand :\n\n"
@@ -622,6 +704,11 @@ def build_prompt(query: str, scored_notes: list[ScoredNote]) -> tuple[str, str]:
                 "system_chars": len(SYSTEM_PROMPT),
                 "user_chars": len(user),
                 "min_score_threshold": MIN_SCORE,
+                "truncation": {
+                    "secondary_max_chars": SECONDARY_MAX_CHARS,
+                    "secondary_keep_ratio": SECONDARY_KEEP_RATIO,
+                    "truncated_notes": truncated_log,
+                },
             },
         )
 
@@ -637,10 +724,21 @@ def generate(system: str, user: str) -> str:
     Span Langfuse de type `generation` → expose latence, modèle, paramètres,
     et tokens (si l'API Ollama les retourne dans `prompt_eval_count` /
     `eval_count`) comme un LLM-call standard dans le dashboard.
+
+    Paramètres clefs (tunés 2026-04-23 après audit des traces Langfuse) :
+    - `num_ctx=8192`  : fenêtre de contexte explicite (le défaut Ollama
+      à 2048/4096 tronquait silencieusement le début du prompt quand les
+      sources du RAG étaient volumineuses, d'où hallucinations sur l'identité).
+    - `num_predict=1024` : budget de sortie doublé (512 coupait les réponses
+      détaillées — p. ex. description du site ou d'un projet — en plein milieu).
+    - `think=False` (top-level, hors `options`) : désactive le mode *thinking*
+      de qwen3. Sinon le modèle consomme du budget de sortie en raisonnement
+      interne avant de générer la réponse visible.
     """
     model_params = {
         "temperature": 0.4,
-        "num_predict": 512,
+        "num_ctx": 8192,
+        "num_predict": 1024,
     }
     messages = [
         {"role": "system", "content": system},
@@ -652,7 +750,7 @@ def generate(system: str, user: str) -> str:
         name="ollama-chat",
         model=LLM_MODEL,
         input=messages,
-        model_parameters=model_params,
+        model_parameters={**model_params, "think": False},
     ) as generation:
         response = requests.post(
             f"{OLLAMA_URL}/api/chat",
@@ -660,6 +758,7 @@ def generate(system: str, user: str) -> str:
                 "model": LLM_MODEL,
                 "messages": messages,
                 "stream": False,
+                "think": False,
                 "options": model_params,
                 "keep_alive": "30m",
             },

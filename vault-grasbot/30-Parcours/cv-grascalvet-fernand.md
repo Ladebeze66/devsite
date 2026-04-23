@@ -28,6 +28,7 @@ answers:
   - "A-t-il de l'expérience professionnelle ?"
 priority: 10
 linked:
+  - "[[bio-fernand]]"
   - "[[MOC-Parcours]]"
   - "[[MOC-Ecole-42]]"
   - "[[MOC-Ia]]"
@@ -64,7 +65,7 @@ visibility: public
 
 ## Présentation
 
-Ancien infirmier de 46 ans, actuellement étudiant en informatique à l'École 42
+Ancien infirmier de 47 ans, actuellement étudiant en informatique à l'École 42
 Perpignan. Je recherche une alternance de 2 ans pour me spécialiser dans
 **l'automatisation agentique au sein des entreprises**, en y apportant mon
 expérience sur le traitement de Data et les nouveaux process basés sur les LLM.
