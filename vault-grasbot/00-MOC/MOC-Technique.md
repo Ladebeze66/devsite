@@ -18,9 +18,11 @@ answers:
 priority: 7
 linked:
   - "[[architecture-site]]"
+  - "[[grasbot]]"
+  - "[[fernandgrascalvet-com]]"
   - "[[grasbot-retrieval]]"
   - "[[vault-structure]]"
-updated: 2026-04-22
+updated: 2026-04-23
 visibility: public
 ---
 
@@ -34,6 +36,8 @@ utilises-tu ? »*).
 ## Notes liées
 
 - [[architecture-site]] — vue d'ensemble Next.js + Strapi + FastAPI/Ollama.
+- [[grasbot]] — fiche produit de l'assistant (chaîne d'appel, stack).
+- [[fernandgrascalvet-com]] — périmètre site public (refonte, `realisation-ia`, Brevo).
 - [[grasbot-retrieval]] — pipeline de recherche (graph + BM25, sans
   embeddings).
 - [[vault-structure]] — organisation du vault Obsidian, frontmatter,

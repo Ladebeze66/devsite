@@ -14,7 +14,7 @@ Site portfolio **Next.js 15** + **Strapi 5** + **GrasBot** (FastAPI, Ollama, vau
 | [`CONFIGURATION_SITE.md`](CONFIGURATION_SITE.md) | Opérationnel : ports, commandes, démarrage automatique, dépannage, pare-feu. |
 | [`vault-grasbot/README.md`](vault-grasbot/README.md) | Base de connaissances GrasBot (retrieval graph + BM25 v3). |
 
-**Obsidian / export** : le dossier [`obsidian-site-docs/`](obsidian-site-docs/) contient le hub, les commandes, **toute** la doc [`docs-site-interne/`](docs-site-interne/) (copie), `CONFIGURATION_SITE.md` et le README dépôt — prêt à ouvrir comme coffre ou à copier. Resynchro : [`obsidian-site-docs/SYNC-DOC.md`](obsidian-site-docs/SYNC-DOC.md).
+**Obsidian :** le dossier [`obsidian-site-docs/`](obsidian-site-docs/) regroupe un hub et des fiches prêtes à copier ou à ouvrir comme coffre secondaire (commandes, ports, liens vers la doc du dépôt).
 
 ## Démarrage rapide (Windows)
 

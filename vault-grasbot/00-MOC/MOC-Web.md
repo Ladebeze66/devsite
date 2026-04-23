@@ -20,14 +20,15 @@ answers:
   - Que fait-il en web ?
 priority: 7
 linked:
-updated: 2026-04-22
+updated: 2026-04-23
 visibility: public
 ---
 
 
-Notes du domaine *web* (2 au total).
+Notes du domaine *web* (3 au total).
 
 ## Notes liées
 
 - [[developpement-web-and-hebergement-sur-serveur-windows|Développement Web & Hébergement sur serveur Windows]] — _reseau, securite, web_
+- [[fernandgrascalvet-com|fernandgrascalvet.com (portfolio)]] — _devops, ia, reseau, securite, web_
 - [[ft-transcendence|ft_transcendence]] — _algorithmique, devops, ecole-42, reseau, web_

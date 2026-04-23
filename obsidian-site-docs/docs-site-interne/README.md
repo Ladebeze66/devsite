@@ -2,18 +2,20 @@
 
 **Dernière mise à jour :** 2026-04-24
 
+> **Dans le pack Obsidian** — Même contenu que le dépôt `my-next-site/docs-site-interne/`. Fichiers à la racine de ce coffre : [CONFIGURATION_SITE.md](../CONFIGURATION_SITE.md) · [00 Hub.md](../00%20Hub.md) · [SYNC-DOC.md](../SYNC-DOC.md) · [README-racine-depot.md](../README-racine-depot.md).
+
 Ce dossier décrit l'architecture, le fonctionnement et les décisions du projet (Next.js + Strapi + FastAPI/Ollama). Il est destiné à l'équipe et à l'assistant IA pour retrouver vite le contexte.
 
 ## Relation avec les autres fichiers
 
 | Fichier / zone | Rôle |
 |----------------|------|
-| `README.md` (racine du dépôt) | Panorama GitHub, liens vers cette doc, démarrage rapide, `reload-vault`. |
-| `CONFIGURATION_SITE.md` (racine) | Guide opérationnel : ports, commandes, dépannage, planificateur de tâches Windows. |
-| `obsidian-site-docs/` (racine) | Pack Obsidian : hub, commandes, **copie** de ce dossier pour export (voir `obsidian-site-docs/SYNC-DOC.md`). |
-| Ce dossier | Conception : flux de données, schémas CMS, incohérences connues, feuille de route. |
+| [README-racine-depot.md](../README-racine-depot.md) | Panorama GitHub (copie du `README` racine du dépôt). |
+| [CONFIGURATION_SITE.md](../CONFIGURATION_SITE.md) | Guide opérationnel : ports, commandes, dépannage, planificateur de tâches Windows. |
+| Dossier parent [obsidian-site-docs/](../) | Pack Obsidian (commandes, hub, ce module doc). |
+| Ce dossier (`docs-site-interne/`) | Conception : flux de données, schémas CMS, incohérences connues, feuille de route. |
 
-**Règle de maintenance :** après une modification notable, mettre à jour le fichier concerné ici ; si le démarrage ou les ports changent, compléter aussi `CONFIGURATION_SITE.md`.
+**Règle de maintenance :** éditer d’abord le **dépôt** Git, puis [resynchroniser ce dossier](../SYNC-DOC.md) ; si les ports changent, mettre à jour [CONFIGURATION_SITE.md](../CONFIGURATION_SITE.md).
 
 ## Index des documents
 

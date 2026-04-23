@@ -2,7 +2,7 @@
 title: "Développement Web & Hébergement sur serveur Windows"
 slug: developpement-web-and-hebergement-sur-serveur-windows
 type: competence
-source: strapi/competences
+source: manual
 domains: [reseau, securite, web]
 tags: []
 aliases:
@@ -26,10 +26,12 @@ priority: 7
 linked:
   - "[[MOC-Competences]]"
 related:
+  - "[[fernandgrascalvet-com]]"
+  - "[[grasbot]]"
   - "[[born2beroot]]"
   - "[[ft-transcendence]]"
   - "[[cpp-partie1]]"
-updated: 2026-04-22
+updated: 2026-04-23
 visibility: public
 ---
 **Slug :** `developpement-web-and-hebergement-sur-serveur-windows`
@@ -38,6 +40,12 @@ visibility: public
 ---
 
 J'ai réalisé ce projet afin d'étendre mes compétences en développement Web. 
+
+### Mise à jour 2025–2026 — refonte, réalisations et contact
+
+Le site a évolué en profondeur : **refonte visuelle** (*Digital Atelier* : Manrope, Newsreader, cartes *vellum*, tokens Tailwind), **Strapi 5** avec le type **`realisation-ia`** (réalisations liées aux compétences, vignettes + routes `/competences/[slug]/[realisation]`), et **GrasBot** (assistant sur tout le site) documenté en projet [[grasbot]] dans le vault. Le **formulaire de contact** envoie désormais les messages via l’**API Brevo** (plus de stockage des messages côté Strapi). Voir la synthèse produit [[fernandgrascalvet-com]].
+
+---
 
 Ce projet est un site web basé sur Next.js pour le frontend et Strapi pour le backend, hébergé sur un serveur Windows Server 2025 avec IIS comme serveur web. Il repose sur une architecture Headless CMS, où le contenu est géré via une API REST et affiché dynamiquement sur le frontend.
 

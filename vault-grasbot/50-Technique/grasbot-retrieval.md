@@ -6,7 +6,8 @@ source: manual
 domains: [ia, web]
 tags: [graph, bm25, ollama, qwen3, retrieval]
 aliases:
-  - grasbot
+  - pipeline grasbot
+  - moteur grasbot
   - chatbot du site
   - moteur de recherche
   - retrieval
@@ -18,11 +19,12 @@ answers:
   - "Quel modèle utilise GrasBot ?"
 priority: 6
 linked:
+  - "[[grasbot]]"
   - "[[MOC-Ia]]"
   - "[[architecture-site]]"
   - "[[vault-structure]]"
   - "[[ia]]"
-updated: 2026-04-22
+updated: 2026-04-23
 visibility: public
 ---
 

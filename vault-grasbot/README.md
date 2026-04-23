@@ -5,12 +5,12 @@ contenus Strapi du site (projets + compétences) et du CV PDF. Alimente
 directement le pipeline de recherche de GrasBot (`llm-api/search.py`) :
 graph + BM25, sans embeddings.
 
-**Dernière génération :** 2026-04-22
+**Dernière génération :** 2026-04-23 (complété manuellement : +2 projets `source: manual`, maj compétences IA/Web)
 
 ## Structure
 
 - `00-MOC/` — Maps of Content (hubs thématiques)
-- `10-Projets/` — 17 projets extraits de Strapi
+- `10-Projets/` — 17 projets Strapi + **2 notes manuelles** (`10-Projets/grasbot.md`, `10-Projets/fernandgrascalvet-com.md`)
 - `20-Competences/` — 4 compétences extraites de Strapi
 - `30-Parcours/` — Parcours personnel, CV, bio (version curatée `source: manual`)
 - `40-Glossaire/` — Termes techniques (vide, à remplir manuellement ou depuis Strapi plus tard)

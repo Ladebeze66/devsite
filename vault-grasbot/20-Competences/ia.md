@@ -2,7 +2,7 @@
 title: Mon Exploration et Maîtrise de l’Intelligence Artificielle
 slug: ia
 type: competence
-source: strapi/competences
+source: manual
 domains: [algorithmique, ecole-42, ia]
 tags: [tri]
 aliases:
@@ -26,10 +26,12 @@ priority: 7
 linked:
   - "[[MOC-Competences]]"
 related:
+  - "[[grasbot]]"
+  - "[[fernandgrascalvet-com]]"
   - "[[born2beroot]]"
   - "[[cpp-partie1]]"
   - "[[cpp-partie2]]"
-updated: 2026-04-22
+updated: 2026-04-23
 visibility: public
 ---
 **Slug :** `ia`
@@ -44,6 +46,14 @@ Dans cette quête d’exploration, j’ai expérimenté des solutions d’IA loc
 Actuellement, je suis en phase d’installation et de déploiement de solutions d’IA locale sur mon propre serveur, un projet en cours de développement qui me permet d’expérimenter les configurations avancées et d’adapter ces modèles à des cas d’usage spécifiques. Cette démarche s’inscrit dans une volonté de maîtriser l’IA en environnement auto-hébergé, offrant ainsi une meilleure compréhension de la gestion des ressources, du fine-tuning des modèles et des défis liés à l’infrastructure.
 
 Parallèlement, j’ai entrepris une spécialisation en Data Science et Intelligence Artificielle au sein de l’École 42, afin d’approfondir mes connaissances théoriques et pratiques dans ce domaine en perpétuelle évolution. Cette formation me permet d’aller encore plus loin dans l’analyse des algorithmes de machine learning et deep learning, d’explorer des approches avancées en traitement des données massives, et de perfectionner mes compétences en développement et intégration de solutions IA appliquées.
+
+### GrasBot — assistant intégré au site
+
+Sur **fernandgrascalvet.com**, j’ai réalisé **GrasBot** : un assistant basé sur un **LLM local** (Qwen3 via Ollama), une API **FastAPI**, et une **base de connaissances** dérivée de ce vault (`vault-grasbot/`) avec retrieval **graph + BM25** (v3, sans embeddings). Le chat est disponible sur toutes les pages (FAB), avec **observabilité Langfuse** pour le débogage et l’amélioration continue. Les réponses visent la **fidélité aux sources** (prompt et troncatures documentés). Voir la fiche projet [[grasbot]] et la note technique [[grasbot-retrieval]].
+
+### Sur le site — rubrique compétence IA
+
+Les **réalisations** liées à cette compétence (entité Strapi `realisation-ia`) apparaissent en **vignettes** sur `/competences/ia` avec un détail `/competences/ia/<slug>` aligné sur les fiches portfolio. Cela permet de présenter GrasBot et d’autres travaux IA comme des **projets navigables**, pas seulement du texte statique.
 
 Animé par une passion pour l’intelligence artificielle et ses innombrables possibilités, je continue de m’informer, d’expérimenter et d’appliquer ces technologies à des projets concrets. Mon objectif est d’acquérir une expertise approfondie pour concevoir des systèmes intelligents performants, adaptables et innovants, tout en restant à la pointe des avancées technologiques.
 

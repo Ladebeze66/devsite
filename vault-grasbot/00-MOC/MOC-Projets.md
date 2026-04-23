@@ -15,7 +15,7 @@ answers:
   - Que fait-il en Projets ?
 priority: 7
 linked:
-updated: 2026-04-22
+updated: 2026-04-23
 visibility: public
 ---
 
@@ -28,11 +28,13 @@ Hub des projets de Fernand Gras-Calvet, triés par titre.
 - [[cpp-partie1|cpp-partie1]] — _algorithmique, c, cpp, ecole-42, reseau_
 - [[cpp-partie2|cpp-partie2]] — _algorithmique, c, cpp, devops, domotique, ecole-42, reseau_
 - [[cub3d|cub3d]] — _domotique, ecole-42, graphique, reseau_
+- [[fernandgrascalvet-com|fernandgrascalvet.com (portfolio)]] — _devops, ia, reseau, securite, web_
 - [[fract-ol|fract-ol]] — _algorithmique, domotique, ecole-42, graphique, reseau, systeme_
 - [[ft-irc|ft-irc]] — _cpp, ecole-42, reseau, systeme_
 - [[ft-printf|Ft-printf]] — _c, ecole-42, reseau_
 - [[ft-transcendence|ft_transcendence]] — _algorithmique, devops, ecole-42, reseau, web_
 - [[get-next-line|Get_next_line]] — _c, ecole-42, reseau_
+- [[grasbot|GrasBot — assistant IA du portfolio]] — _devops, ecole-42, ia, web_
 - [[inception|inception]] — _algorithmique, devops, ecole-42, reseau, systeme_
 - [[libft|libft]] — _algorithmique, c, domotique, ecole-42, reseau_
 - [[minishell|minishell]] — _algorithmique, domotique, ecole-42, reseau, systeme_

@@ -20,9 +20,11 @@ linked:
   - "[[MOC-Technique]]"
   - "[[developpement-web-and-hebergement-sur-serveur-windows]]"
   - "[[ia]]"
+  - "[[grasbot]]"
+  - "[[fernandgrascalvet-com]]"
   - "[[grasbot-retrieval]]"
   - "[[vault-structure]]"
-updated: 2026-04-22
+updated: 2026-04-23
 visibility: public
 ---
 
@@ -53,15 +55,16 @@ indépendantes, reliées par des API HTTP.
   Manrope + Newsreader, radius `sheet` / `tile`, ombres `ambient` / `jewel`.
 - **Pages principales** : `/` (hero + takeaways + démarche), `/portfolio`
   (grille asymétrique 2/3 + 1/3), `/competences` (même pattern), fiches
-  détail `[slug]`, `/contact`.
+  détail (`/portfolio/[slug]`, `/competences/[slug]`), réalisations liées
+  `/competences/[slug]/[realisation]`, `/contact` (Brevo).
 - **Composant chat** : `ChatBot.js` + FAB flottant `GrasBotFab.tsx` monté
   dans `layout.tsx` → accessible depuis toutes les pages.
 
 ## CMS — `cmsbackend/` (Strapi 5)
 
-- Content-types : `homepage`, `project`, `competence`, `glossaire`, `message`.
+- Content-types : `homepage`, `project`, `competence`, `realisation-ia`, `glossaire` (le type `message` a été retiré — contact via Brevo, voir `docs-site-interne/contact-flow.md`).
 - API REST : `https://api.fernandgrascalvet.com/api/<pluralName>`.
-- Permissions `find` publique sur tous les types `draftAndPublish: true`.
+- Permissions `find` publique sur les types publics en `draftAndPublish: true`.
 
 ## Chatbot — `llm-api/` + `vault-grasbot/` + Ollama
 
