@@ -49,7 +49,7 @@ visibility: public
 ## Identité
 
 - **Nom** : Gras-Calvet Fernand
-- **Âge** : 46 ans
+- **Âge** : 47 ans
 - **Situation** : Étudiant en informatique, École 42 Perpignan
 - **Objectif** : Alternance **Data / IA** (2 ans)
 - **RQTH** : reconversion professionnelle suite à problèmes de santé

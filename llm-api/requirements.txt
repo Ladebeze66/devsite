@@ -6,8 +6,20 @@
 # - v2 : ajout chromadb + pyyaml (RAG vectoriel avec nomic-embed-text).
 # - v3 : retour à un pipeline graph + BM25, 100 % pure Python, pas de
 #        compilation C++, pas d'embeddings (lecture directe de vault-grasbot/).
+# - v3.1 (2026-04-23) : ajout Langfuse pour observabilité complète du pipeline
+#        (retrieval + prompt + génération) + python-dotenv pour charger
+#        `llm-api/.env` automatiquement. Voir docs-site-interne/langfuse-observability.md.
 
 fastapi>=0.110
 uvicorn[standard]>=0.27
 requests>=2.31
 pyyaml>=6.0
+
+# Observabilité (optionnelles en runtime : l'API fonctionne sans si les clés sont absentes).
+# NB : on reste sur Langfuse 3.x tant que l'instrumentation dans `observability.py`
+# et `search.py` utilise `start_as_current_span` / `start_as_current_observation`
+# (API v3). La v4 du SDK a supprimé `start_as_current_span` et modifié la surface
+# publique — si on veut migrer, il faudra réécrire ces deux fichiers puis relever
+# le plafond ci-dessous.
+langfuse>=3.0,<4
+python-dotenv>=1.0

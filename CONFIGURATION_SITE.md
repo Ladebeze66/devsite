@@ -14,11 +14,15 @@ Ce site utilise une architecture full-stack moderne avec :
 my-next-site/
 ├── app/                    # Application Next.js
 ├── cmsbackend/            # Backend Strapi
-├── llm-api/               # API FastAPI pour IA
+├── llm-api/               # API FastAPI pour IA (+ instrumentation Langfuse)
+│   ├── .env               # Secrets Python (Langfuse, etc.) — non committé
+│   └── observability.py   # Init client Langfuse (no-op safe)
 ├── start-my-site.ps1      # Script de démarrage
 ├── stop-my-site.ps1       # Script d'arrêt propre
 └── package.json           # Dépendances frontend
 ```
+
+**Observabilité** : le chatbot GrasBot est tracé dans une instance **Langfuse self-hosted** (`langfuse.fernandgrascalvet.com`). Chaque question déclenche une trace `ask` avec spans `retrieval` / `prompt_build` / `ollama-chat`, plus des scores auto (`grounded`, `retrieval_relevance`) et des tags. Voir `docs-site-interne/langfuse-observability.md` pour le détail.
 
 ## 🚀 Démarrage Rapide
 

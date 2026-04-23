@@ -28,6 +28,14 @@ Variables d'environnement (toutes optionnelles) :
 - `SEARCH_TOP_K`      (default: 5)
 - `SEARCH_MIN_SCORE`  (default: 1.0) — seuil en-dessous duquel on considère
                      qu'aucune note pertinente n'a été trouvée.
+
+Instrumentation Langfuse (2026-04-23) :
+
+- `answer()` : trace racine. Metadata (session_id, user_id, tags grounded/model).
+- `search()` : span `retrieval` avec scores, reasons, seeds, voisins du graphe.
+- `build_prompt()` : span `prompt_build` avec system/user en output.
+- `generate()` : span `generation` (type Langfuse spécial : tokens, latence, model).
+Voir `docs-site-interne/langfuse-observability.md`.
 """
 
 from __future__ import annotations
@@ -35,6 +43,7 @@ from __future__ import annotations
 import math
 import os
 import re
+import time
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
@@ -42,6 +51,8 @@ from typing import Any
 
 import requests
 import yaml
+
+from observability import langfuse
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -487,31 +498,74 @@ def expand_by_graph(seed: list[ScoredNote], vault: dict[str, Note],
 
 
 # ---------------------------------------------------------------------------
-# API haut-niveau : search
+# Sérialisation pour Langfuse (évite de loguer des objets Python opaques)
+# ---------------------------------------------------------------------------
+def _scored_note_to_dict(s: ScoredNote) -> dict[str, Any]:
+    """Projection JSON-safe d'une `ScoredNote` pour l'UI Langfuse."""
+    return {
+        "slug": s.note.slug,
+        "title": s.note.title,
+        "type": s.note.type,
+        "score": round(s.score, 3),
+        "reasons": s.reasons,
+    }
+
+
+# ---------------------------------------------------------------------------
+# API haut-niveau : search (instrumenté Langfuse)
 # ---------------------------------------------------------------------------
 def search(query: str, top_k: int | None = None) -> list[ScoredNote]:
-    """Retourne la liste des notes pertinentes pour `query`, triée par score."""
+    """Retourne la liste des notes pertinentes pour `query`, triée par score.
+
+    Tracé dans Langfuse comme un span `retrieval` — on y log les tokens extraits,
+    les seeds avant expansion, les voisins ajoutés par le graphe, et le top-K final.
+    """
     top_k = top_k or TOP_K
     vault = load_vault()
     if not vault:
         return []
 
-    stats = _corpus_stats()
-    query_tokens = tokenize_fr(query)
+    with langfuse.start_as_current_span(
+        name="retrieval",
+        input={"query": query, "top_k": top_k},
+    ) as span:
+        t0 = time.perf_counter()
+        stats = _corpus_stats()
+        query_tokens = tokenize_fr(query)
 
-    scored = [score_note(note, query, query_tokens, stats) for note in vault.values()]
-    scored = [s for s in scored if s.score > 0]
-    scored.sort(key=lambda x: -x.score)
+        scored = [score_note(note, query, query_tokens, stats) for note in vault.values()]
+        scored = [s for s in scored if s.score > 0]
+        scored.sort(key=lambda x: -x.score)
 
-    # Top-N brut avant expansion (garde 3 seeds pour expansion graphe)
-    seeds = scored[:3]
-    expanded = expand_by_graph(seeds, vault, max_extra=top_k - len(seeds))
-    expanded.sort(key=lambda x: -x.score)
-    return expanded[:top_k]
+        # Top-N brut avant expansion (garde 3 seeds pour expansion graphe)
+        seeds = scored[:3]
+        expanded = expand_by_graph(seeds, vault, max_extra=top_k - len(seeds))
+        expanded.sort(key=lambda x: -x.score)
+        result = expanded[:top_k]
+
+        elapsed_ms = (time.perf_counter() - t0) * 1000
+
+        span.update(
+            output=[_scored_note_to_dict(s) for s in result],
+            metadata={
+                "query_tokens": query_tokens,
+                "vault_size": len(vault),
+                "candidates_with_signal": len(scored),
+                "seeds_before_graph": [_scored_note_to_dict(s) for s in seeds],
+                "bm25_stats": {
+                    "N": stats["N"],
+                    "avgdl": round(stats["avgdl"], 2),
+                    "idf_terms": len(stats["idf"]),
+                },
+                "elapsed_ms": round(elapsed_ms, 1),
+            },
+        )
+
+        return result
 
 
 # ---------------------------------------------------------------------------
-# Prompt building
+# Prompt building (instrumenté)
 # ---------------------------------------------------------------------------
 SYSTEM_PROMPT = """Tu es GrasBot, l'assistant IA du portfolio de Fernand Gras-Calvet, étudiant à l'École 42 Perpignan.
 
@@ -532,69 +586,127 @@ def build_prompt(query: str, scored_notes: list[ScoredNote]) -> tuple[str, str]:
     # Seuil : si toutes les notes sont en-dessous, on considère "pas de contexte pertinent"
     relevant = [s for s in scored_notes if s.score >= MIN_SCORE]
 
-    if relevant:
-        context_blocks = []
-        for i, s in enumerate(relevant, 1):
-            n = s.note
-            header = f"[SOURCE {i} · slug={n.slug} · type={n.type} · score={s.score:.1f}] {n.title}"
-            context_blocks.append(f"{header}\n{n.body}")
-        context = "\n\n---\n\n".join(context_blocks)
-        user = (
-            "Voici les notes pertinentes du vault personnel de Fernand :\n\n"
-            f"{context}\n\n"
-            "---\n\n"
-            f"Question du visiteur : {query}\n\n"
-            "Réponds en t'appuyant sur ces notes. Si la question dépasse leur portée, dis-le."
-        )
-    else:
-        user = (
-            f"Question du visiteur : {query}\n\n"
-            "Note : aucune fiche du vault ne correspond clairement à cette question. "
-            "Réponds sobrement à partir de tes connaissances générales, "
-            "sans inventer de faits spécifiques sur Fernand. "
-            "Invite le visiteur à explorer /portfolio, /competences, /contact."
+    with langfuse.start_as_current_span(
+        name="prompt_build",
+        input={"query": query, "scored_count": len(scored_notes)},
+    ) as span:
+        if relevant:
+            context_blocks = []
+            for i, s in enumerate(relevant, 1):
+                n = s.note
+                header = f"[SOURCE {i} · slug={n.slug} · type={n.type} · score={s.score:.1f}] {n.title}"
+                context_blocks.append(f"{header}\n{n.body}")
+            context = "\n\n---\n\n".join(context_blocks)
+            user = (
+                "Voici les notes pertinentes du vault personnel de Fernand :\n\n"
+                f"{context}\n\n"
+                "---\n\n"
+                f"Question du visiteur : {query}\n\n"
+                "Réponds en t'appuyant sur ces notes. Si la question dépasse leur portée, dis-le."
+            )
+        else:
+            user = (
+                f"Question du visiteur : {query}\n\n"
+                "Note : aucune fiche du vault ne correspond clairement à cette question. "
+                "Réponds sobrement à partir de tes connaissances générales, "
+                "sans inventer de faits spécifiques sur Fernand. "
+                "Invite le visiteur à explorer /portfolio, /competences, /contact."
+            )
+
+        grounded = bool(relevant)
+        span.update(
+            output={"system": SYSTEM_PROMPT, "user": user},
+            metadata={
+                "grounded": grounded,
+                "relevant_notes": [_scored_note_to_dict(s) for s in relevant],
+                "system_chars": len(SYSTEM_PROMPT),
+                "user_chars": len(user),
+                "min_score_threshold": MIN_SCORE,
+            },
         )
 
-    return SYSTEM_PROMPT, user
+        return SYSTEM_PROMPT, user
 
 
 # ---------------------------------------------------------------------------
-# Génération via Ollama
+# Génération via Ollama (instrumenté comme "generation" Langfuse)
 # ---------------------------------------------------------------------------
 def generate(system: str, user: str) -> str:
-    """Appelle Ollama `/api/chat` et renvoie le texte de réponse."""
-    response = requests.post(
-        f"{OLLAMA_URL}/api/chat",
-        json={
-            "model": LLM_MODEL,
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-            "stream": False,
-            "options": {
-                "temperature": 0.4,
-                "num_predict": 512,
+    """Appelle Ollama `/api/chat` et renvoie le texte de réponse.
+
+    Span Langfuse de type `generation` → expose latence, modèle, paramètres,
+    et tokens (si l'API Ollama les retourne dans `prompt_eval_count` /
+    `eval_count`) comme un LLM-call standard dans le dashboard.
+    """
+    model_params = {
+        "temperature": 0.4,
+        "num_predict": 512,
+    }
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": user},
+    ]
+
+    with langfuse.start_as_current_observation(
+        as_type="generation",
+        name="ollama-chat",
+        model=LLM_MODEL,
+        input=messages,
+        model_parameters=model_params,
+    ) as generation:
+        response = requests.post(
+            f"{OLLAMA_URL}/api/chat",
+            json={
+                "model": LLM_MODEL,
+                "messages": messages,
+                "stream": False,
+                "options": model_params,
+                "keep_alive": "30m",
             },
-            "keep_alive": "30m",
-        },
-        timeout=180,
-    )
-    response.raise_for_status()
-    data = response.json()
-    message = data.get("message") or {}
-    content = message.get("content", "").strip()
-    if not content:
-        raise RuntimeError(
-            f"generate: réponse vide du modèle '{LLM_MODEL}' — vérifier qu'il est pullé."
+            timeout=180,
         )
-    return content
+        response.raise_for_status()
+        data = response.json()
+        message = data.get("message") or {}
+        content = message.get("content", "").strip()
+        if not content:
+            generation.update(
+                output=None,
+                metadata={"ollama_raw": data},
+                level="ERROR",
+                status_message=f"Empty response from model '{LLM_MODEL}'",
+            )
+            raise RuntimeError(
+                f"generate: réponse vide du modèle '{LLM_MODEL}' — vérifier qu'il est pullé."
+            )
+
+        # Ollama renvoie parfois les comptes de tokens — on les propage si dispos
+        # (compatible avec le format Langfuse "usage").
+        usage: dict[str, int] = {}
+        if "prompt_eval_count" in data:
+            usage["input"] = int(data["prompt_eval_count"])
+        if "eval_count" in data:
+            usage["output"] = int(data["eval_count"])
+        if usage:
+            usage["total"] = usage.get("input", 0) + usage.get("output", 0)
+
+        update_kwargs: dict[str, Any] = {"output": content}
+        if usage:
+            update_kwargs["usage_details"] = usage
+        generation.update(**update_kwargs)
+
+        return content
 
 
 # ---------------------------------------------------------------------------
-# Façade haut-niveau
+# Façade haut-niveau — trace racine Langfuse
 # ---------------------------------------------------------------------------
-def answer(query: str, top_k: int | None = None) -> dict[str, Any]:
+def answer(
+    query: str,
+    top_k: int | None = None,
+    session_id: str | None = None,
+    user_id: str | None = None,
+) -> dict[str, Any]:
     """Entrée principale consommée par `api.py`.
 
     Retourne :
@@ -605,33 +717,111 @@ def answer(query: str, top_k: int | None = None) -> dict[str, Any]:
       "grounded": bool,                # True si au moins 1 note a dépassé MIN_SCORE
       "vault_size": int,
     }
+
+    Côté Langfuse, crée une trace racine `ask` qui englobe :
+      - span `retrieval`
+      - span `prompt_build`
+      - span `generation` (type generation : model, params, usage)
+    Avec session_id/user_id propagés au trace-level pour regroupement dans Langfuse.
     """
-    scored = search(query, top_k=top_k)
-    system, user = build_prompt(query, scored)
-    text = generate(system, user)
+    with langfuse.start_as_current_span(
+        name="ask",
+        input={"query": query},
+    ) as root_span:
+        # Méta au niveau de la TRACE (pas du span), pour filtrer/grouper dans l'UI.
+        trace_metadata: dict[str, Any] = {
+            "top_k": top_k or TOP_K,
+            "min_score": MIN_SCORE,
+        }
+        trace_update: dict[str, Any] = {
+            "name": "ask",
+            "input": {"query": query},
+            "metadata": trace_metadata,
+        }
+        if session_id:
+            trace_update["session_id"] = session_id
+        if user_id:
+            trace_update["user_id"] = user_id
 
-    sources = []
-    for s in scored:
-        url = None
-        if s.note.type == "projet":
-            url = f"/portfolio/{s.note.slug}"
-        elif s.note.type == "competence":
-            url = f"/competences/{s.note.slug}"
-        sources.append({
-            "slug": s.note.slug,
-            "title": s.note.title,
-            "type": s.note.type,
-            "score": round(s.score, 2),
-            "reasons": s.reasons,
-            **({"url": url} if url else {}),
-        })
+        langfuse.update_current_trace(**trace_update)
 
-    grounded = any(s.score >= MIN_SCORE for s in scored)
+        # --- Pipeline ---
+        t0 = time.perf_counter()
+        scored = search(query, top_k=top_k)
+        system, user = build_prompt(query, scored)
+        text = generate(system, user)
+        elapsed_ms = (time.perf_counter() - t0) * 1000
 
-    return {
-        "response": text,
-        "sources": sources,
-        "model": LLM_MODEL,
-        "grounded": grounded,
-        "vault_size": len(load_vault()),
-    }
+        # --- Construction de la réponse API ---
+        sources = []
+        for s in scored:
+            url = None
+            if s.note.type == "projet":
+                url = f"/portfolio/{s.note.slug}"
+            elif s.note.type == "competence":
+                url = f"/competences/{s.note.slug}"
+            sources.append({
+                "slug": s.note.slug,
+                "title": s.note.title,
+                "type": s.note.type,
+                "score": round(s.score, 2),
+                "reasons": s.reasons,
+                **({"url": url} if url else {}),
+            })
+
+        grounded = any(s.score >= MIN_SCORE for s in scored)
+        max_score = max((s.score for s in scored), default=0.0)
+        # Score normalisé pour Langfuse : 0 si pas de contexte, sinon
+        # min(max_score / 15, 1) — 15 ≈ score typique d'un match fort (title + alias).
+        retrieval_relevance = min(max_score / 15.0, 1.0)
+
+        # --- Finalisation : output + scores + tags sur la trace ---
+        tags = [
+            "grounded" if grounded else "ungrounded",
+            f"model:{LLM_MODEL}",
+        ]
+        if not scored:
+            tags.append("vault-miss")
+
+        langfuse.update_current_trace(
+            output={
+                "response": text,
+                "sources_count": len(sources),
+                "grounded": grounded,
+            },
+            tags=tags,
+        )
+
+        # Scores Langfuse : permettent de filtrer le dashboard (ex. "toutes les
+        # traces non-grounded du mois") et de tracer des régressions.
+        try:
+            langfuse.score_current_trace(
+                name="grounded",
+                value=1.0 if grounded else 0.0,
+                data_type="BOOLEAN",
+            )
+            langfuse.score_current_trace(
+                name="retrieval_relevance",
+                value=round(retrieval_relevance, 3),
+                data_type="NUMERIC",
+            )
+        except Exception as exc:  # pragma: no cover
+            print(f"⚠  score_current_trace failed: {exc}")
+
+        root_span.update(
+            output={"response_chars": len(text)},
+            metadata={
+                "elapsed_ms": round(elapsed_ms, 1),
+                "sources_count": len(sources),
+                "max_score": round(max_score, 2),
+                "grounded": grounded,
+            },
+        )
+
+        return {
+            "response": text,
+            "sources": sources,
+            "model": LLM_MODEL,
+            "grounded": grounded,
+            "vault_size": len(load_vault()),
+        }

@@ -32,6 +32,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+llm-api/.env
+llm-api/.env.local
+# Templates documentaires : forcer l'inclusion (ils contiennent des placeholders).
+!.env.example
+!llm-api/.env.example
 
 # vercel
 .vercel

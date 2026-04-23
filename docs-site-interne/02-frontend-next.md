@@ -43,6 +43,7 @@
 - Carrousels : `Carousel.tsx`, `CarouselCompetences.tsx` (swiper / react-responsive-carousel).
 - Sections : `ContentSection.tsx`, `ContentSectionCompetences*.tsx`.
 - `ContactForm.tsx` → `POST /api/contact` → Brevo API (voir `docs-site-interne/contact-flow.md`).
+- `ChatBot.js` → `askAI.js` → `/api/proxy` → FastAPI `/ask` avec `session_id` + `user_id` (UUID anonymes via `app/utils/grasbotIds.js`, voir `docs-site-interne/langfuse-observability.md`).
 - `ChatBot.js` → `askAI.js` → `/api/proxy`.
 - `ModalGlossaire.tsx` — glossaire (données Strapi selon usage dans les pages).
 
