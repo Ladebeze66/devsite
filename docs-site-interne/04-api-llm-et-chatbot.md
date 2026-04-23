@@ -1,6 +1,6 @@
 ﻿# API LLM et chatbot (GrasBot)
 
-**Dernière mise à jour :** 2026-04-22 (v3 — bascule graph + BM25)
+**Dernière mise à jour :** 2026-04-24 (v3 + alignement parcours site)
 
 ## Vue d'ensemble
 
@@ -31,13 +31,25 @@ par la refonte (`sources`, `grounded`, `model`, `vault_size`) passent dans
 la réponse JSON et pourront être affichés dans une itération suivante
 (voir [pistes d'évolution](#pistes-dévolution)).
 
+## Parcours public (hors moteur Python) — cohérence contenu
+
+Le visiteur découvre les **projets** sur `/portfolio/[slug]` et, pour la
+compétence **IA** (et toute compétence à laquelle on lie des
+**`realisation-ia`** dans Strapi), un **parallèle** sur `/competences/[slug]`
+(vignettes) puis `/competences/[slug]/[realisation]` (fiche identique en
+gabarit à une fiche projet). Rien n'est servi ici par FastAPI : c'est
+du **Strapi + Next** uniquement. Le chatbot, lui, interroge toujours
+**`vault-grasbot/`** via `llm-api/search.py` — mettre à jour le vault
+(ou l'extraction Strapi → vault) quand on veut que GrasBot **reflète** des
+faits nouveaux présentés sur le site. Détail des routes : [`02-frontend-next.md`](./02-frontend-next.md).
+
 ## FastAPI — `llm-api/`
 
 | Fichier | Rôle |
 |---------|------|
 | `api.py` | Endpoints `GET /ask?q=...`, `GET /health`, `POST /reload-vault`. |
 | `search.py` | `load_vault`, `tokenize_fr`, `score_note`, `expand_by_graph`, `search`, `build_prompt`, `generate`, `answer`. |
-| `requirements.txt` | `fastapi`, `uvicorn`, `requests`, `pyyaml`. **Plus besoin** de `chromadb` / `chroma-hnswlib` (supprimés v3). |
+| `requirements.txt` | `fastapi`, `uvicorn`, `requests`, `pyyaml` ; + `langfuse` (SDK 3.x, plafond strict inférieur à la v4) + `python-dotenv` pour l'observabilité optionnelle. Voir `llm-api/requirements.txt`. **Plus besoin** de `chromadb` / `chroma-hnswlib` (supprimés v3). |
 
 Modules supprimés en v3 :
 

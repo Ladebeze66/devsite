@@ -1,6 +1,6 @@
 # Frontend Next.js
 
-**Dernière mise à jour :** 2026-04-01
+**Dernière mise à jour :** 2026-04-24
 
 ## Stack
 
@@ -14,12 +14,19 @@
 |--------|---------|--------|
 | `/` | `app/page.tsx` | Accueil : `GET /api/homepages?populate=*` |
 | `/portfolio` | `app/portfolio/page.jsx` | Liste projets |
-| `/portfolio/[slug]` | `app/portfolio/[slug]/page.tsx` | Détail projet (`fetchData('projects', slug)`) |
-| `/competences` | `app/competences/page.jsx` | Liste compétences |
-| `/competences/[slug]` | `app/competences/[slug]/page.tsx` | Détail (`fetchData('competences', slug)`) |
+| `/portfolio/[slug]` | `app/portfolio/[slug]/page.tsx` | Détail projet : `ContentSection` + `fetchData('projects', slug)` |
+| `/competences` | `app/competences/page.jsx` | Liste compétences — tri par champ Strapi `order` (v4 : `attributes.order`, v5 : `order` à la racine) |
+| `/competences/[slug]` | `app/competences/[slug]/page.tsx` | **Rendu conditionnel** : si au moins une entrée `realisation-ia` est liée à la compétence (filtre API sur le slug), **grille de vignettes** (même rythme visuel que le portfolio) ; sinon fiche richtext historique via `ContentSectionCompetencesContainer` |
+| `/competences/[slug]/[realisation]` | `app/competences/[slug]/[realisation]/page.tsx` | Fiche d'une **réalisation** (collection Strapi `realisation-ia`) : réutilise `ContentSection` comme les projets (carousel, Markdown `resum` ou `Resum`, CTA `link` externe) |
 | `/contact` | `app/contact/page.js` | Formulaire → `/api/contact` (Brevo, voir `contact-flow.md`) |
 | `/api/contact` | `app/api/contact/route.ts` | Endpoint serveur : envoie un email via Brevo, honeypot + rate-limit |
 | `/api/proxy` | `app/api/proxy/route.js` | Proxy GET vers API LLM distante |
+
+**Strapi — content-types concernés :**
+
+- `competence` : `name`, `content` (richtext), `picture`, `slug`, `order`
+- `realisation-ia` : `name`, `description`, `picture`, `slug`, `resum` (richtext, alias accepté côté front : `Resum` pour les `project` uniquement), `link`, `order`, relation `competences` (plusieurs)
+- Vignette → toujours navigation vers la **fiche détail** interne ; le champ `link` sert de bouton *Voir plus* en bas de fiche (comme sur les fiches `project`).
 
 ## Layout
 
@@ -43,8 +50,7 @@
 - Carrousels : `Carousel.tsx`, `CarouselCompetences.tsx` (swiper / react-responsive-carousel).
 - Sections : `ContentSection.tsx`, `ContentSectionCompetences*.tsx`.
 - `ContactForm.tsx` → `POST /api/contact` → Brevo API (voir `docs-site-interne/contact-flow.md`).
-- `ChatBot.js` → `askAI.js` → `/api/proxy` → FastAPI `/ask` avec `session_id` + `user_id` (UUID anonymes via `app/utils/grasbotIds.js`, voir `docs-site-interne/langfuse-observability.md`).
-- `ChatBot.js` → `askAI.js` → `/api/proxy`.
+- `GrasBotFab` + `ChatBot.js` → `askAI.js` → `/api/proxy` → FastAPI `/ask` avec `session_id` + `user_id` (UUID anonymes via `app/utils/grasbotIds.js`, voir `docs-site-interne/langfuse-observability.md`).
 - `ModalGlossaire.tsx` — glossaire (données Strapi selon usage dans les pages).
 
 ## Fichiers clés (liste courte)

@@ -24,6 +24,13 @@ my-next-site/
 
 **Observabilité** : le chatbot GrasBot est tracé dans une instance **Langfuse self-hosted** (`langfuse.fernandgrascalvet.com`). Chaque question déclenche une trace `ask` avec spans `retrieval` / `prompt_build` / `ollama-chat`, plus des scores auto (`grounded`, `retrieval_relevance`) et des tags. Voir `docs-site-interne/langfuse-observability.md` pour le détail.
 
+## Contenu : compétences, réalisations IA et ordre d’affichage
+
+- **Ordre** de la liste `/competences` : champ `order` sur le content-type compétence. Selon la version de Strapi, l’API renvoie `attributes.order` (v4) ou `order` (v5) — le front unifie cela (voir `getOrder()` dans `app/competences/page.jsx`).
+- **Fiche** `/competences/[slug]` : affiche des **vignettes** (projets de type `realisation-ia` liés à la compétence) dès qu’il en existe ; sinon, rendu de la fiche richtext « classique ».
+- **Détail** d’une réalisation : route `/competences/[slug]/[realisation]` (même gabarit de contenu qu’une fiche portfolio).
+- **Documentation détaillée** (tableau des routes, champs Strapi, lien avec GrasBot) : `docs-site-interne/02-frontend-next.md` et, côté API chatbot, `docs-site-interne/04-api-llm-et-chatbot.md` (section *Parcours public*).
+
 ## 🚀 Démarrage Rapide
 
 ### Script Automatique (Recommandé)
@@ -287,6 +294,6 @@ Pensez à sauvegarder régulièrement :
 
 ---
 
-**Dernière mise à jour** : $(Get-Date -Format "dd/MM/yyyy HH:mm")
+**Dernière mise à jour** : 2026-04-24
 **Version Cursor** : 2.0.77
 **OS** : Windows Server 2025
