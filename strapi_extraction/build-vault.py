@@ -59,7 +59,12 @@ DOMAIN_KEYWORDS: dict[str, list[str]] = {
     "web": ["next.js", "nextjs", "react", "django", "api rest", "websocket", "strapi"],
     "devops": ["docker", "nginx", "mariadb", "wordpress", "inception", "conteneur"],
     "securite": ["born2beroot", "ssh", "fail2ban", "ufw", "lvm", "cybersécurité"],
-    "ia": ["llm", "ollama", "ia locale", "intelligence artificielle", "chatbot", "embedding"],
+    "ia": [
+        "llm", "ollama", "ia locale", "intelligence artificielle", "chatbot", "embedding",
+        # Spécialisation Data / IA (ft_linear_regression, piscine Python data, etc.)
+        "machine learning", "régression", "régression linéaire", "descente de gradient",
+        "numpy", "pandas", "scikit-learn", "data science", "dataframe",
+    ],
     "graphique": ["minilibx", "raycasting", "cub3d", "fract-ol", "wolfenstein"],
     "3d": ["impression 3d", "3d printing", "prusa", "slicer", "filament"],
     "domotique": ["domotique", "home assistant", "zigbee", "iot"],
@@ -74,6 +79,11 @@ TAG_KEYWORDS: dict[str, list[str]] = {
     "concurrence": ["thread", "mutex", "philosopher"],
     "docker": ["docker", "inception"],
     "makefile": ["makefile"],
+    "data-ia": [
+        "ft_linear_regression", "ft-linear-regression",
+        "régression linéaire", "descente de gradient",
+        "piscine python", "numpy", "pandas", "scikit-learn",
+    ],
     "projet-perso": [],  # drapeau manuel (futur)
 }
 

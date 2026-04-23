@@ -2,7 +2,7 @@
 title: MOC — Web
 slug: MOC-Web
 type: moc
-source: vault/generated
+source: manual
 domains: [web]
 tags: [moc]
 aliases:
@@ -25,10 +25,12 @@ visibility: public
 ---
 
 
-Notes du domaine *web* (3 au total).
+Notes du domaine *web* (5 au total).
 
 ## Notes liées
 
 - [[developpement-web-and-hebergement-sur-serveur-windows|Développement Web & Hébergement sur serveur Windows]] — _reseau, securite, web_
-- [[fernandgrascalvet-com|fernandgrascalvet.com (portfolio)]] — _devops, ia, reseau, securite, web_
+- [[fernandgrascalvet-com|fernandgrascalvet.com (portfolio)]] — _devops, ia, web_
+- [[grasbot|GrasBot — chatbot IA du portfolio]] — _devops, ia, web_
+- [[newsletter-ia|Newsletter IA — Ollama + Listmonk + Directus]] — _devops, ia, web_
 - [[ft-transcendence|ft_transcendence]] — _algorithmique, devops, ecole-42, reseau, web_

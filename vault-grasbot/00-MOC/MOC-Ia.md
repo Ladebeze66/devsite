@@ -2,7 +2,7 @@
 title: MOC — Ia
 slug: MOC-Ia
 type: moc
-source: vault/generated
+source: manual
 domains: [ia]
 tags: [moc]
 aliases:
@@ -28,11 +28,15 @@ visibility: public
 ---
 
 
-Notes du domaine *ia* (4 au total : 2 compétences + 2 projets / techniques liés).
+Notes du domaine *ia* (8 au total : 2 compétences + 6 projets liés).
 
 ## Notes liées
 
-- [[grasbot|GrasBot — assistant IA du portfolio]] — _devops, ecole-42, ia, web_
+- [[grasbot|GrasBot — chatbot IA du portfolio]] — _devops, ia, web_
+- [[newsletter-ia|Newsletter IA — Ollama + Listmonk + Directus]] — _devops, ia, web_
+- [[transcription-video|Transcription vidéo automatique]] — _devops, ia_
+- [[ft-linear-regression|ft_linear_regression]] — _algorithmique, ecole-42, ia_
+- [[piscine-python-data-science|Piscine Python — Data Science]] — _algorithmique, ecole-42, ia_
 - [[ia|Mon Exploration et Maîtrise de l’Intelligence Artificielle]] — _algorithmique, ecole-42, ia_
 - [[competence|Mon expérience dans la domotique]] — _algorithmique, domotique, ia, reseau_
-- [[fernandgrascalvet-com|fernandgrascalvet.com (portfolio)]] — _devops, ia, reseau, securite, web_ (couverture transversale du site)
+- [[fernandgrascalvet-com|fernandgrascalvet.com (portfolio)]] — _devops, ia, web_ (couverture transversale du site)

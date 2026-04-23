@@ -10,7 +10,7 @@ graph + BM25, sans embeddings.
 ## Structure
 
 - `00-MOC/` — Maps of Content (hubs thématiques)
-- `10-Projets/` — 17 projets Strapi + **2 notes manuelles** (`10-Projets/grasbot.md`, `10-Projets/fernandgrascalvet-com.md`)
+- `10-Projets/` — 17 projets Strapi + **6 notes manuelles** (`grasbot.md`, `newsletter-ia.md`, `transcription-video.md`, `fernandgrascalvet-com.md`, `ft-linear-regression.md`, `piscine-python-data-science.md`)
 - `20-Competences/` — 4 compétences extraites de Strapi
 - `30-Parcours/` — Parcours personnel, CV, bio (version curatée `source: manual`)
 - `40-Glossaire/` — Termes techniques (vide, à remplir manuellement ou depuis Strapi plus tard)

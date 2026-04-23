@@ -41,9 +41,9 @@ visibility: public
 
 J'ai réalisé ce projet afin d'étendre mes compétences en développement Web. 
 
-### Mise à jour 2025–2026 — refonte, réalisations et contact
+### Le site en production
 
-Le site a évolué en profondeur : **refonte visuelle** (*Digital Atelier* : Manrope, Newsreader, cartes *vellum*, tokens Tailwind), **Strapi 5** avec le type **`realisation-ia`** (réalisations liées aux compétences, vignettes + routes `/competences/[slug]/[realisation]`), et **GrasBot** (assistant sur tout le site) documenté en projet [[grasbot]] dans le vault. Le **formulaire de contact** envoie désormais les messages via l’**API Brevo** (plus de stockage des messages côté Strapi). Voir la synthèse produit [[fernandgrascalvet-com]].
+Le site **fernandgrascalvet.com** est la mise en pratique courante de cette compétence. La fiche projet [[fernandgrascalvet-com]] décrit ce que le visiteur voit (portfolio, compétences avec `realisation-ia`, contact via Brevo, assistant [[grasbot|GrasBot]]).
 
 ---
 

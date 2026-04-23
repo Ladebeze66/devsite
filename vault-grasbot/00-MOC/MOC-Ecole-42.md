@@ -2,7 +2,7 @@
 title: MOC — École 42
 slug: MOC-Ecole-42
 type: moc
-source: vault/generated
+source: manual
 domains: [ecole-42]
 tags: [moc]
 aliases:
@@ -21,7 +21,7 @@ answers:
   - Que fait-il en ecole-42 ?
 priority: 7
 linked:
-updated: 2026-04-22
+updated: 2026-04-23
 visibility: public
 ---
 
@@ -36,6 +36,7 @@ Tout ce qui est rattaché à la formation 42 Perpignan.
 - [[cub3d|cub3d]] — _domotique, ecole-42, graphique, reseau_
 - [[fract-ol|fract-ol]] — _algorithmique, domotique, ecole-42, graphique, reseau, systeme_
 - [[ft-irc|ft-irc]] — _cpp, ecole-42, reseau, systeme_
+- [[ft-linear-regression|ft_linear_regression]] — _algorithmique, ecole-42, ia_
 - [[ft-printf|Ft-printf]] — _c, ecole-42, reseau_
 - [[ft-transcendence|ft_transcendence]] — _algorithmique, devops, ecole-42, reseau, web_
 - [[get-next-line|Get_next_line]] — _c, ecole-42, reseau_
@@ -46,5 +47,6 @@ Tout ce qui est rattaché à la formation 42 Perpignan.
 - [[ia|Mon Exploration et Maîtrise de l’Intelligence Artificielle]] — _algorithmique, ecole-42, ia_
 - [[netpractice|netpractice]] — _algorithmique, ecole-42, reseau_
 - [[philosopher|philosopher]] — _c, ecole-42, reseau, systeme_
+- [[piscine-python-data-science|Piscine Python — Data Science]] — _algorithmique, ecole-42, ia_
 - [[presentation-ecole-42|Présentation école 42]] — _ecole-42, reseau, systeme_
 - [[push-swap|push_swap]] — _algorithmique, ecole-42, reseau_

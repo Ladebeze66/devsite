@@ -3,12 +3,15 @@ title: Mon Exploration et Maîtrise de l’Intelligence Artificielle
 slug: ia
 type: competence
 source: manual
-domains: [algorithmique, ecole-42, ia]
-tags: [tri]
+domains: [ia, ecole-42, algorithmique]
+tags: [chatbot, ollama, langfuse, data-ia]
 aliases:
   - mon exploration et maîtrise de l’intelligence artificielle
   - ia
   - intelligence artificielle
+  - ia locale
+  - ia self-hosted
+  - ia auto-hébergée
   - llm
   - llms
   - modèles de langage
@@ -18,19 +21,24 @@ aliases:
   - deep learning
   - data science
   - ollama
+  - langfuse
 answers:
-  - Quelles sont ses compétences en IA ?
+  - "Quelles sont ses compétences en IA ?"
   - "A-t-il de l'expérience en IA ?"
-  - Parle-moi de son expérience en IA
+  - "Parle-moi de son expérience en IA."
+  - "Utilise-t-il des LLMs locaux ?"
+  - "Qu'est-ce qui l'intéresse dans l'IA ?"
 priority: 7
 linked:
   - "[[MOC-Competences]]"
+  - "[[MOC-Ia]]"
 related:
   - "[[grasbot]]"
+  - "[[newsletter-ia]]"
+  - "[[transcription-video]]"
+  - "[[ft-linear-regression]]"
+  - "[[piscine-python-data-science]]"
   - "[[fernandgrascalvet-com]]"
-  - "[[born2beroot]]"
-  - "[[cpp-partie1]]"
-  - "[[cpp-partie2]]"
 updated: 2026-04-23
 visibility: public
 ---
@@ -39,23 +47,42 @@ visibility: public
 
 ---
 
-Comme beaucoup, j’ai découvert l’intelligence artificielle grand public avec l’arrivée de ChatGPT, qui a marqué un tournant décisif dans l’accessibilité et la démocratisation de cette technologie. En l’espace de quelques mois, le domaine a connu une expansion fulgurante, avec l’émergence d’une multitude de solutions exploitant l’IA sous diverses formes. Fasciné par ces avancées, j’ai rapidement développé un vif intérêt pour plusieurs applications, notamment la génération d’images, les chatbots intelligents et plus largement les modèles de langage avancés (LLMs).
+## Mon exploration des LLM et de l'IA : un intérêt devenu spécialisation
 
-Dans cette quête d’exploration, j’ai expérimenté des solutions d’IA locale, notamment avec Ollama, LLM Studio, et d’autres outils permettant une plus grande maîtrise et personnalisation des modèles. Mon objectif a été de comprendre en profondeur les capacités d’intégration de ces intelligences artificielles locales, en explorant l’entraînement de modèles personnalisés, l’optimisation des performances et l’affinement des interactions par l’ingénierie des prompts (cliquez sur IA locale test mistral 7b sur mon serveur).
+Comme beaucoup, j'ai découvert l'intelligence artificielle grand public avec l'arrivée de ChatGPT, qui a marqué un tournant décisif dans l'accessibilité et la démocratisation de cette technologie. Fasciné par la vitesse d'évolution du domaine, j'ai rapidement développé un intérêt pour plusieurs applications : **génération d'images**, **chatbots**, et plus largement les **modèles de langage (LLMs)**.
 
-Actuellement, je suis en phase d’installation et de déploiement de solutions d’IA locale sur mon propre serveur, un projet en cours de développement qui me permet d’expérimenter les configurations avancées et d’adapter ces modèles à des cas d’usage spécifiques. Cette démarche s’inscrit dans une volonté de maîtriser l’IA en environnement auto-hébergé, offrant ainsi une meilleure compréhension de la gestion des ressources, du fine-tuning des modèles et des défis liés à l’infrastructure.
+## De l'expérimentation à l'auto-hébergement
 
-Parallèlement, j’ai entrepris une spécialisation en Data Science et Intelligence Artificielle au sein de l’École 42, afin d’approfondir mes connaissances théoriques et pratiques dans ce domaine en perpétuelle évolution. Cette formation me permet d’aller encore plus loin dans l’analyse des algorithmes de machine learning et deep learning, d’explorer des approches avancées en traitement des données massives, et de perfectionner mes compétences en développement et intégration de solutions IA appliquées.
+Rapidement, j'ai voulu sortir de la dépendance aux API propriétaires et comprendre ce qui se passe sous le capot. J'ai expérimenté des solutions d'**IA locale** avec **Ollama**, **LM Studio**, **Open WebUI**, en explorant le fine-tuning léger, l'ingénierie de prompts, et l'intégration de modèles dans des workflows métier.
 
-### GrasBot — assistant intégré au site
+Aujourd'hui, toute ma pile IA tourne sur **mon serveur personnel** :
 
-Sur **fernandgrascalvet.com**, j’ai réalisé **GrasBot** : un assistant basé sur un **LLM local** (Qwen3 via Ollama), une API **FastAPI**, et une **base de connaissances** dérivée de ce vault (`vault-grasbot/`) avec retrieval **graph + BM25** (v3, sans embeddings). Le chat est disponible sur toutes les pages (FAB), avec **observabilité Langfuse** pour le débogage et l’amélioration continue. Les réponses visent la **fidélité aux sources** (prompt et troncatures documentés). Voir la fiche projet [[grasbot]] et la note technique [[grasbot-retrieval]].
+- **LLM locaux** (Qwen3, Llama, Mistral, modèles d'embedding),
+- **observabilité** via **Langfuse** self-hosted,
+- **recherche web privée** via **SearxNG** et **Firecrawl** pour alimenter des agents.
 
-### Sur le site — rubrique compétence IA
+Cette infrastructure me permet d'expérimenter **sans plafond de tokens**, **sans fuite de données**, et avec une compréhension fine du **coût** et de la **performance** de chaque modèle.
 
-Les **réalisations** liées à cette compétence (entité Strapi `realisation-ia`) apparaissent en **vignettes** sur `/competences/ia` avec un détail `/competences/ia/<slug>` aligné sur les fiches portfolio. Cela permet de présenter GrasBot et d’autres travaux IA comme des **projets navigables**, pas seulement du texte statique.
+## Une spécialisation formalisée à l'École 42
 
-Animé par une passion pour l’intelligence artificielle et ses innombrables possibilités, je continue de m’informer, d’expérimenter et d’appliquer ces technologies à des projets concrets. Mon objectif est d’acquérir une expertise approfondie pour concevoir des systèmes intelligents performants, adaptables et innovants, tout en restant à la pointe des avancées technologiques.
+Parallèlement, je me spécialise en **Data Science et Intelligence Artificielle à l'École 42**, ce qui me permet d'approfondir les **fondations mathématiques** (régression, descente de gradient, fonctions de coût, métriques d'évaluation) plutôt que de rester au niveau de l'utilisation des bibliothèques de haut niveau. Les projets [[ft-linear-regression]] (premier modèle **from scratch**) et la [[piscine-python-data-science|Piscine Python for Data Science]] (5 modules) posent les briques essentielles avant les modèles plus complexes.
+
+## Mon angle
+
+Je privilégie trois axes :
+
+1. **Autonomie** — héberger moi-même pour comprendre réellement les contraintes, les coûts et les limites.
+2. **Observabilité** — chaque appel LLM que je produis est tracé (Langfuse). On ne peut pas améliorer ce qu'on ne mesure pas.
+3. **Utilité concrète** — pas d'IA pour l'IA : chaque projet résout un problème réel (newsletter automatisée, chatbot de portfolio, transcription vidéo…).
+
+## Réalisations IA exposées sur le site
+
+La rubrique `/competences/ia` présente ces travaux en **vignettes navigables** (entité Strapi `realisation-ia`) :
+
+- [[grasbot|GrasBot — chatbot IA du portfolio]] — RAG maison (graph + BM25) + Qwen3 local + Langfuse.
+- [[newsletter-ia|Newsletter IA — Ollama + Listmonk + Directus]] — chaîne de publication auto-hébergée avec génération LLM ciblée.
+- [[transcription-video|Transcription vidéo automatique]] — pipeline multimédia (décodage → segmentation → STT → post-processing).
+- *Parcours / formation* : voir [[ft-linear-regression]] et [[piscine-python-data-science]].
 
 ---
 
@@ -66,6 +93,6 @@ Animé par une passion pour l’intelligence artificielle et ses innombrables po
 ## Liens
 
 - [[MOC-Competences]] — vue d'ensemble des compétences
+- [[MOC-Ia]] — domaine *ia*
 - [[MOC-Algorithmique]] — domaine *algorithmique*
 - [[MOC-Ecole-42]] — domaine *ecole-42*
-- [[MOC-Ia]] — domaine *ia*

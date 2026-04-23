@@ -52,6 +52,21 @@ actuellement utilisés :
 | `concurrence` | Threads, mutex, synchronisation |
 | `docker` | Conteneurisation |
 | `makefile` | Build system GNU Make |
+| `chatbot` | Assistants conversationnels |
+| `ollama` | Serveur de LLM local |
+| `fastapi` | API Python FastAPI |
+| `langfuse` | Observabilité LLM |
+| `nextjs` | Framework React Next.js |
+| `strapi` | CMS headless Strapi |
+| `portfolio` | Site portfolio personnel |
+| `qwen3` | Modèle LLM Qwen3 |
+| `listmonk` | Diffusion de newsletters open-source |
+| `directus` | CMS headless Directus |
+| `newsletter` | Chaîne de publication newsletter |
+| `openwebui` | Open WebUI (front LLM) |
+| `ovh` | OVHcloud AI Endpoints |
+| `transcription` | Speech-to-text / sous-titres |
+| `multimedia` | Traitement audio / vidéo |
 
 ## Aliases (`aliases:`)
 
