@@ -118,7 +118,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 className="min-w-0 truncate pr-1 text-xl font-headline font-extrabold italic tracking-tight text-primary md:text-2xl"
                 translate="no"
               >
-                Portfolio Gras-Calvet Fernand
+                Portfolio Fernand Gras-Calvet
               </h2>
 
               {/* Burger ghost (Material Symbols) : plus sobre, couleur primaire, hover tonal. */}

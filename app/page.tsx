@@ -150,7 +150,7 @@ export default function HomePage() {
               <div
                 className="prose prose-sm max-w-none font-body text-on-surface-variant sm:prose-base
                 prose-headings:font-headline prose-headings:text-primary
-                prose-p:font-body prose-p:text-on-surface-variant
+                prose-p:font-body prose-p:text-left prose-p:text-on-surface-variant md:prose-p:text-justify
                 prose-strong:text-on-surface
                 prose-a:text-primary prose-a:no-underline hover:prose-a:underline
                 prose-li:marker:text-primary
