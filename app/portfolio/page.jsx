@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { getApiUrl } from "../utils/getApiUrl";
+import { pickStrapiImage } from "../utils/strapiImage";
 import VignetteCarousel from "../components/VignetteCarousel";
 import "../assets/main.css";
 import "../globals.css";
@@ -113,10 +115,16 @@ export default function Page() {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-6">
           {projects.map((project, idx) => {
             const pictures = project.picture ?? [];
-            const images = pictures.map((img) => ({
-              url: `${apiUrl}${img.url}`,
-              alt: img.name || `Visuel du projet ${project.name}`,
-            }));
+            const images = pictures
+              .map((img) => {
+                const picked = pickStrapiImage(apiUrl, img, "card");
+                if (!picked) return null;
+                return {
+                  url: picked.src,
+                  alt: img.name || `Visuel du projet ${project.name}`,
+                };
+              })
+              .filter(Boolean);
             const firstImage = images[0];
 
             return (
@@ -129,11 +137,12 @@ export default function Page() {
                   {images.length > 1 ? (
                     <VignetteCarousel images={images} />
                   ) : firstImage ? (
-                    <img
+                    <Image
                       src={firstImage.url}
                       alt={firstImage.alt}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      loading="lazy"
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 42vw"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-sm text-on-surface-variant">

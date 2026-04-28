@@ -4,17 +4,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchData } from "../utils/fetchData";
 import { getApiUrl } from "../utils/getApiUrl";
+import { pickStrapiImage, type StrapiMediaLike } from "../utils/strapiImage";
 import Carousel from "./Carousel";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-interface ImageData {
-  url: string;
-  formats?: {
-    large?: {
-      url: string;
-    };
-  };
+interface ImageData extends StrapiMediaLike {
   name?: string;
 }
 
@@ -157,10 +152,21 @@ export default function ContentSection({
   const richText = data.Resum ?? data.resum ?? "";
 
   const images =
-    picture?.map((img: ImageData) => ({
-      url: `${apiUrl}${img.formats?.large?.url || img.url}`,
-      alt: img.name || `Visuel du projet ${name}`,
-    })) || [];
+    picture
+      ?.map((img: ImageData) => {
+        const picked = pickStrapiImage(apiUrl, img, "full");
+        const url =
+          picked?.src ??
+          (img.url || img.formats?.large?.url
+            ? `${apiUrl}${img.formats?.large?.url ?? img.url}`
+            : null);
+        if (!url) return null;
+        return {
+          url,
+          alt: img.name || `Visuel du projet ${name}`,
+        };
+      })
+      .filter((item): item is { url: string; alt: string } => item != null) || [];
 
   return (
     <div className="mx-auto flex w-full min-w-0 max-w-3xl flex-col gap-5 px-4 pb-10 sm:px-6">

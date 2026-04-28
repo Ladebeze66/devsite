@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import "./assets/main.css";
 import { getApiUrl } from "./utils/getApiUrl";
+import { pickStrapiImage } from "./utils/strapiImage";
 
 async function getHomepageData() {
   const apiUrl = getApiUrl();
@@ -106,7 +108,12 @@ export default function HomePage() {
 
   const title = homepage.title ?? "Titre par défaut";
   const cv: string = homepage.cv ?? "";
-  const imageUrl = homepage.photo?.url ? `${apiUrl}${homepage.photo.url}` : null;
+  const portraitPick = homepage.photo
+    ? pickStrapiImage(apiUrl, homepage.photo, "hero")
+    : null;
+  const imageUrl =
+    portraitPick?.src ??
+    (homepage.photo?.url ? `${apiUrl}${homepage.photo.url}` : null);
 
   return (
     <div className="mx-auto flex w-full min-w-0 max-w-5xl flex-col gap-3 px-4 pb-10 sm:px-6">
@@ -120,11 +127,14 @@ export default function HomePage() {
           <div className="mx-auto md:mx-0">
             {imageUrl ? (
               <div className="rounded-sheet bg-primary p-1 shadow-ambient-sm">
-                <div className="overflow-hidden rounded-[1.25rem]">
-                  <img
+                <div className="relative h-48 w-48 overflow-hidden rounded-[1.25rem] sm:h-56 sm:w-56 md:h-64 md:w-64">
+                  <Image
                     src={imageUrl}
                     alt={`Portrait de ${title}`}
-                    className="h-48 w-48 object-cover object-center sm:h-56 sm:w-56 md:h-64 md:w-64"
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 768px) 12rem, 16rem"
+                    priority
                   />
                 </div>
               </div>

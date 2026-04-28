@@ -2,8 +2,10 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { getApiUrl } from "../../utils/getApiUrl";
+import { pickStrapiImage, type StrapiMediaLike } from "../../utils/strapiImage";
 import VignetteCarousel from "../../components/VignetteCarousel";
 import ContentSectionCompetencesContainer from "../../components/ContentSectionCompetencesContainer";
 
@@ -38,7 +40,7 @@ type Realisation = {
   description?: string;
   link?: string;
   order?: number;
-  picture?: Array<{ url?: string; name?: string }>;
+  picture?: Array<StrapiMediaLike & { name?: string }>;
 };
 
 type Competence = {
@@ -200,10 +202,17 @@ export default function CompetencePage() {
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-6">
         {realisations.map((realisation, idx) => {
           const pictures = realisation.picture ?? [];
-          const images = pictures.map((img) => ({
-            url: img?.url ? `${apiUrl}${img.url}` : "/placeholder.jpg",
-            alt: img?.name || `Visuel de la réalisation ${realisation.name}`,
-          }));
+          const images = pictures
+            .map((img) => {
+              const picked = pickStrapiImage(apiUrl, img, "card");
+              const url = picked?.src ?? (img?.url ? `${apiUrl}${img.url}` : null);
+              if (!url) return null;
+              return {
+                url,
+                alt: img?.name || `Visuel de la réalisation ${realisation.name}`,
+              };
+            })
+            .filter(Boolean);
           const firstImage = images[0];
 
           // Comportement voulu : la vignette renvoie TOUJOURS vers la fiche
@@ -226,11 +235,12 @@ export default function CompetencePage() {
                 {images.length > 1 ? (
                   <VignetteCarousel images={images} />
                 ) : firstImage ? (
-                  <img
+                  <Image
                     src={firstImage.url}
                     alt={firstImage.alt}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    loading="lazy"
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 42vw"
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-sm text-on-surface-variant">

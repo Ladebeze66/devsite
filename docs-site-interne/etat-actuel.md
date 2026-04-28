@@ -1,6 +1,6 @@
 # État actuel du site
 
-**Dernière mise à jour :** 2026-04-24 (doc compétences / realisation-ia + CONFIGURATION)
+**Dernière mise à jour :** 2026-04-28 (perf images, compression IIS/Next, plan Server Components)
 
 ## Ce qui est en place
 
@@ -13,6 +13,7 @@
 - **Vault de connaissance `vault-grasbot/`** : ~46 notes Markdown, dont 2 fiches projet manuelles (GrasBot, site portfolio) et compétences IA/Web mises à jour (2026-04) — recharger l’API après déploiement si besoin : `POST /reload-vault` (aliases, answers, priority) — source de vérité du chatbot, régénéré depuis Strapi par `strapi_extraction/build-vault.py`. Inclut une note `bio-fernand` courte (priority 10) dédiée aux questions biographiques et un CV complet complémentaire.
 - **Observabilité Langfuse** : instance self-hosted `langfuse.fernandgrascalvet.com`, instrumentation Python (`llm-api/observability.py`) traçant chaque requête `/ask` (retrieval / prompt_build / ollama-chat) avec session/user IDs anonymes côté front. Mode no-op automatique si les clés sont absentes. Voir [`langfuse-observability.md`](./langfuse-observability.md).
 - **Scripts** d'extraction et de doc dans `strapi_extraction/`.
+- **Performances images (front)** : utilitaire **`pickStrapiImage`**, variantes Strapi, **`next/image`** + `remotePatterns`, portrait **`priority`**, **`preconnect`** API dans `layout.tsx`. **`compress: false`** dans `next.config.ts` (obligatoire avec le reverse proxy IIS actuel — **`compress: true`** provoquait des **500** publics). Détail : [`09-performances-images.md`](./09-performances-images.md). Prochaine étape planifiée (sans implémentation engageant pour l’instant) : **Server Components** — [`10-plan-server-components.md`](./10-plan-server-components.md).
 - Documentation opérationnelle : [`CONFIGURATION_SITE.md`](../CONFIGURATION_SITE.md) à la racine du dépôt (incl. ordre des compétences et routes dédiées, renvoi vers [02-frontend-next.md](./02-frontend-next.md)).
 - **Captures d'écran** de référence (WebP) : [captures/](./captures/) — voir [INDEX.md](./captures/INDEX.md).
 - **Décision produit** : une **rubrique homelab / serveur** (souvent évoquée en « phase 3 ») n’est **pas retenue** — pas d’évolution planifiée sur ce thème ; le parcours public reste portfolio, compétences (dont IA + réalisations) et contact.

@@ -4,15 +4,10 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import CarouselCompetences from "./CarouselCompetences";
 import { getApiUrl } from "../utils/getApiUrl";
+import { pickStrapiImage, type StrapiMediaLike } from "../utils/strapiImage";
 
-interface ImageData {
-  url: string;
+interface ImageData extends StrapiMediaLike {
   name?: string;
-  formats?: {
-    large?: {
-      url: string;
-    };
-  };
 }
 
 interface GlossaireMot {
@@ -43,10 +38,21 @@ export default function ModalGlossaire({ mot, onClose }: ModalGlossaireProps) {
   }, [onClose]);
 
   const images =
-    mot.images?.map((img) => ({
-      url: `${apiUrl}${img.formats?.large?.url || img.url}`,
-      alt: img.name || "Illustration",
-    })) || [];
+    mot.images
+      ?.map((img: ImageData) => {
+        const picked = pickStrapiImage(apiUrl, img, "full");
+        const url =
+          picked?.src ??
+          (img.url || img.formats?.large?.url
+            ? `${apiUrl}${img.formats?.large?.url ?? img.url}`
+            : null);
+        if (!url) return null;
+        return {
+          url,
+          alt: img.name || "Illustration",
+        };
+      })
+      .filter((item): item is { url: string; alt: string } => item != null) || [];
 
   return createPortal(
     <div

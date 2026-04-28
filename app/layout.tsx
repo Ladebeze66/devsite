@@ -89,6 +89,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.gstatic.com"
           crossOrigin=""
         />
+        {/* API Strapi (médias JSON + images) — origine alignée sur NEXT_PUBLIC_API_URL. */}
+        <link
+          rel="preconnect"
+          href={process.env.NEXT_PUBLIC_API_URL || "https://api.fernandgrascalvet.com"}
+          crossOrigin=""
+        />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"

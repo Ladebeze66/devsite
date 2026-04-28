@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -54,12 +55,16 @@ export default function VignetteCarousel({
       }
     >
       {images.map((img, index) => (
-        <SwiperSlide key={index} className="flex h-full items-center justify-center">
-          <img
+        <SwiperSlide
+          key={index}
+          className="relative flex h-full min-h-0 w-full items-center justify-center"
+        >
+          <Image
             src={img.url}
             alt={img.alt}
-            className="h-full w-full object-cover"
-            loading="lazy"
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 42vw"
           />
         </SwiperSlide>
       ))}

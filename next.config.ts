@@ -22,7 +22,26 @@ const nextConfig = {
   },
 
   images: {
-    domains: ["localhost", "api.fernandgrascalvet.com"],
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "api.fernandgrascalvet.com",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "1337",
+        pathname: "/uploads/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "1337",
+        pathname: "/uploads/**",
+      },
+    ],
   },
 };
 

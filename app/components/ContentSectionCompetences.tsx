@@ -3,16 +3,13 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { getApiUrl } from "../utils/getApiUrl";
+import { pickStrapiImage, type StrapiMediaLike } from "../utils/strapiImage";
 import CarouselCompetences from "./CarouselCompetences";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import ModalGlossaire from "./ModalGlossaire";
 
-interface ImageData {
-  url: string;
-  formats?: {
-    large?: { url: string };
-  };
+interface ImageData extends StrapiMediaLike {
   name?: string;
 }
 
@@ -132,10 +129,21 @@ export default function ContentSectionCompetences({
   const { name, content, picture } = competenceData;
 
   const images =
-    picture?.map((img) => ({
-      url: `${apiUrl}${img.formats?.large?.url || img.url}`,
-      alt: img.name || `Visuel de la compétence ${name}`,
-    })) || [];
+    picture
+      ?.map((img: ImageData) => {
+        const picked = pickStrapiImage(apiUrl, img, "full");
+        const url =
+          picked?.src ??
+          (img.url || img.formats?.large?.url
+            ? `${apiUrl}${img.formats?.large?.url ?? img.url}`
+            : null);
+        if (!url) return null;
+        return {
+          url,
+          alt: img.name || `Visuel de la compétence ${name}`,
+        };
+      })
+      .filter((item): item is { url: string; alt: string } => item != null) || [];
 
   /**
    * Transforme le Markdown en injectant des spans `.glossary-keyword` / `.chatbot-keyword`

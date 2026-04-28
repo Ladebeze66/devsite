@@ -1,6 +1,6 @@
 # Frontend Next.js
 
-**Dernière mise à jour :** 2026-04-24
+**Dernière mise à jour :** 2026-04-28
 
 ## Stack
 
@@ -43,7 +43,9 @@
 ## Configuration Next
 
 - `next.config.ts` : `rewrites` de `/api/:path*` vers `${API_URL}/api/:path*` où `API_URL` vient de `NEXT_PUBLIC_API_URL` ou défaut production.
-- `images.domains` : `localhost`, `api.fernandgrascalvet.com`.
+- **`next/image`** : `images.remotePatterns` vers les chemins **`/uploads/**`** de l’API Strapi (HTTPS prod + `localhost` / `127.0.0.1:1337` en dev) ; `formats` AVIF/WebP ; **`compress: false`** (compatibilité reverse proxy IIS — voir [`09-performances-images.md`](./09-performances-images.md) §4.1).
+- **Médias Strapi** : utilitaire **`pickStrapiImage`** (`app/utils/strapiImage.ts`) pour préférer les variantes `medium` / `large` selon le contexte (liste, hero, galerie).
+- Plan **Server Components** (données Strapi), non implémenté : [`10-plan-server-components.md`](./10-plan-server-components.md).
 
 ## Composants notables
 
@@ -59,6 +61,7 @@
 app/layout.tsx
 app/page.tsx
 app/utils/getApiUrl.ts
+app/utils/strapiImage.ts
 app/utils/fetchData.ts
 app/api/contact/route.ts
 next.config.ts

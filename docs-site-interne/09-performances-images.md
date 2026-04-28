@@ -1,10 +1,11 @@
 # Audit performances images & dev mode
 
-**Dernière mise à jour :** 2026-04-28
-**Statut :** diagnostic — aucune modification du code n'est encore appliquée.
+**Dernière mise à jour :** 2026-04-28 (révision compression IIS/Next + lien plan SC)
+**Statut :** lots **A, B, C** et socle du lot **F** réalisés dans le code Next ; inventaire médias (Lot **D**) et autres lots **non** faits sauf mention.
 
-> Document d'analyse à l'origine d'un futur lot de corrections. À mettre à jour
-> au fur et à mesure que les actions sont réalisées (cocher les cases).
+> Document hybridé : conserve l’audit historique (§2 inventaire médias inchangé
+> tant qu’on n’a pas re-mesuré `cmsbackend/public/uploads/`). Les §3–4 reflètent
+> l’implémentation actuelle après l’itération perf front.
 
 ## 1. Contexte du problème
 
@@ -59,66 +60,63 @@ Strapi génère bien ces variantes — mais **dans le format de l'original**. Do
 un `.png` de 4 MB produit un `large_…png` de ~1 MB, alors qu'une version
 WebP serait à ~150-300 KB pour la même qualité perçue.
 
-## 3. Comment les images sont consommées par Next
+## 3. Comment les images sont consommées par Next (état courant)
 
-### 3.1 Toujours `img.url` (l'original), jamais les variantes
+### 3.1 Utilitaire `pickStrapiImage` (`app/utils/strapiImage.ts`)
 
-`app/portfolio/page.jsx` (vignettes en grille) :
+Toute lecture d’un média Strapi passant par le front doit préférer une **variante**
+à l’original :
 
-```132:137:app/portfolio/page.jsx
-                    <img
-                      src={firstImage.url}
-                      alt={firstImage.alt}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      loading="lazy"
-                    />
-```
+| Preset | Usage typique | Ordre de préférence |
+|--------|----------------|---------------------|
+| `card` | Grilles liste portfolio / compétences / vignettes `realisation-ia` | `medium` → `small` → `thumbnail` → original |
+| `hero` | Portrait hero home | `large` → `medium` → `small` → original |
+| `full` | Galeries fiche projet, compétence, glossaire (carousel détail) | `large` → `medium` → `small` → original |
 
-Même pattern dans :
+Les pages et composants listés au §3.2 appellent cet utilitaire puis
+construisent une URL absolue avec `getApiUrl()`. Si Strapi ne renvoie pas de
+bloc `formats` (upload incomplet ou vieux contenu), on retombe sur
+`formats.large ?? url` comme avant pour les zones **déjà** codées ainsi.
 
-- `app/competences/page.jsx` (ligne ~127)
-- `app/competences/[slug]/page.tsx` (ligne ~229)
-- `app/components/Carousel.tsx` (ligne ~81 + lightbox 120)
-- `app/components/CarouselCompetences.tsx` (ligne ~69 + lightbox 108)
-- `app/components/VignetteCarousel.tsx` (ligne ~58)
-- `app/page.tsx` (portrait hero, ligne 124)
+### 3.2 `next/image` + `sizes`
 
-**Aucun de ces composants ne lit `formats.thumbnail.url`, `formats.small.url`,
-`formats.medium.url` ni `formats.large.url`** — Strapi a déjà fait le travail
-de redimensionnement, on l'ignore.
+**Import** `next/image` utilisé pour les flux suivants :
 
-> **Constat n° 2 :** une carte de portfolio en grille charge un PNG ~3 MB
-> alors qu'on l'affiche en 400×300 px. La variante `medium_` (~300 KB) ou
-> `small_` (~120 KB) suffirait — gain immédiat de **~10× sur le poids
-> transféré**, sans toucher aux fichiers stockés.
+- **`app/page.tsx`** — portrait hero : `fill` dans un bloc dimensionné +
+  **`priority`** (LCP).
+- **`app/portfolio/page.jsx`**, **`app/competences/page.jsx`**,
+  **`app/competences/[slug]/page.tsx`** — vignettes : `fill` +
+  `sizes` adaptatif.
+- **`VignetteCarousel.tsx`**, **`Carousel.tsx`**, **`CarouselCompetences.tsx`**
+  — slides Swiper en `fill` avec `sizes` ; la **lightbox** reste une **`<img>`**
+  native (zoom plein cadre sans contraintes de dimensions Next).
 
-### 3.2 `<img>` natif partout — `next/image` jamais utilisé
+**Non couvert dans ce lot** : `placeholder="blur"` avec `blurDataURL` dérivé
+de `formats.thumbnail` (restait dans le périmètre « idéal » du lot F
+historique).
 
-`grep` confirme : **aucun `import Image from "next/image"`** dans tout `app/`.
-Conséquence :
+### 3.3 Configuration `next.config.ts`
 
-- pas de `srcset`/`sizes` automatique (le navigateur télécharge la même image
-  en mobile qu'en desktop) ;
-- pas de placeholder `blur` ;
-- pas de conversion à la volée vers AVIF/WebP via le runtime image de Next ;
-- aucune dimension donnée (`width`/`height`) → CLS (Cumulative Layout Shift)
-  potentiel pendant le chargement.
+- **`images.remotePatterns`** vers `uploads/**` pour
+  **`https://api.fernandgrascalvet.com`**, **`http://localhost:1337`** et
+  **`http://127.0.0.1:1337`** (aligné sur `getApiUrl()` en dev).
+- **`images.formats`** : `image/avif`, `image/webp`.
+- Ancienne clé **`images.domains`** : retirée (dépréciée depuis Next 14).
 
-`next.config.ts` autorise pourtant `localhost` et `api.fernandgrascalvet.com`
-dans `images.domains` — la migration est donc partiellement amorcée mais
-inutilisée :
+Référence code : fichier `next.config.ts` à la racine du dépôt Next.
 
-```24:26:next.config.ts
-  images: {
-    domains: ["localhost", "api.fernandgrascalvet.com"],
-  },
-```
+---
 
-Note : `domains` est **déprécié** depuis Next 14 ; il faudra basculer vers
-`remotePatterns` au moment de la migration (et préciser
-`formats: ['image/avif', 'image/webp']`).
+### Ancien diagnostic (archivé pour mémoire)
 
-### 3.3 Toutes les pages sont `"use client"` + `useEffect`-fetch
+Avant cette itération, les listes chargeaient surtout **`img.url`** (original)
+sans variantes Strapi ni `next/image`. Les métriques de l’inventaire §2 restent
+utiles tant que les **originaux** côté disque sont lourds (PNG) : même avec des
+variantes bien choisies, Strapi régénère souvent ces variantes **dans le même
+format** que l’original — une conversion fichier (Lot **E**) reste pertinente
+pour réduire le stockage total.
+
+### 3.4 Toutes les pages sont `"use client"` + `useEffect`-fetch
 
 `app/page.tsx`, `app/portfolio/page.jsx`, `app/competences/page.jsx`,
 `app/competences/[slug]/page.tsx` : toutes commencent par `"use client"` et
@@ -135,26 +133,40 @@ font `fetch()` côté navigateur dans `useEffect`. Conséquences :
 > **Constat n° 3 :** migrer ces pages en **Server Components** (fetch dans le
 > composant async + `revalidate: 60`) résoudrait à la fois le ressenti de
 > lenteur **et** la latence images, puisque les `<img>` seraient dans le HTML
-> initial — le navigateur lance les requêtes images en parallèle du JS.
+> initial — le navigateur lance les requêtes images en parallèle du JS. Plan détaillé :
+> [`10-plan-server-components.md`](./10-plan-server-components.md).
 
 ## 4. Mode `dev` : impact réel
 
 L'utilisateur souhaite **rester en dev pour le moment** — c'est noté. Voici
 ce que ça coûte vraiment, du plus marquant au moins marquant.
 
-### 4.1 Compression HTTP désactivée explicitement (Next)
+### 4.1 Compression HTTP (Next) et reverse proxy IIS
 
-```9:12:next.config.ts
-const nextConfig = {
-  reactStrictMode: true,
-  compress: false,
-  trailingSlash: false,
-```
+**Décision effective (diagnostic avril 2026, exposition HTTPS derrière IIS) :** **`compress: false`**
+dans `next.config.ts` (état actuel du dépôt).
 
-`compress: false` désactive **gzip/brotli** côté Next — y compris en
-production. Pour du JSON Strapi de 50 KB ou un bundle JS de 500 KB, c'est un
-facteur 4 à 8 sur le poids transféré. **À retirer ou passer à `true` même
-en dev.**
+- Un passage à **`compress: true`** a provoqué des **HTTP 500** côté
+  **navigateur** alors que Next loguait **`GET / 200`** : la réponse **gzip**
+  générée par Next n'était **pas** correctement gérée par la chaîne
+  **IIS + URL Rewrite + ARR** vers `http://localhost:3000` (buffer / en-têtes /
+  double traitement).
+- La **compression dynamique IIS**, une fois son module installé, **n’a pas été
+  retenue** comme substitution fiable sur ce périmètre non plus tant que la combinaison
+  tunnel + Next n’a pas été retestée de façon isolée.
+
+> Tant que le site est exposé **derrière IIS de cette façon**, ne pas réactiver
+> **`compress: true`** côté Next sans **test** sur **`https://fernandgrascalvet.com`**.
+> Le léger surplus de transfert brut **localhost ⇄ IIS** est acceptable en dev/serveur.
+
+### 4.1b IIS — compression (référence)
+
+- **Compression statique** : peut rester active sur les sites IIS (fichiers
+  servis directement par IIS) ; hors scope du corps HTML proxifié vers Next.
+- **Compression dynamique** : module séparé (rôle serveur Web) ; **ne remplace pas**
+  le problème **`Content-Encoding`** venant de Next si un jour on réactive gzip côté app.
+
+Le mode `next dev` reste sans minification agressive du JS (voir §4.2).
 
 ### 4.2 `next dev --turbopack`
 
@@ -195,9 +207,11 @@ invalidant tout. **Voir `cmsbackend/config/middlewares.ts`** :
 ];
 ```
 
-> **Constat n° 4 :** en dev, l'impact « gros » est `compress: false`. Le
-> reste du dev mode est inconfortable au démarrage mais n'explique pas la
-> lenteur image perçue.
+> **Constat n° 4 (révisé encore) :** on garde **`compress: false`** côté Next
+> pour éviter les **500 IIS** derrière reverse proxy ; le surplus de transfert HTML/JSON non gzip
+> entre IIS et localhost est préféré à une page publique cassée.
+> Le reste du mode `dev` reste plus lourd qu’une **build prod** (bundle JS, pas de data cache
+> Next sur les pages entièrement client).
 
 ## 5. Autres pistes détectées en cours d'audit
 
@@ -216,19 +230,19 @@ probablement morts** mais alourdissent : `git clone`, sauvegardes, indexation
 IDE, et potentiellement `next build` s'ils sont importés depuis un fichier
 encore référencé. À auditer (`grep` sur les imports) puis purger ou archiver.
 
-### 5.2 Pas de `link rel="preload"` pour le portrait hero
+### 5.2 Portrait hero et LCP
 
-`app/page.tsx` (home) affiche un portrait via `<img>` après fetch
-client-side. Sur la home, c'est l'image principale au-dessus de la ligne de
-flottaison ; un preload (ou un Server Component + `next/image priority`)
-ferait gagner ~200-500 ms de TTI sur le LCP.
+**Partiellement traité (2026-04-28) :** le portrait utilise **`next/image`**
+avec **`priority`** dans `app/page.tsx` (pas de `rel=preload` séparé). Le fetch
+home reste **client** (`useEffect`) — le gain LCP complet viendra surtout avec
+le lot **G** (Server Components).
 
-### 5.3 Pas de hint réseau vers `api.fernandgrascalvet.com`
+### 5.3 Preconnect vers l’API Strapi
 
-Aucun `<link rel="preconnect" href="https://api.fernandgrascalvet.com">`
-dans `app/layout.tsx`. Le premier round-trip image en prod paye le DNS +
-TLS handshake en série ; un preconnect le déclenche pendant le parsing
-HTML.
+**Fait (2026-04-28) :** `app/layout.tsx` injecte
+`<link rel="preconnect" href={process.env.NEXT_PUBLIC_API_URL || URL prod par défaut} crossOrigin="" />`
+pour l’origine API (médias + JSON). En local, si `.env` pointe vers
+`http://localhost:1337`, le preconnect cible ce host.
 
 ### 5.4 Wallpaper OK, alternatives mortes
 
@@ -242,20 +256,16 @@ Tri par ratio gain / effort. À discuter avant exécution.
 
 ### Quick wins (≤ 1 h, gros gains)
 
-- [ ] **Lot A — Lire les variantes Strapi côté Next.**
-  Modifier les 6 emplacements `<img src={img.url}>` pour préférer
-  `img.formats?.medium?.url ?? img.formats?.small?.url ?? img.url`.
-  Ajouter une fonction utilitaire `pickStrapiImage(picture, "card" | "thumbnail" | "full")`
-  dans `app/utils/`. **Gain attendu :** ÷ 5 à ÷ 10 sur le poids des grilles
-  de portfolio/compétences. Aucune perte qualité (les variantes sont
-  dimensionnées par Strapi à partir des originaux).
-- [ ] **Lot B — Activer la compression Next.**
-  Passer `compress: false` → `compress: true` dans `next.config.ts`.
-  **Gain attendu :** ÷ 4 sur le JSON Strapi et le HTML.
-- [ ] **Lot C — `preconnect` API Strapi.**
-  Ajouter `<link rel="preconnect" href="https://api.fernandgrascalvet.com" crossOrigin="" />`
-  dans `app/layout.tsx`. **Gain attendu :** ~150-300 ms sur le TTFB des
-  images en prod, négligeable en local.
+- [x] **Lot A — Lire les variantes Strapi côté Next.**
+  Implémenté via **`pickStrapiImage`** (`app/utils/strapiImage.ts`) et branchements
+  listes + carousels + fiches (voir §3). **À re-mesurer** sur `/portfolio` et
+  `/competences` (Network → Img) après redémarrage des services.
+- [ ] **Lot B — Compression Next (`compress`) — annulé dans cette forme.**
+  Tentative **`compress: true`** puis **rétablissement à `false`** : conflit avec
+  reverse proxy IIS (**500** public). Voir §4.1.
+- [x] **Lot C — `preconnect` API Strapi.**
+  Lien dans `app/layout.tsx`, origine pilotée par **`NEXT_PUBLIC_API_URL`**
+  avec repli sur l’API de production.
 
 ### Lots moyens (1-3 h chacun)
 
@@ -284,12 +294,10 @@ Tri par ratio gain / effort. À discuter avant exécution.
   **Réversibilité :** le script garde les originaux dans `extract/backup/`
   jusqu'à validation manuelle.
 
-- [ ] **Lot F — Migration `<img>` → `next/image`.**
-  Remplacer les 6 occurrences. Mettre à jour `next.config.ts` :
-  `domains` → `remotePatterns`, ajouter
-  `formats: ['image/avif', 'image/webp']`, définir `deviceSizes` cohérents
-  avec les breakpoints Tailwind. Ajouter `priority` au portrait hero,
-  `placeholder="blur"` (avec `blurDataURL` provenant de `formats.thumbnail`).
+- [x] **Lot F — Migration `<img>` → `next/image` (socle).**
+  Fait pour les flux principaux (listes, carousels, hero) + **`remotePatterns`**
+  + **`formats` AVIF/WebP**. **Non fait :** `deviceSizes` explicites (défaut
+  Next), **`placeholder="blur"`** — laissé en dette optionnelle.
 
 ### Lots structurels (½ journée +)
 
@@ -298,6 +306,7 @@ Tri par ratio gain / effort. À discuter avant exécution.
   vers un sous-composant client uniquement pour l'interactivité (carousels,
   modal). Bénéfices : HTML initial complet, fetch caché serveur, pas de
   spinner au premier paint. Compatible avec Lot F (`next/image priority`).
+  **Plan rédigé :** [`10-plan-server-components.md`](./10-plan-server-components.md).
 
 - [ ] **Lot H — Plugin Strapi pour conversion WebP à l'upload.**
   Configurer `@strapi/provider-upload-local` (ou un plugin custom) pour
@@ -322,18 +331,26 @@ Tri par ratio gain / effort. À discuter avant exécution.
 Stocker les captures dans `docs-site-interne/captures/perf/` avec le
 nom `<lot>-<avant|apres>.webp`.
 
-## 8. Ce que ce document **ne** fait pas (encore)
+## 8. Suite / dettes
 
-- Aucune ligne de code modifiée — c'est un audit.
-- Le script `strapi_extraction/audit-images.js` (Lot D) reste à écrire.
-- Les conversions WebP (Lot E) restent à faire.
+- **Contenu Strapi** : harmonisation des médias et WebP côté CMS faite par l’auteur
+  — l’inventaire §2 n’a pas été **re-mesuré** ; relancer un passage sur
+  `cmsbackend/public/uploads/` si besoin de chiffres à jour.
+- **Lot D** — script `strapi_extraction/audit-images.js` : **pas écrit**.
+- **Lot E** — conversion + ré-upload : **hors code Next** ; voir pipeline
+  `strapi_extraction/media-sync` si utilisé pour le remplacement ciblé.
+- **Lot G** — Server Components sur `/`, `/portfolio`, `/competences` : **à faire**
+  (voir [`10-plan-server-components.md`](./10-plan-server-components.md)).
+- **Lots H / I** : inchangés (plugin Strapi upload, purge `app/assets/images/`).
 
-À la prochaine itération : créer le script d'audit images en s'inspirant
-de la structure de `strapi_extraction/extract-api-data.js` (même style de
-log, même répertoire `extract/`, même résumé JSON final).
+Prochaine amélioration doc utile : captures **avant/après** réseau dans
+`docs-site-interne/captures/perf/` une fois les services redémarrés et le
+parcours manuel validé.
 
 ## 9. Liens internes
 
+- Migration Server Components (plan) :
+  [`10-plan-server-components.md`](./10-plan-server-components.md)
 - Pipeline d'extraction Strapi existant :
   [`06-strapi-extraction.md`](./06-strapi-extraction.md)
 - Architecture globale & ports :

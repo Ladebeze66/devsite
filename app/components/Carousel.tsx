@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -77,13 +78,17 @@ export default function Carousel({ images, className }: CarouselProps) {
           }
         >
           {images.map((img, index) => (
-            <SwiperSlide key={index} className="flex h-full items-center justify-center">
-              <img
+            <SwiperSlide
+              key={index}
+              className="relative flex h-full min-h-0 w-full items-center justify-center"
+            >
+              <Image
                 src={img.url}
                 alt={img.alt}
-                className="h-full w-full cursor-zoom-in object-cover transition-transform duration-300 hover:scale-[1.02]"
+                fill
+                className="cursor-zoom-in object-cover transition-transform duration-300 hover:scale-[1.02]"
+                sizes="(max-width: 768px) 100vw, min(48rem, 100vw)"
                 onClick={() => setSelectedImage(img.url)}
-                loading="lazy"
               />
             </SwiperSlide>
           ))}
