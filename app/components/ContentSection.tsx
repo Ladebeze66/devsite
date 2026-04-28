@@ -6,6 +6,7 @@ import { fetchData } from "../utils/fetchData";
 import { getApiUrl } from "../utils/getApiUrl";
 import Carousel from "./Carousel";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ImageData {
   url: string;
@@ -211,7 +212,7 @@ export default function ContentSection({
               prose-li:marker:text-primary
               prose-hr:border-0 prose-hr:w-16 prose-hr:mx-auto prose-hr:bg-primary/30 prose-hr:h-0.5 prose-hr:rounded-full prose-hr:my-6"
           >
-            <ReactMarkdown>{richText}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{richText}</ReactMarkdown>
           </div>
         )}
 

@@ -55,3 +55,6 @@ llm-api/*.pyc
 # Legacy RAG index (ChromaDB) — obsolete depuis bascule graph+BM25
 /chroma-index/
 
+# Téléchargements + WebP générés par strapi_extraction/media-sync/ (poids important)
+strapi_extraction/extract/media-sync-work/
+

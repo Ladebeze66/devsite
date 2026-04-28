@@ -1,6 +1,6 @@
 # Outils `strapi_extraction/`
 
-**Dernière mise à jour :** 2026-04-22
+**Dernière mise à jour :** 2026-04-28
 
 Dossier de **scripts Node + Python** pour extraire, nettoyer et convertir les
 données issues de l'API Strapi en base de connaissance chatbot (hors runtime
@@ -84,8 +84,18 @@ comme source de vérité sans comparer au CMS.
 Ces points seront corrigés en même temps que l'enrichissement du vault
 (glossaire + homepage Strapi → notes `40-Glossaire/` et `30-Parcours/`).
 
+## Sync médias WebP (hors pipeline GrasBot)
+
+Dossier **`strapi_extraction/media-sync/`** — inventaire des fichiers image liés aux
+content-types (`projects`, `competences`, `homepages`, `realisation-ias`, `glossaires`),
+téléchargement classé par rubrique, conversion WebP (sharp), puis ré-upload optionnel.
+
+Documentation : voir `strapi_extraction/media-sync/README.md`.  
+Sortie lourde (ignorée Git) : `strapi_extraction/extract/media-sync-work/`.
+
 ## Liens complémentaires
 
 - Vault + retrieval : [`08-vault-obsidian-retrieval.md`](./08-vault-obsidian-retrieval.md)
 - API LLM : [`04-api-llm-et-chatbot.md`](./04-api-llm-et-chatbot.md)
 - Schémas Strapi : [`03-cms-strapi.md`](./03-cms-strapi.md)
+- Performances images (audit) : [`09-performances-images.md`](./09-performances-images.md)
