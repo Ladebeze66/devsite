@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { askAI } from "../utils/askAI";
 
 /**
@@ -17,6 +19,11 @@ import { askAI } from "../utils/askAI";
  * - Badge `grounded` sous chaque réponse (paperclip si sources exploitées,
  *   info si réponse générale faute de contexte pertinent).
  * - Timeout 45 s côté fetch (géré dans `askAI.js`) avec message éditorial.
+ *
+ * v3.2 (2026-04-26) :
+ * - Réponses bot rendues en Markdown (`ReactMarkdown` + `remark-gfm`) : gras,
+ *   listes, liens cliquables. Texte justifié dans la bulle. Les messages
+ *   utilisateur restent en texte brut.
  *
  * Design :
  * - Fond `surface-container-lowest/95 backdrop-blur-vellum rounded-sheet shadow-ambient`.
@@ -141,8 +148,38 @@ export default function ChatBot({ onClose }) {
           }
           return (
             <div key={index} className="mr-auto flex max-w-[85%] flex-col gap-1.5">
-              <div className="rounded-sheet bg-surface-container px-3 py-2 font-headline text-xs leading-relaxed text-on-surface">
-                {msg.text}
+              <div
+                className="rounded-sheet bg-surface-container px-3 py-2 text-on-surface [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
+              >
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  className="prose prose-sm max-w-none text-justify font-body text-xs leading-relaxed text-on-surface
+                    prose-p:my-2 prose-p:text-xs prose-p:leading-relaxed
+                    prose-strong:font-semibold prose-strong:text-on-surface
+                    prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5 prose-li:text-xs
+                    prose-a:break-words prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                    prose-headings:font-headline prose-headings:text-sm prose-headings:text-on-surface prose-headings:my-2
+                    prose-code:rounded prose-code:bg-surface-container-low prose-code:px-1 prose-code:text-[11px]
+                    prose-pre:my-2 prose-pre:bg-surface-container-low prose-pre:text-[11px]"
+                  components={{
+                    a({ href, children, ...props }) {
+                      const external =
+                        typeof href === "string" && /^https?:\/\//i.test(href);
+                      return (
+                        <a
+                          href={href}
+                          {...props}
+                          target={external ? "_blank" : undefined}
+                          rel={external ? "noopener noreferrer" : undefined}
+                        >
+                          {children}
+                        </a>
+                      );
+                    },
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkdown>
               </div>
               {(msg.sources?.length > 0 || msg.grounded !== undefined) && !msg.error && !msg.timeout && (
                 <BotFooter sources={msg.sources} grounded={msg.grounded} />
