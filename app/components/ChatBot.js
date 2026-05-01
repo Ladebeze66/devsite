@@ -1,10 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { askAI } from "../utils/askAI";
+import {
+  clearGrasbotChatMessages,
+  loadGrasbotChatMessages,
+  newChatMessageId,
+  saveGrasbotChatMessages,
+} from "../utils/grasbotChatStorage";
 
 /**
  * GrasBot — UI du chatbot (Stitch).
@@ -25,6 +31,12 @@ import { askAI } from "../utils/askAI";
  *   listes, liens cliquables. Texte justifié dans la bulle. Les messages
  *   utilisateur restent en texte brut.
  *
+ * v3.3 (2026-04-26) :
+ * - Historique persisté en **localStorage** par `grasbot_user_id` (voir
+ *   `grasbotChatStorage.js`) : même navigateur / effacement cookies selon usage,
+ *   jusqu'à 80 messages récents. Aucune réinjection dans Ollama.
+ * - Bouton pour effacer la conversation locale.
+ *
  * Design :
  * - Fond `surface-container-lowest/95 backdrop-blur-vellum rounded-sheet shadow-ambient`.
  * - Bulles : user = `bg-primary text-white` à droite, bot = `bg-surface-container` à gauche.
@@ -34,9 +46,26 @@ import { askAI } from "../utils/askAI";
 export default function ChatBot({ onClose }) {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]);
+  const [hydrated, setHydrated] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
+
+  useLayoutEffect(() => {
+    setMessages(loadGrasbotChatMessages());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    saveGrasbotChatMessages(messages);
+  }, [messages, hydrated]);
+
+  const handleClearHistory = () => {
+    setMessages([]);
+    clearGrasbotChatMessages();
+    inputRef.current?.focus();
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -51,7 +80,7 @@ export default function ChatBot({ onClose }) {
   const handleAsk = async () => {
     if (!question.trim() || isWaiting) return;
 
-    const userMessage = { sender: "user", text: question };
+    const userMessage = { sender: "user", text: question, id: newChatMessageId() };
     setMessages((prev) => [...prev, userMessage]);
     setQuestion("");
     setIsWaiting(true);
@@ -66,6 +95,7 @@ export default function ChatBot({ onClose }) {
           sources: payload.sources || [],
           grounded: Boolean(payload.grounded),
           timeout: Boolean(payload._timeout),
+          id: newChatMessageId(),
         },
       ]);
     } catch (_error) {
@@ -77,6 +107,7 @@ export default function ChatBot({ onClose }) {
           sources: [],
           grounded: false,
           error: true,
+          id: newChatMessageId(),
         },
       ]);
     } finally {
@@ -109,20 +140,34 @@ export default function ChatBot({ onClose }) {
             </p>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Fermer le chat"
-          className="flex h-9 w-9 items-center justify-center rounded-full text-white transition-colors hover:bg-primary-container focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-fixed"
-        >
-          <span
-            className="material-symbols-outlined"
-            aria-hidden="true"
-            translate="no"
+        <div className="flex shrink-0 items-center gap-1">
+          <button
+            type="button"
+            onClick={handleClearHistory}
+            disabled={messages.length === 0}
+            aria-label="Effacer l'historique de conversation"
+            title="Effacer l'historique"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-white transition-colors hover:bg-primary-container focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-fixed disabled:pointer-events-none disabled:opacity-40"
           >
-            close
-          </span>
-        </button>
+            <span className="material-symbols-outlined text-xl" aria-hidden="true" translate="no">
+              delete_sweep
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fermer le chat"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-white transition-colors hover:bg-primary-container focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-fixed"
+          >
+            <span
+              className="material-symbols-outlined"
+              aria-hidden="true"
+              translate="no"
+            >
+              close
+            </span>
+          </button>
+        </div>
       </div>
 
       <div
@@ -136,10 +181,11 @@ export default function ChatBot({ onClose }) {
         )}
 
         {messages.map((msg, index) => {
+          const msgKey = msg.id ?? `legacy-${index}`;
           if (msg.sender === "user") {
             return (
               <div
-                key={index}
+                key={msgKey}
                 className="ml-auto max-w-[80%] rounded-sheet bg-primary px-3 py-2 font-headline text-xs leading-relaxed text-white"
               >
                 {msg.text}
@@ -147,7 +193,7 @@ export default function ChatBot({ onClose }) {
             );
           }
           return (
-            <div key={index} className="mr-auto flex max-w-[85%] flex-col gap-1.5">
+            <div key={msgKey} className="mr-auto flex max-w-[85%] flex-col gap-1.5">
               <div
                 className="rounded-sheet bg-surface-container px-3 py-2 text-on-surface [&>*:first-child]:mt-0 [&>*:last-child]:mb-0"
               >
