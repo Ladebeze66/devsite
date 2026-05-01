@@ -26,6 +26,8 @@ answers:
   - "Quel est son profil ?"
   - "Cherche-t-il une alternance ?"
   - "A-t-il de l'expérience professionnelle ?"
+  - "Où télécharger le CV ?"
+  - "Je veux ton CV en PDF"
 priority: 10
 linked:
   - "[[bio-fernand]]"
@@ -57,6 +59,7 @@ visibility: public
 
 ## Contact
 
+- **CV PDF** : téléchargeable sur le site à l’URL fixe `/cv/cv-fernand-grascalvet.pdf` (remplacer le fichier sur le serveur sans changer ce chemin pour mettre à jour le PDF).
 - **Téléphone** : 06.12.01.01.72
 - **Email** : grascalvet.fernand@gmail.com
 - **Adresse** : 13 rue de Belfort, 66600 Rivesaltes

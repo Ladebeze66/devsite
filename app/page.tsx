@@ -170,6 +170,19 @@ export default function HomePage() {
               </div>
             )}
 
+            <p className="mt-1 text-center md:text-left">
+              <a
+                href="/cv/cv-fernand-grascalvet.pdf"
+                download="cv-fernand-grascalvet.pdf"
+                className="inline-flex items-center gap-1.5 font-headline text-xs font-semibold text-primary underline decoration-primary/40 underline-offset-2 transition-colors hover:text-primary-container hover:decoration-primary"
+              >
+                <span className="material-symbols-outlined text-base" aria-hidden="true" translate="no">
+                  picture_as_pdf
+                </span>
+                Télécharger le CV (PDF)
+              </a>
+            </p>
+
             <div className="mt-2 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-center sm:items-center md:justify-start">
               <Link
                 href="/portfolio"
