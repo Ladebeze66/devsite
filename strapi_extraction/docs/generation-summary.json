@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-15T14:26:54.969Z",
+  "generatedAt": "2026-05-10T08:56:28.903Z",
   "results": [
     {
       "type": "projects",
@@ -30,19 +30,20 @@
     {
       "type": "competences",
       "success": true,
-      "itemCount": 4,
-      "docCount": 5,
+      "itemCount": 5,
+      "docCount": 6,
       "files": [
         "02-competences-index.md",
         "competence-ia.md",
         "competence-developpement-web-and-hebergement-sur-serveur-windows.md",
         "competence-impression-3d.md",
-        "competence-competence.md"
+        "competence-competence.md",
+        "competence-transcription-audio-fgc-transcription.md"
       ]
     }
   ],
   "totalTypes": 3,
   "successfulTypes": 2,
-  "totalSourceItems": 21,
-  "totalDocuments": 24
+  "totalSourceItems": 22,
+  "totalDocuments": 25
 }

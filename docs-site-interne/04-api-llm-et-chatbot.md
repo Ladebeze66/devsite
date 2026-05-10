@@ -28,8 +28,10 @@ Détails architecturaux dans
 
 Le champ consommé par le front reste **`data.response`**. Les champs ajoutés
 par la refonte (`sources`, `grounded`, `model`, `vault_size`) passent dans
-la réponse JSON et pourront être affichés dans une itération suivante
-(voir [pistes d'évolution](#pistes-dévolution)).
+la réponse JSON ; les **`sources`** incluent une **`url`** relative pour les types
+`projet` et `compétence` (ex. `/portfolio/[slug]`, `/competences/[slug]` ou
+`/competences/[route_parent]/[slug]` si la note compétence définit `route_parent`
+dans le frontmatter du vault — utilisé pour les fiches sous `/competences/ia/…`).
 
 ## Parcours public (hors moteur Python) — cohérence contenu
 

@@ -14,7 +14,7 @@ Site portfolio **Next.js 15** + **Strapi 5** + **GrasBot** (FastAPI, Ollama, vau
 | [`CONFIGURATION_SITE.md`](CONFIGURATION_SITE.md) | Opérationnel : ports, commandes, démarrage automatique, dépannage, pare-feu. |
 | [`vault-grasbot/README.md`](vault-grasbot/README.md) | Base de connaissances GrasBot (retrieval graph + BM25 v3). |
 
-**Obsidian / export** : le dossier [`obsidian-site-docs/`](obsidian-site-docs/) contient le hub, les commandes, **toute** la doc [`docs-site-interne/`](docs-site-interne/) (copie), `CONFIGURATION_SITE.md` et le README dépôt — prêt à ouvrir comme coffre ou à copier. Resynchro : [`obsidian-site-docs/SYNC-DOC.md`](obsidian-site-docs/SYNC-DOC.md).
+**Obsidian / export** : un coffre Obsidian optionnel (copie de la doc + commandes) peut vivre **hors dépôt** — ne pas s’attendre à un dossier versionné à la racine ; synchroniser manuellement depuis [`docs-site-interne/`](docs-site-interne/) et [`CONFIGURATION_SITE.md`](CONFIGURATION_SITE.md) si besoin.
 
 ## Démarrage rapide (Windows)
 
@@ -60,7 +60,6 @@ my-next-site/
 ├── vault-grasbot/       # Connaissance (Obsidian) pour le retrieval
 ├── strapi_extraction/   # Extraction / build vault
 ├── docs-site-interne/   # Doc technique détaillée
-├── obsidian-site-docs/  # Pack Obsidian (résumés + commandes)
 ├── start-my-site.ps1
 ├── stop-my-site.ps1
 └── CONFIGURATION_SITE.md
@@ -72,10 +71,8 @@ Projet personnel ; contenu et code sont fournis tels quels pour illustration du 
 
 ---
 
-*Dernière révision du README : 2026-04 — aligné sur `docs-site-interne` et `CONFIGURATION_SITE.md`.*
+*Dernière révision du README : 2026-05 — aligné sur `docs-site-interne` et `CONFIGURATION_SITE.md`.*
 
-Pour lancer tâches planifiées: taskschd.msc
+Pour lancer les tâches planifiées Windows : `taskschd.msc`
 
-LANGFUSE_SECRET_KEY="sk-lf-7f3cbead-71eb-49b4-8f05-9b7ea57765aa"
-LANGFUSE_PUBLIC_KEY="pk-lf-1ed91915-97d3-4b6b-a903-dd8473b3efba"
-LANGFUSE_BASE_URL="https://langfuse.fernandgrascalvet.com"
+Les clés **Langfuse** (si utilisées) restent dans `llm-api/.env` — ne pas les commiter ; voir [`docs-site-interne/langfuse-observability.md`](docs-site-interne/langfuse-observability.md).

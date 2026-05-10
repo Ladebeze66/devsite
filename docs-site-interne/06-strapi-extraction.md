@@ -1,10 +1,12 @@
 # Outils `strapi_extraction/`
 
-**Dernière mise à jour :** 2026-04-28
+**Dernière mise à jour :** 2026-05-10
 
 Dossier de **scripts Node + Python** pour extraire, nettoyer et convertir les
 données issues de l'API Strapi en base de connaissance chatbot (hors runtime
 du site).
+
+Synchroniser le champ Strapi avec **`strapi_extraction/docs/competence-transcription-audio-fgc-transcription.md`** (sections *Présentation → En bref*, même source que `competences-clean.json`).
 
 ## Pipeline complet
 

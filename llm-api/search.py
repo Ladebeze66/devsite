@@ -244,6 +244,11 @@ def parse_note(path: Path) -> Note | None:
         if key in fm and fm[key] is not None:
             extra[key] = fm[key]
 
+    # Segmentation optionnelle des URLs Next `/competences/[parent]/[slug]` (ex. parent `ia`).
+    rp = fm.get("route_parent")
+    if rp is not None and str(rp).strip():
+        extra["route_parent"] = str(rp).strip()
+
     return Note(
         slug=slug,
         title=title,
@@ -860,7 +865,11 @@ def answer(
             if s.note.type == "projet":
                 url = f"/portfolio/{s.note.slug}"
             elif s.note.type == "competence":
-                url = f"/competences/{s.note.slug}"
+                parent = str(s.note.extra.get("route_parent") or "").strip()
+                if parent:
+                    url = f"/competences/{parent}/{s.note.slug}"
+                else:
+                    url = f"/competences/{s.note.slug}"
             sources.append({
                 "slug": s.note.slug,
                 "title": s.note.title,

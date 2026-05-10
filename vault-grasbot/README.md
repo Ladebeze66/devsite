@@ -5,13 +5,13 @@ contenus Strapi du site (projets + compétences) et du CV PDF. Alimente
 directement le pipeline de recherche de GrasBot (`llm-api/search.py`) :
 graph + BM25, sans embeddings.
 
-**Dernière génération :** 2026-04-23 (complété manuellement : +2 projets `source: manual`, maj compétences IA/Web)
+**Dernière génération :** 2026-04-23 (complété manuellement : +2 projets `source: manual`, maj compétences IA/Web ; **2026-05-10** : compétence `transcription-audio-fgc-transcription` — pyannote + Mistral Small 24b, corpus Strapi aligné dans `strapi_extraction/`)
 
 ## Structure
 
 - `00-MOC/` — Maps of Content (hubs thématiques)
 - `10-Projets/` — 17 projets Strapi + **6 notes manuelles** (`grasbot.md`, `newsletter-ia.md`, `transcription-video.md`, `fernandgrascalvet-com.md`, `ft-linear-regression.md`, `piscine-python-data-science.md`)
-- `20-Competences/` — 4 compétences extraites de Strapi
+- `20-Competences/` — compétences Strapi extraites par `build-vault.py` **et** note manuelle **`transcription-audio-fgc-transcription.md`** (alignée Strapi / GrasBot, non écrasée tant que `source: manual`)
 - `30-Parcours/` — Parcours personnel, CV, bio (version curatée `source: manual`)
 - `40-Glossaire/` — Termes techniques (vide, à remplir manuellement ou depuis Strapi plus tard)
 - `50-Technique/` — Auto-documentation (architecture, retrieval, vault)
@@ -37,6 +37,7 @@ answers:                                # questions-types auxquelles répond la 
 priority: 5                             # 1..10, boost léger au scoring
 linked: ["[[MOC-...]]"]                 # voisins du graphe (sortants)
 related: ["[[autre-note]]"]
+route_parent: ia                        # optionnel (compétence) : lien source `/competences/ia/{slug}`
 updated: YYYY-MM-DD
 visibility: public | private            # `private` exclu du retrieval
 ---

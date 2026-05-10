@@ -1,6 +1,6 @@
 # Feuille de route
 
-**Dernière mise à jour :** 2026-04-28
+**Dernière mise à jour :** 2026-05-10
 
 Document vivant : ajuster les statuts et dates au fil du travail.
 
@@ -33,6 +33,7 @@ Document vivant : ajuster les statuts et dates au fil du travail.
 
 | Date | Jalon |
 |------|--------|
+| 2026-05-10 | Vault GrasBot : fiche compétence **Transcription audio (FGC transcription)** (`transcription-audio-fgc-transcription`, `source: manual`), MOC compétences / IA mis à jour ; lien bidirectionnel avec `transcription-video`. |
 | 2026-04-01 | Création du dossier `docs-site-interne` (dépôt Git) et première rédaction basée sur le code. |
 | 2026-04-01 | Reprise après coupure : vérification complétude ; enrichissement de `04-api-llm-et-chatbot.md` ; suppression de `test.txt`. |
 | 2026-04-01 | Index captures (`captures/INDEX.md`), `captures/README.md`, `07-reference-visuelle-captures.md`, skill `.cursor/skills/site-portfolio-evolution/SKILL.md`. |

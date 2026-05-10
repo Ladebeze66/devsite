@@ -66,7 +66,11 @@ actuellement utilisés :
 | `openwebui` | Open WebUI (front LLM) |
 | `ovh` | OVHcloud AI Endpoints |
 | `transcription` | Speech-to-text / sous-titres |
+| `mistral-small` | Résumés via Mistral Small (ex. 24b Ollama) |
+| `structured-summary` | Résumés JSON / Markdown à schéma contrôlé |
+| `pyannote` | Diarisation / attribution locuteurs |
 | `multimedia` | Traitement audio / vidéo |
+| `diarisation` | Segmentation locuteurs / tours de parole |
 
 ## Aliases (`aliases:`)
 

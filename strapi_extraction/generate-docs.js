@@ -109,7 +109,7 @@ const generators = {
     
     indexContent += `## Domaines d'expertise\n\n`;
     sortedCompetences.forEach((competence, index) => {
-      indexContent += `${index + 1}. **[${competence.name}](${competence.slug}.md)**\n`;
+      indexContent += `${index + 1}. **[${competence.name}](competence-${createSafeFileName(competence.slug)}.md)**\n`;
     });
     
     docs.push({

@@ -1,6 +1,6 @@
 # Frontend Next.js
 
-**Dernière mise à jour :** 2026-04-28
+**Dernière mise à jour :** 2026-05-10
 
 ## Stack
 
@@ -24,7 +24,7 @@
 
 **Strapi — content-types concernés :**
 
-- `competence` : `name`, `content` (richtext), `picture`, `slug`, `order`
+- `competence` : `name`, `content` (richtext), `picture`, `slug`, `order` — exemple de slug public / vault : `transcription-audio-fgc-transcription` (Transcription audio FGC).
 - `realisation-ia` : `name`, `description`, `picture`, `slug`, `resum` (richtext, alias accepté côté front : `Resum` pour les `project` uniquement), `link`, `order`, relation `competences` (plusieurs)
 - Vignette → toujours navigation vers la **fiche détail** interne ; le champ `link` sert de bouton *Voir plus* en bas de fiche (comme sur les fiches `project`).
 

@@ -23,12 +23,12 @@ answers:
   - Que fait-il en ia ?
 priority: 7
 linked:
-updated: 2026-04-23
+updated: 2026-05-10
 visibility: public
 ---
 
 
-Notes du domaine *ia* (8 au total : 2 compétences + 6 projets liés).
+Notes du domaine *ia* (9 au total : 3 compétences dédiées IA / croisées + 6 projets liés).
 
 ## Notes liées
 
@@ -38,5 +38,6 @@ Notes du domaine *ia* (8 au total : 2 compétences + 6 projets liés).
 - [[ft-linear-regression|ft_linear_regression]] — _algorithmique, ecole-42, ia_
 - [[piscine-python-data-science|Piscine Python — Data Science]] — _algorithmique, ecole-42, ia_
 - [[ia|Mon Exploration et Maîtrise de l’Intelligence Artificielle]] — _algorithmique, ecole-42, ia_
+- [[transcription-audio-fgc-transcription|Transcription audio (FGC transcription)]] — _devops, ia, web_
 - [[competence|Mon expérience dans la domotique]] — _algorithmique, domotique, ia, reseau_
 - [[fernandgrascalvet-com|fernandgrascalvet.com (portfolio)]] — _devops, ia, web_ (couverture transversale du site)

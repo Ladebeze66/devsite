@@ -1,6 +1,6 @@
 # CMS Strapi
 
-**Dernière mise à jour :** 2026-04-01
+**Dernière mise à jour :** 2026-05-10
 
 ## Emplacement
 
@@ -42,6 +42,8 @@ Utilisation front : `app/page.tsx` — premier enregistrement `populate=*`, imag
 | `picture` | media (multiple) | requis |
 | `slug` | uid ← `name` | requis |
 | `order` | integer | optionnel |
+
+Exemple d’entrée alignée avec le vault GrasBot : **Transcription audio (FGC transcription)** — slug `transcription-audio-fgc-transcription` (fiche `/competences/transcription-audio-fgc-transcription`, note vault `source: manual`).
 
 ### `message` (supprimé le 2026-04-23)
 

@@ -1,6 +1,6 @@
 # État actuel du site
 
-**Dernière mise à jour :** 2026-04-28 (perf images, compression IIS/Next, plan Server Components)
+**Dernière mise à jour :** 2026-05-10 (vault transcription FGC : pyannote, Mistral Small 24b)
 
 ## Ce qui est en place
 
@@ -10,7 +10,7 @@
 - **Formulaire contact** : e-mail via **Brevo** (route Next `POST /api/contact`). Voir [contact-flow.md](./contact-flow.md).
 - **Chatbot GrasBot v3** : FAB global (`GrasBotFab.tsx`) → proxy Next → API LLM hébergée (`llmapi.fernandgrascalvet.com`).
 - **FastAPI + Ollama** dans `llm-api/` : modèle `qwen3:8b`, pipeline `search.py` (graph + BM25 sur vault Obsidian `vault-grasbot/`, sans embeddings).
-- **Vault de connaissance `vault-grasbot/`** : ~46 notes Markdown, dont 2 fiches projet manuelles (GrasBot, site portfolio) et compétences IA/Web mises à jour (2026-04) — recharger l’API après déploiement si besoin : `POST /reload-vault` (aliases, answers, priority) — source de vérité du chatbot, régénéré depuis Strapi par `strapi_extraction/build-vault.py`. Inclut une note `bio-fernand` courte (priority 10) dédiée aux questions biographiques et un CV complet complémentaire.
+- **Vault de connaissance `vault-grasbot/`** : ~46 notes Markdown, dont 2 fiches projet manuelles (GrasBot, site portfolio) et compétences IA/Web mises à jour (2026-04) — recharger l’API après déploiement si besoin : `POST /reload-vault` (aliases, answers, priority) — source de vérité du chatbot, régénéré depuis Strapi par `strapi_extraction/build-vault.py`. **Note manuelle** pour la compétence **Transcription audio (FGC transcription)** (`transcription-audio-fgc-transcription`) : pipeline **faster-whisper**, **diarisation pyannote**, résumés **JSON / Markdown** via **Ollama mistral-small3.2:24b** et templates avec ou sans diarisation (`source: manual`). Corpus exporté aussi dans `strapi_extraction/extract/clean-data/competences-clean.json` + `docs/competence-transcription-audio-fgc-transcription.md`. Inclut une note `bio-fernand` courte (priority 10) dédiée aux questions biographiques et un CV complet complémentaire.
 - **Observabilité Langfuse** : instance self-hosted `langfuse.fernandgrascalvet.com`, instrumentation Python (`llm-api/observability.py`) traçant chaque requête `/ask` (retrieval / prompt_build / ollama-chat) avec session/user IDs anonymes côté front. Mode no-op automatique si les clés sont absentes. Voir [`langfuse-observability.md`](./langfuse-observability.md).
 - **Scripts** d'extraction et de doc dans `strapi_extraction/`.
 - **Performances images (front)** : utilitaire **`pickStrapiImage`**, variantes Strapi, **`next/image`** + `remotePatterns`, portrait **`priority`**, **`preconnect`** API dans `layout.tsx`. **`compress: false`** dans `next.config.ts` (obligatoire avec le reverse proxy IIS actuel — **`compress: true`** provoquait des **500** publics). Détail : [`09-performances-images.md`](./09-performances-images.md). Prochaine étape planifiée (sans implémentation engageant pour l’instant) : **Server Components** — [`10-plan-server-components.md`](./10-plan-server-components.md).

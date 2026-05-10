@@ -35,6 +35,7 @@ linked:
 related:
   - "[[grasbot]]"
   - "[[newsletter-ia]]"
+  - "[[transcription-audio-fgc-transcription]]"
   - "[[transcription-video]]"
   - "[[ft-linear-regression]]"
   - "[[piscine-python-data-science]]"

@@ -1,6 +1,6 @@
 # Documentation interne du site
 
-**Dernière mise à jour :** 2026-04-24
+**Dernière mise à jour :** 2026-05-10
 
 Ce dossier décrit l'architecture, le fonctionnement et les décisions du projet (Next.js + Strapi + FastAPI/Ollama). Il est destiné à l'équipe et à l'assistant IA pour retrouver vite le contexte.
 
@@ -10,7 +10,7 @@ Ce dossier décrit l'architecture, le fonctionnement et les décisions du projet
 |----------------|------|
 | `README.md` (racine du dépôt) | Panorama GitHub, liens vers cette doc, démarrage rapide, `reload-vault`. |
 | `CONFIGURATION_SITE.md` (racine) | Guide opérationnel : ports, commandes, dépannage, planificateur de tâches Windows. |
-| `obsidian-site-docs/` (racine) | Pack Obsidian : hub, commandes, **copie** de ce dossier pour export (voir `obsidian-site-docs/SYNC-DOC.md`). |
+| Coffre Obsidian (optionnel, hors dépôt) | Copie locale de la doc pour lecture hors ligne ; pas de dossier `obsidian-site-docs/` versionné à la racine. |
 | Ce dossier | Conception : flux de données, schémas CMS, incohérences connues, feuille de route. |
 
 **Règle de maintenance :** après une modification notable, mettre à jour le fichier concerné ici ; si le démarrage ou les ports changent, compléter aussi `CONFIGURATION_SITE.md`.
@@ -46,7 +46,6 @@ my-next-site/
 ├── stop-my-site.ps1
 ├── next.config.ts
 ├── CONFIGURATION_SITE.md
-├── obsidian-site-docs/    # pack Obsidian (optionnel)
 └── docs-site-interne/
     ├── captures/          # screenshots de référence (voir INDEX.md)
     └── ...

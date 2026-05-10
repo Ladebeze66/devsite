@@ -26,7 +26,8 @@ related:
   - "[[ia]]"
   - "[[newsletter-ia]]"
   - "[[grasbot]]"
-updated: 2026-04-23
+  - "[[transcription-audio-fgc-transcription]]"
+updated: 2026-05-10
 visibility: public
 ---
 
