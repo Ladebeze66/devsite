@@ -11,6 +11,7 @@ import {
   newChatMessageId,
   saveGrasbotChatMessages,
 } from "../utils/grasbotChatStorage";
+import { getGrasbotSourceIconName, resolveGrasbotSourceHref } from "../utils/grasbotSourceUrl";
 
 /**
  * GrasBot — UI du chatbot (Stitch).
@@ -20,8 +21,9 @@ import {
  * `app/layout.tsx`. Ce composant se concentre sur le panneau de conversation.
  *
  * v3 (2026-04-22) — bascule retrieval graph + BM25 :
- * - Affichage des `sources` renvoyées par l'API (pill par source, cliquable
- *   vers `/portfolio/<slug>` ou `/competences/<slug>` si dispo).
+ * - Affichage des `sources` renvoyées par l'API (pill par source). L'URL est
+ *   résolue via `resolveGrasbotSourceHref` (API `url` / `route_parent` + fallback
+ *   pour l'historique localStorage sans métadonnées à jour).
  * - Badge `grounded` sous chaque réponse (paperclip si sources exploitées,
  *   info si réponse générale faute de contexte pertinent).
  * - Timeout 45 s côté fetch (géré dans `askAI.js`) avec message éditorial.
@@ -292,7 +294,7 @@ function BotFooter({ sources, grounded }) {
     seen.add(s.slug);
     uniqueSources.push(s);
   }
-  const clickable = uniqueSources.filter((s) => s.url);
+  const clickable = uniqueSources.filter((s) => resolveGrasbotSourceHref(s) !== "#");
   const displayed = clickable.slice(0, 4);
 
   return (
@@ -309,19 +311,22 @@ function BotFooter({ sources, grounded }) {
         </span>
         {grounded ? "Basé sur le vault" : "Réponse générale"}
       </span>
-      {displayed.map((s) => (
-        <Link
-          key={s.slug}
-          href={s.url}
-          className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-2 py-0.5 font-headline text-[10px] text-primary transition-colors hover:bg-primary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          title={s.title}
-        >
-          <span className="material-symbols-outlined text-[12px]" aria-hidden="true" translate="no">
-            {s.type === "competence" ? "psychology" : "folder"}
-          </span>
-          {s.slug}
-        </Link>
-      ))}
+      {displayed.map((s) => {
+        const href = resolveGrasbotSourceHref(s);
+        return (
+          <Link
+            key={s.slug}
+            href={href}
+            className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-2 py-0.5 font-headline text-[10px] text-primary transition-colors hover:bg-primary/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            title={s.title}
+          >
+            <span className="material-symbols-outlined text-[12px]" aria-hidden="true" translate="no">
+              {getGrasbotSourceIconName(s, href)}
+            </span>
+            {s.slug}
+          </Link>
+        );
+      })}
     </div>
   );
 }

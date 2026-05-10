@@ -27,6 +27,8 @@ related:
   - "[[ia]]"
   - "[[grasbot]]"
   - "[[architecture-site]]"
+route_parent: ia
+site_slug: newsletter-ia-generation-automatisee-avec-ollama-and-listmonk
 updated: 2026-04-23
 visibility: public
 ---

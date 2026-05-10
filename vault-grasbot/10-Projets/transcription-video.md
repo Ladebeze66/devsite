@@ -27,6 +27,8 @@ related:
   - "[[newsletter-ia]]"
   - "[[grasbot]]"
   - "[[transcription-audio-fgc-transcription]]"
+route_parent: ia
+site_slug: transcription-video-automatique
 updated: 2026-05-10
 visibility: public
 ---

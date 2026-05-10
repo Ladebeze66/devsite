@@ -35,6 +35,9 @@ related:
   - "[[newsletter-ia]]"
   - "[[transcription-video]]"
 link: "https://fernandgrascalvet.com"
+route_parent: ia
+# Slug public Strapi (realisation-ia, UID depuis le titre) — dernier segment de l’URL site.
+site_slug: gras-bot-chatbot-ia-du-portfolio
 updated: 2026-04-23
 visibility: public
 ---

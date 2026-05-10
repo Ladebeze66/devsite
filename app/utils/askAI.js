@@ -16,7 +16,16 @@ import { getGrasbotSessionId, getGrasbotUserId } from "./grasbotIds";
  * @param {string} question
  * @returns {Promise<{
  *   response: string,
- *   sources?: Array<{slug: string, title: string, type: string, score: number, url?: string}>,
+ *   sources?: Array<{
+ *     slug: string,
+ *     title: string,
+ *     type: string,
+ *     score: number,
+ *     url?: string,
+ *     route_parent?: string,
+ *     path_slug?: string,
+ *     site_slug?: string,
+ *   }>,
  *   grounded?: boolean,
  *   model?: string,
  *   vault_size?: number,

@@ -20,11 +20,11 @@ $uri = ($BaseUrl.TrimEnd("/") + "/reload-vault")
 
 try {
     $response = Invoke-RestMethod -Method Post -Uri $uri -TimeoutSec 60
-    Write-Host ("Vault rechargé : {0} notes — {1}" -f $response.notes_total, $uri) -ForegroundColor Green
+    Write-Host ("Vault reloaded: {0} note(s) -> {1}" -f $response.notes_total, $uri) -ForegroundColor Green
     $response | ConvertTo-Json -Compress
 }
 catch {
-    Write-Host ("Échec : {0}" -f $_.Exception.Message) -ForegroundColor Red
-    Write-Host ("URI : {0}" -f $uri)
+    Write-Host ("Failed: {0}" -f $_.Exception.Message) -ForegroundColor Red
+    Write-Host ("POST {0}" -f $uri)
     exit 1
 }

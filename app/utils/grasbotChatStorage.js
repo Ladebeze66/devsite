@@ -1,13 +1,13 @@
 /**
  * Persistance locale du fil GrasBot (sans envoi à Ollama).
  *
- * Clé : `grasbot_chat_v1:<user_id>` où `user_id` est celui de `grasbotIds.js`.
+ * Clé : `grasbot_chat_v{VERSION}:<user_id>` où `user_id` est celui de `grasbotIds.js`.
  * Limite : les derniers messages uniquement pour éviter quota localStorage (~5 Mo).
  */
 
 import { getGrasbotUserId } from "./grasbotIds";
 
-export const GRASBOT_CHAT_STORAGE_VERSION = 1;
+export const GRASBOT_CHAT_STORAGE_VERSION = 2;
 export const GRASBOT_CHAT_MAX_MESSAGES = 80;
 
 function storageKey(userId) {

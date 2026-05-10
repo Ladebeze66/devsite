@@ -249,6 +249,11 @@ def parse_note(path: Path) -> Note | None:
     if rp is not None and str(rp).strip():
         extra["route_parent"] = str(rp).strip()
 
+    # Slug public Strapi / Next (dernier segment d'URL) si différent du slug vault (ex. realisation-ia).
+    ss = fm.get("site_slug")
+    if ss is not None and str(ss).strip():
+        extra["site_slug"] = str(ss).strip()
+
     return Note(
         slug=slug,
         title=title,
@@ -804,6 +809,35 @@ def generate(system: str, user: str) -> str:
         return content
 
 
+def _path_slug(note: Note) -> str:
+    """Dernier segment d'URL site : `site_slug` Strapi si renseigné, sinon slug vault."""
+    s = str(note.extra.get("site_slug") or "").strip()
+    return s if s else note.slug
+
+
+def _source_public_url(note: Note) -> tuple[str | None, str]:
+    """URL relative pour les pilules GrasBot + segment `route_parent` si imbriqué.
+
+    Retourne ``(url_ou_none, route_parent_expose)`` où `route_parent_expose` est
+    le segment parent (ex. ``ia``) uniquement lorsqu'il participe à l'URL
+    ``/competences/{parent}/{path_slug}``. Le dernier segment utilise
+    :func:`_path_slug` (alias Strapi ``site_slug`` dans le frontmatter).
+    """
+    raw = str(note.extra.get("route_parent") or "").strip()
+    seg = raw if raw and raw != note.slug else ""
+    last = _path_slug(note)
+
+    if note.type == "projet":
+        if seg:
+            return f"/competences/{seg}/{last}", seg
+        return f"/portfolio/{last}", ""
+    if note.type == "competence":
+        if seg:
+            return f"/competences/{seg}/{last}", seg
+        return f"/competences/{last}", ""
+    return None, ""
+
+
 # ---------------------------------------------------------------------------
 # Façade haut-niveau — trace racine Langfuse
 # ---------------------------------------------------------------------------
@@ -818,7 +852,7 @@ def answer(
     Retourne :
     {
       "response": str,                 # texte LLM (consommé par askAI.js → ChatBot.js)
-      "sources": list[{slug, title, type, score, reasons, url?}],
+      "sources": list[{slug, title, type, score, reasons, url?, route_parent?, path_slug?}],
       "model": str,
       "grounded": bool,                # True si au moins 1 note a dépassé MIN_SCORE
       "vault_size": int,
@@ -861,23 +895,23 @@ def answer(
         # --- Construction de la réponse API ---
         sources = []
         for s in scored:
-            url = None
-            if s.note.type == "projet":
-                url = f"/portfolio/{s.note.slug}"
-            elif s.note.type == "competence":
-                parent = str(s.note.extra.get("route_parent") or "").strip()
-                if parent:
-                    url = f"/competences/{parent}/{s.note.slug}"
-                else:
-                    url = f"/competences/{s.note.slug}"
-            sources.append({
+            url, rp_out = _source_public_url(s.note)
+            entry: dict[str, Any] = {
                 "slug": s.note.slug,
                 "title": s.note.title,
                 "type": s.note.type,
                 "score": round(s.score, 2),
                 "reasons": s.reasons,
-                **({"url": url} if url else {}),
-            })
+                "path_slug": _path_slug(s.note),
+            }
+            if url:
+                entry["url"] = url
+            if rp_out:
+                entry["route_parent"] = rp_out
+            site_val = str(s.note.extra.get("site_slug") or "").strip()
+            if site_val:
+                entry["site_slug"] = site_val
+            sources.append(entry)
 
         grounded = any(s.score >= MIN_SCORE for s in scored)
         max_score = max((s.score for s in scored), default=0.0)

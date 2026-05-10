@@ -37,11 +37,37 @@ answers:                                # questions-types auxquelles répond la 
 priority: 5                             # 1..10, boost léger au scoring
 linked: ["[[MOC-...]]"]                 # voisins du graphe (sortants)
 related: ["[[autre-note]]"]
-route_parent: ia                        # optionnel (compétence) : lien source `/competences/ia/{slug}`
+route_parent: ia                        # optionnel — voir § URLs des tags GrasBot
+site_slug: autre-slug-strapi            # optionnel : dernier segment URL si différent du slug vault (realisation-ia)
 updated: YYYY-MM-DD
 visibility: public | private            # `private` exclu du retrieval
 ---
 ```
+
+### URLs des tags GrasBot (`route_parent`)
+
+L’API (`llm-api/search.py`) ajoute aux **`sources`** une URL relative pour les pilules sous la réponse. Défaut :
+
+| `type` | URL si pas de `route_parent` |
+|--------|------------------------------|
+| `projet` | `/portfolio/{slug}` |
+| `competence` | `/competences/{slug}` |
+
+Le site peut aussi servir **`/competences/[parent]/[slug]`** (réalisations IA sous la compétence **IA**, fiches compétence imbriquées, etc.). Dans ce cas, ajouter dans le frontmatter :
+
+```yaml
+route_parent: ia   # segment parent dans l’URL Next (ex. ia → /competences/ia/{slug})
+```
+
+Règles : si `route_parent` est défini et **différent** de `slug` → lien **`/competences/{route_parent}/{slug}`** (pour `projet` et `competence`). Si `route_parent == slug`, on évite le doublon et on utilise `/competences/{slug}`.
+
+**Slug Strapi ≠ slug vault** — Les entrées `realisation-ia` utilisent un UID dérivé du **titre** dans Strapi (`slug` admin), souvent différent du fichier vault (`grasbot.md`, slug court pour les wikilinks). Dans ce cas, renseigner **`site_slug`** avec la valeur exacte du champ *slug* Strapi (voir Admin ou `GET /api/realisation-ias`). L’API GrasBot expose alors **`path_slug`** et l’URL utilise ce segment pour le dernier morceau du chemin.
+
+**Audit** — repérer les notes à corriger : corps ou bloc info qui mentionne `realisation-ia` et `[[ia]]`, ou une route documentée sous `/competences/ia/`. Dans `10-Projets/`, les réalisations IA typiques ont `route_parent: ia` (GrasBot, newsletter IA, transcription vidéo). Les projets 42 restent en `/portfolio/...` sans `route_parent`.
+
+Après édition du vault : **`POST /reload-vault`** ou **`.\reload-vault.ps1`** (racine du dépôt).
+
+**Front Next** : `app/utils/grasbotSourceUrl.js` — fallbacks `GRASBOT_ROUTE_PARENT_FALLBACK` et **`GRASBOT_SITE_SLUG_FALLBACK`** (à synchroniser avec Strapi si tu ajoutes des réalisations IA).
 
 Voir `TAXONOMIE.md` pour le vocabulaire contrôlé des domaines/tags et les
 règles de rédaction des aliases/answers.
